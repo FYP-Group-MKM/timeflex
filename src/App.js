@@ -22,7 +22,7 @@ export default class App extends Component {
         super(props);
         this.state = {
             currentDate: new Date(),
-            currentViewName: "Week",
+            currentViewName: "Month",
             drawerOpen: false,
         };
         this.currentDateChange = this.currentDateChange.bind(this);
@@ -52,7 +52,7 @@ export default class App extends Component {
                                 direction="row"
                                 alignItems="center"
                                 justify="space-between"
-                                spacing="1"
+                                spacing={1}
                             >
                                 <Grid item>
                                     <Hidden xsDown>
