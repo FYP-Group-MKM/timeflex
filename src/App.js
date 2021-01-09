@@ -113,7 +113,7 @@ export default class App extends Component {
                 </header>
                 <body style={{ margin: "0px" }}>
                     <div style={{ margin: "55px 0" }} />
-                    <CreateEventForm />
+                    <CreateEventForm currentDate={this.state.currentDate} />
                     <Calendar
                         key={this.state.currentViewName + this.state.currentDate}
                         currentDate={this.state.currentDate}

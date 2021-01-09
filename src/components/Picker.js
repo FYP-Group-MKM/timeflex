@@ -28,10 +28,10 @@ export default class Picker extends Component {
     render() {
 
         let pickerFormat = "MMMM yyyy";
-        let date = format(this.state.currentDate, 'MMMM yyyy');
+        let date = format(this.state.currentDate, 'MMM yyyy');
         if (this.state.currentViewName === "Day") {
             pickerFormat = "d MMMM yyyy";
-            date = format(this.state.currentDate, 'd MMMM yyyy');
+            date = format(this.state.currentDate, 'd MMM yyyy');
         }
 
         return (
