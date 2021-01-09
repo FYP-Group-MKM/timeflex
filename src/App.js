@@ -61,7 +61,7 @@ export default class App extends Component {
                                         </Typography>
                                     </Hidden>
                                     <Hidden smUp>
-                                        <IconButton
+                                        <IconButton style={{ color: '#848485' }}
                                             color="inherit"
                                             aria-label="open drawer"
                                             onClick={this.handleDrawerOpen}
