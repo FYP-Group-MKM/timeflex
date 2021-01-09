@@ -21,7 +21,7 @@ app.post('/api/appointments', (req, res) => {
     appointments.push(newAppointment);
 });
 
-app.delete('/api/appointments', (req, res) => {
+app.delete('/api/appointments/:id', (req, res) => {
     const delAppointment = appointments.find(appointment => {
         return appointment.id === req.params.id;
     });
