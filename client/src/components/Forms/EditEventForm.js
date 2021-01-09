@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -14,21 +11,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
 
-const styles = {
-    fab: {
-        position: "absolute",
-        bottom: 25,
-        right: 25,
-        zIndex: 1,
-    },
-};
-
-class CreateEventForm extends Component {
+class EditEventForm extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: false,
+            isOpen: this.props.open,
             allDay: false,
             error: false,
             title: "",
@@ -87,8 +75,6 @@ class CreateEventForm extends Component {
     handleEndDateInput = (endDate) => {
         this.setState({ endDate });
     }
-
-
 
     render() {
         return (
@@ -198,14 +184,9 @@ class CreateEventForm extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-                <Tooltip title="Create Event" placement="left" aria-label="add">
-                    <Fab color="primary" aria-label="add" style={styles.fab} onClick={this.handleOpen}>
-                        <AddIcon />
-                    </Fab>
-                </Tooltip>
             </div >
         )
     }
 }
 
-export default CreateEventForm;
+export default EditEventForm;

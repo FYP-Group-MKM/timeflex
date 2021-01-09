@@ -4,6 +4,7 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
@@ -72,24 +73,15 @@ export default function SideBar(props) {
     const classes = useStyles();
     const theme = useTheme();
 
-    const handleClickDay = () =>{
-        console.log("Hello")
-        console.log(props)
+    const handleClickDay = () => {
         props.currentViewNameChange("Day")
-        
-        
-        
     }
-    const handleClickWeek = () =>{
-        
+    const handleClickWeek = () => {
         props.currentViewNameChange("Week")
-        
     }
 
-    const handleClickMonth = () =>{
-        
+    const handleClickMonth = () => {
         props.currentViewNameChange("Month")
-        
     }
     return (
         <div className={classes.root}>
@@ -103,23 +95,26 @@ export default function SideBar(props) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                <h2>{"TimeFlex    "}  </h2> 
-                <IconButton onClick={props.handleDrawerClose} style={{ color: '#848485' }}>
+                    <Typography variant="h6" style={{ color: "#616161" }}>
+                        TimeFlex
+                    </Typography>
+                    {/* <h6>TimeFlex</h6> */}
+                    <IconButton onClick={props.handleDrawerClose} style={{ color: '#616161' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </div>
                 <Divider />
                 <List>
-                <ListItem button key="Day View" style={{ color: '#848485' }} onClick={handleClickDay} value="Day">
-                    <ListItemText primary="Day View" />
-                    </ListItem>
-                    
-                    <ListItem button key="Week View" style={{ color: '#848485' }} onClick={handleClickWeek} value="Week">
-                    <ListItemText primary="Week View" />
+                    <ListItem button key="Day View" style={{ color: '#616161' }} onClick={handleClickDay} value="Day">
+                        <ListItemText primary="Day View" />
                     </ListItem>
 
-                    <ListItem button key="Month View" style={{ color: '#848485' }} onClick={handleClickMonth} value="Month">
-                    <ListItemText primary="Month View" />
+                    <ListItem button key="Week View" style={{ color: '#616161' }} onClick={handleClickWeek} value="Week">
+                        <ListItemText primary="Week View" />
+                    </ListItem>
+
+                    <ListItem button key="Month View" style={{ color: '#616161' }} onClick={handleClickMonth} value="Month">
+                        <ListItemText primary="Month View" />
                     </ListItem>
                 </List>
             </Drawer>

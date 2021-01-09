@@ -14,14 +14,13 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
-import { appointments } from '../../data/appointments';
 
 export default class Calendar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             height: window.innerHeight,
-            data: appointments,
+            appointments: [],
             addedAppointment: {},
             appointmentChanges: {},
             editingAppointment: undefined,
@@ -38,6 +37,10 @@ export default class Calendar extends Component {
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
+
+        fetch('/api/appointments')
+            .then(res => res.json())
+            .then(appointments => this.setState({ appointments }));
     }
 
     componentWillUnmount() {
@@ -78,10 +81,32 @@ export default class Calendar extends Component {
         });
     }
 
+    handleDelete = appointment => {
+        // console.log(appointment);
+        fetch('/api/appointments/' + appointment.id, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(appointment)
+        });
+        this.props.refresh();
+    };
+
+    AppointmentTooltipLayout = props => {
+        return (
+            <AppointmentTooltip.Layout
+                {...props}
+                onDeleteButtonClick={() => { this.handleDelete(props.appointmentMeta.data) }}
+            />
+        );
+    }
+
     render() {
         return (
             <Scheduler
-                data={this.state.data}
+                data={this.state.appointments}
                 height={window.innerHeight - 70}
                 firstDayOfWeek={1}
             >
@@ -119,9 +144,11 @@ export default class Calendar extends Component {
                     showCloseButton
                     showOpenButton
                     showDeleteButton
-                />
+                    layoutComponent={this.AppointmentTooltipLayout}
+                >
+                </AppointmentTooltip>
                 <AppointmentForm />
-            </Scheduler>
+            </Scheduler >
         );
     }
 }

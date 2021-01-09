@@ -30,7 +30,7 @@ export default class DateNavigator extends Component {
             date.setDate(date.getDate() + 7);
         }
         if (this.state.currentViewName === "Month") {
-            date.setDate(date.getMonth() + 1);
+            date.setMonth(date.getMonth() + 1);
         }
         this.props.currentDateChange(date);
     }
@@ -44,7 +44,7 @@ export default class DateNavigator extends Component {
             date.setDate(date.getDate() - 7);
         }
         if (this.state.currentViewName === "Month") {
-            date.setDate(date.getMonth() - 1);
+            date.setMonth(date.getMonth() - 1);
         }
         this.props.currentDateChange(date);
     }
