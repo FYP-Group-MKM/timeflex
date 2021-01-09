@@ -118,10 +118,13 @@ export default class App extends Component {
                         key={this.state.currentViewName + this.state.currentDate}
                         currentDate={this.state.currentDate}
                         currentViewName={this.state.currentViewName}
+                        currentViewNameChange={this.state.currentViewNameChange}
                     />
                     <SideBar
                         drawerOpen={this.state.drawerOpen}
                         handleDrawerClose={this.handleDrawerClose}
+                        currentViewNameChange={this.currentViewNameChange}
+                        
                     />
                 </body>
             </ThemeProvider >

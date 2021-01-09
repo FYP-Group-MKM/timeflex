@@ -75,6 +75,25 @@ export default function SideBar(props) {
     const classes = useStyles();
     const theme = useTheme();
 
+    const handleClickDay = () =>{
+        console.log("Hello")
+        console.log(props)
+        props.currentViewNameChange("Day")
+        
+        
+        
+    }
+    const handleClickWeek = () =>{
+        
+        props.currentViewNameChange("Week")
+        
+    }
+
+    const handleClickMonth = () =>{
+        
+        props.currentViewNameChange("Month")
+        
+    }
     return (
         <div className={classes.root}>
             <Drawer
@@ -87,18 +106,24 @@ export default function SideBar(props) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    <IconButton onClick={props.handleDrawerClose}>
+                <h2>{"TimeFlex    "}  </h2> 
+                <IconButton onClick={props.handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </div>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                <ListItem button key="Day View" style={{ color: '#848485' }} onClick={handleClickDay} value="Day">
+                    <ListItemText primary="Day View" />
+                    </ListItem>
+                    
+                    <ListItem button key="Week View" style={{ color: '#848485' }} onClick={handleClickWeek} value="Week">
+                    <ListItemText primary="Week View" />
+                    </ListItem>
+
+                    <ListItem button key="Month View" style={{ color: '#848485' }} onClick={handleClickMonth} value="Month">
+                    <ListItemText primary="Month View" />
+                    </ListItem>
                 </List>
             </Drawer>
         </div>
