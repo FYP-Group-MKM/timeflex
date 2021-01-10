@@ -117,6 +117,7 @@ export default class Calendar extends Component {
                             open={this.state.editing}
                             onClose={this.handleTooltipClose}
                             editDataId={this.state.editDataId}
+                            refresh={this.props.refresh}
                         />
                         : null
                 }

@@ -41,7 +41,7 @@ app.put('/api/appointments/:id', (req, res) => {
         appointments.forEach((appointment, i) => {
             if (idFilter(req)(appointment)) {
                 const editAppointment = { ...req.body };
-                appointment[i] = editAppointment;
+                appointments[i] = editAppointment;
                 res.json({ msg: 'Member updated', editAppointment });
             }
         });

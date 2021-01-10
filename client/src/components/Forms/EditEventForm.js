@@ -39,6 +39,8 @@ class EditEventForm extends Component {
     handleSubmit = () => {
         if (this.state.editData.title === null || this.state.editData.title === "") {
             this.setState({ error: true });
+        } else if (this.state.editData.startDate > this.state.editData.endDate) {
+            alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
             fetch('/api/appointments/' + this.state.id, {
@@ -50,6 +52,7 @@ class EditEventForm extends Component {
                 body: JSON.stringify(this.state.editData)
             });
             this.props.onClose();
+            this.props.refresh();
         }
     }
 

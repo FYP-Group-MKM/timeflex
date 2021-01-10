@@ -49,6 +49,8 @@ class CreateEventForm extends Component {
     handleSubmit = () => {
         if (this.state.title === null || this.state.title === "") {
             this.setState({ error: true });
+        } else if (this.state.startDate > this.state.endDate) {
+            alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
             let appointment = {
