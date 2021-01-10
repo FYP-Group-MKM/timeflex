@@ -15,7 +15,7 @@ let appointments = [
     }, {
         title: 'Install New Router in Dev Room',
         startDate: new Date(2021, 0, 21, 14, 30),
-        endDate: new Date(2021, 0, 21, 11, 35),
+        endDate: new Date(2021, 0, 21, 15, 35),
         id: "2",
         location: 'Room 2',
     }, {

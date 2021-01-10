@@ -14,6 +14,7 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
+import EditEventForm from '../Forms/EditEventForm';
 
 export default class Calendar extends Component {
     constructor(props) {
