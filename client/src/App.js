@@ -136,6 +136,7 @@ export default class App extends Component {
                             drawerOpen={this.state.drawerOpen}
                             handleDrawerClose={this.handleDrawerClose}
                             currentViewNameChange={this.currentViewNameChange}
+                            drawerClose={this.handleDrawerClose}
                         />
                     </ThemeProvider>
                 </body>

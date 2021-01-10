@@ -75,13 +75,16 @@ export default function SideBar(props) {
 
     const handleClickDay = () => {
         props.currentViewNameChange("Day")
+        props.drawerClose()
     }
     const handleClickWeek = () => {
         props.currentViewNameChange("Week")
+        props.drawerClose()
     }
 
     const handleClickMonth = () => {
         props.currentViewNameChange("Month")
+        props.drawerClose()
     }
     return (
         <div className={classes.root}>
