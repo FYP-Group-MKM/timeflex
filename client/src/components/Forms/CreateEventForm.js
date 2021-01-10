@@ -34,7 +34,6 @@ class CreateEventForm extends Component {
             title: "",
             startDate: this.props.currentDate,
             endDate: this.props.currentDate,
-            location: "",
             description: null,
         };
     }
@@ -56,7 +55,7 @@ class CreateEventForm extends Component {
                 title: this.state.title,
                 startDate: this.state.startDate,
                 endDate: this.state.endDate,
-                location: this.state.location,
+                description: this.state.description
             };
             fetch('/api/appointments', {
                 method: 'POST',

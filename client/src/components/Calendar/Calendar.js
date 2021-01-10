@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
+import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     AllDayPanel,
@@ -7,10 +7,7 @@ import {
     WeekView,
     MonthView,
     Appointments,
-    AppointmentForm,
     AppointmentTooltip,
-    EditRecurrenceMenu,
-    ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
@@ -21,17 +18,13 @@ export default class Calendar extends Component {
         super(props);
         this.state = {
             height: window.innerHeight,
+            editing: false,
+            editDataId: "",
             appointments: [],
-            addedAppointment: {},
-            appointmentChanges: {},
             editingAppointment: undefined,
             currentDate: this.props.currentDate,
             currentViewName: this.props.currentViewName,
         };
-        this.commitChanges = this.commitChanges.bind(this);
-        this.changeAddedAppointment = this.changeAddedAppointment.bind(this);
-        this.changeAppointmentChanges = this.changeAppointmentChanges.bind(this);
-        this.changeEditingAppointment = this.changeEditingAppointment.bind(this);
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
@@ -52,104 +45,82 @@ export default class Calendar extends Component {
         this.setState({ height: window.innerHeight });
     }
 
-    changeAddedAppointment(addedAppointment) {
-        this.setState({ addedAppointment });
-    }
 
-    changeAppointmentChanges(appointmentChanges) {
-        this.setState({ appointmentChanges });
-    }
-
-    changeEditingAppointment(editingAppointment) {
-        this.setState({ editingAppointment });
-    }
-
-    commitChanges({ added, changed, deleted }) {
-        this.setState((state) => {
-            let { data } = state;
-            if (added) {
-                const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-                data = [...data, { id: startingAddedId, ...added }];
-            }
-            if (changed) {
-                data = data.map(appointment => (
-                    changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-            }
-            if (deleted !== undefined) {
-                data = data.filter(appointment => appointment.id !== deleted);
-            }
-            return { data };
-        });
-    }
-
-    handleDelete = appointment => {
-        // console.log(appointment);
-        fetch('/api/appointments/' + appointment.id, {
+    handleDelete = deleteAppointmentId => {
+        fetch('/api/appointments/' + deleteAppointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(appointment)
         });
         this.props.refresh();
     };
+
+    handleTooltipOpen = editDataId => {
+        this.setState({ editDataId, editing: true });
+    }
+
+    handleTooltipClose = () => {
+        this.setState({ editing: false });
+    }
 
     AppointmentTooltipLayout = props => {
         return (
             <AppointmentTooltip.Layout
                 {...props}
-                onDeleteButtonClick={() => { this.handleDelete(props.appointmentMeta.data) }}
+                onDeleteButtonClick={() => { this.handleDelete(props.appointmentMeta.data.id) }}
+                onOpenButtonClick={() => { this.handleTooltipOpen(props.appointmentMeta.data.id) }}
             />
         );
     }
 
     render() {
         return (
-            <Scheduler
-                data={this.state.appointments}
-                height={window.innerHeight - 70}
-                firstDayOfWeek={1}
-            >
-                <ViewState
-                    currentDate={this.state.currentDate}
-                    currentViewName={this.state.currentViewName}
-                />
-                <EditingState
-                    onCommitChanges={this.commitChanges}
-                    addedAppointment={this.state.addedAppointment}
-                    onAddedAppointmentChange={this.changeAddedAppointment}
-                    appointmentChanges={this.state.appointmentChanges}
-                    onAppointmentChangesChange={this.changeAppointmentChanges}
-                    editingAppointment={this.state.editingAppointment}
-                    onEditingAppointmentChange={this.changeEditingAppointment}
-                />
-                <DayView
-                    startDayHour={0}
-                    endDayHour={24}
-                    cellDuration={60}
-                />
-                <WeekView
-                    timeTableCellComponent={TimeTableCell}
-                    dayScaleCellComponent={DayScaleCell}
-                    startDayHour={0}
-                    endDayHour={24}
-                    cellDuration={60}
-                />
-                <MonthView />
-                <AllDayPanel />
-                <EditRecurrenceMenu />
-                <ConfirmationDialog />
-                <Appointments />
-                <AppointmentTooltip
-                    showCloseButton
-                    showOpenButton
-                    showDeleteButton
-                    layoutComponent={this.AppointmentTooltipLayout}
+            <div>
+                <Scheduler
+                    data={this.state.appointments}
+                    height={window.innerHeight - 70}
+                    firstDayOfWeek={1}
                 >
-                </AppointmentTooltip>
-                <AppointmentForm />
-            </Scheduler >
+                    <ViewState
+                        currentDate={this.state.currentDate}
+                        currentViewName={this.state.currentViewName}
+                    />
+                    <DayView
+                        startDayHour={0}
+                        endDayHour={24}
+                        cellDuration={60}
+                    />
+                    <WeekView
+                        timeTableCellComponent={TimeTableCell}
+                        dayScaleCellComponent={DayScaleCell}
+                        startDayHour={0}
+                        endDayHour={24}
+                        cellDuration={60}
+                    />
+                    <MonthView />
+                    <AllDayPanel />
+                    <Appointments />
+                    <AppointmentTooltip
+                        showCloseButton
+                        showOpenButton
+                        showDeleteButton
+                        layoutComponent={this.AppointmentTooltipLayout}
+                    >
+                    </AppointmentTooltip>
+                </Scheduler >
+                {
+                    (this.state.editDataId !== "" && this.state.editDataId !== null)
+                        ? <EditEventForm
+                            key={this.state.editing}
+                            open={this.state.editing}
+                            onClose={this.handleTooltipClose}
+                            editDataId={this.state.editDataId}
+                        />
+                        : null
+                }
+            </div>
         );
     }
 }

@@ -6,33 +6,43 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const idFilter = req => appointment => appointment.id === parseInt(req.params.id);
+const idFilter = req => appointment => appointment.id === req.params.id;
 
+// Get all appointments
 app.get('/api/appointments', (req, res) => {
     res.json(appointments);
+});
+
+// Get a single appointment by id
+app.get('/api/appointments/:id', (req, res) => {
+    const found = appointments.some(idFilter(req));
+
+    if (found) {
+        res.json(appointments.find(idFilter(req)));
+    } else {
+        res.status(400).json({ msg: `No appointment with the id of ${req.params.id}` });
+    }
 });
 
 app.post('/api/appointments', (req, res) => {
     const newAppointment = {
         id: uuid.v4(),
-        title: req.body.title,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        location: req.body.location,
+        ...req.body,
     };
     appointments.push(newAppointment);
 });
 
+// Edit appointment by id
 app.put('/api/appointments/:id', (req, res) => {
+    console.log(req.body)
     const found = appointments.some(idFilter(req));
 
     if (found) {
         appointments.forEach((appointment, i) => {
             if (idFilter(req)(appointment)) {
-
-                const editAppointment = { ...appointment, ...req.body };
+                const editAppointment = { ...req.body };
                 appointment[i] = editAppointment;
-                res.json({ msg: 'Member updated', updMember });
+                res.json({ msg: 'Member updated', editAppointment });
             }
         });
     } else {
