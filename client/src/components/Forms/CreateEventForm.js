@@ -45,9 +45,11 @@ class CreateEventForm extends Component {
     }
 
     handleSubmit = () => {
+        console.log(this.state.simpleAppointment.startDate);
+        console.log(this.state.simpleAppointment.endDate);
         if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
             this.setState({ error: true });
-        } else if (this.state.simpleAppointment.startDate > this.state.simpleAppointment.endDate) {
+        } else if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
             alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
@@ -69,10 +71,14 @@ class CreateEventForm extends Component {
 
     setAllDay = () => {
         let simpleAppointment = { ...this.state.simpleAppointment };
-        simpleAppointment.allDay
-            ? simpleAppointment.allDay = true
-            : simpleAppointment.allDay = false
+        simpleAppointment.allDay = !simpleAppointment.allDay;
         this.setState({ simpleAppointment });
+    }
+
+    setDivisible = () => {
+        let smartAppointment = { ...this.state.smartAppointment };
+        smartAppointment.divisible = !smartAppointment.divisible;
+        this.setState({ smartAppointment });
     }
 
     handleTextFieldInput = (event) => {
@@ -90,21 +96,22 @@ class CreateEventForm extends Component {
     }
 
     handleStartDateInput = (date) => {
-        this.setState({
-            simpleAppointment: {
-                ...this.state.simpleAppointment,
-                startDate: date,
-                endDate: date,
-            }
-        });
+        let simpleAppointment = { ...this.state.simpleAppointment };
+        simpleAppointment.startDate = date;
+        simpleAppointment.endDate = date;
+        this.setState({ simpleAppointment });
     }
 
-    handleEndDateInput = (endDate) => {
-        this.setState({ simpleAppointment: { endDate } });
+    handleEndDateInput = (date) => {
+        let simpleAppointment = { ...this.state.simpleAppointment };
+        simpleAppointment.endDate = date;
+        this.setState({ simpleAppointment });
     }
 
     handleSmartDeadlineInput = deadline => {
-        this.setState({ smartAppointment: { deadline } });
+        let smartAppointment = { ...this.state.smartAppointment };
+        smartAppointment.deadline = deadline;
+        this.setState({ smartAppointment });
     }
 
     setSmartPlanningForm = () => {
@@ -190,7 +197,7 @@ class CreateEventForm extends Component {
                                 </Grid>
                             </Grid> */}
                             <Grid item>
-                                <Tooltip title="This feature helps you to find " placement="left">
+                                <Tooltip title="Find a timeslot for a task that does not have a fixed one" placement="top">
                                     <Button
                                         variant="outlined"
                                         size="small"
@@ -232,7 +239,7 @@ class CreateEventForm extends Component {
             <div>
                 <DialogTitle id="form-dialog-title">Smart Planning</DialogTitle>
                 <DialogContent style={{ minHeight: "300px" }}>
-                    <Typography variant="body2">
+                    <Typography variant="body2" style={{ marginBottom: "10px" }}>
                         Pleaese provide the following information for TimeFlex to generate suggested timeslot(s).
                     </Typography>
                     <form autoComplete="off">
@@ -268,34 +275,38 @@ class CreateEventForm extends Component {
                             </Grid>
                             <Grid item style={{ marginLeft: "6px" }}>
                                 <FormControlLabel
-                                    control={<Switch color="primary" size="small" />}
+                                    control={<Switch color="primary" size="small" checked={this.state.smartAppointment.divisible} onChange={this.setDivisible} />}
                                     label="Divsible"
                                 />
                             </Grid>
-                            <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                                <Grid item style={{ maxWidth: "100px", marginLeft: "8px" }}>
-                                    <Tooltip title="Minimum length of a divided session" placement="top">
-                                        <TextField
-                                            id="standard-number"
-                                            label="Minimum Session"
-                                            type="number"
-                                            InputLabelProps={{ shrink: true }}
-                                            style={{ margin: "10px 0" }}
-                                        />
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item style={{ maxWidth: "100px", marginLeft: "8px" }}>
-                                    <Tooltip title="Maximum length of a divided session" placement="top">
-                                        <TextField
-                                            id="standard-number"
-                                            label="Minimum Session"
-                                            type="number"
-                                            InputLabelProps={{ shrink: true }}
-                                            style={{ margin: "10px 0" }}
-                                        />
-                                    </Tooltip>
-                                </Grid>
-                            </Grid>
+                            {
+                                this.state.smartAppointment.divisible
+                                    ? <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
+                                        <Grid item style={{ maxWidth: "110px", marginLeft: "8px" }}>
+                                            <Tooltip title="Minimum hours of a divided session" placement="top">
+                                                <TextField
+                                                    id="standard-number"
+                                                    label="Min. hours"
+                                                    type="number"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    style={{ margin: "10px 0" }}
+                                                />
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item style={{ maxWidth: "110px", marginLeft: "8px" }}>
+                                            <Tooltip title="Maximum hours of a divided session" placement="top">
+                                                <TextField
+                                                    id="standard-number"
+                                                    label="Max. hours"
+                                                    type="number"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    style={{ margin: "10px 0" }}
+                                                />
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                    : null
+                            }
                             <Grid item style={{ margin: "15px 0" }}>
                                 <TextField
                                     name="description"
@@ -316,7 +327,7 @@ class CreateEventForm extends Component {
                         </Button>
                     <Button variant="contained" onClick={this.handleSubmit} color="primary" disableElevation>
                         Find a time
-                        </Button>
+                    </Button>
                 </DialogActions>
             </div >
         );
@@ -336,11 +347,6 @@ class CreateEventForm extends Component {
                         : this.renderSmartPlanningForm()
                     }
                 </Dialog>
-                {/* <Tooltip title="Create Event" placement="left" aria-label="add">
-                    <Fab color="primary" aria-label="add" style={styles.fab} onClick={this.handleOpen}>
-                        <AddIcon />
-                    </Fab>
-                </Tooltip> */}
             </div>
         );
     }
