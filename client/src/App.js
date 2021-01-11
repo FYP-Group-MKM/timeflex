@@ -3,10 +3,13 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import MenuIcon from '@material-ui/icons/Menu';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 import { ThemeProvider } from '@material-ui/core/styles';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
@@ -16,6 +19,14 @@ import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
 
+const styles = {
+    fab: {
+        position: "absolute",
+        bottom: 25,
+        right: 25,
+        zIndex: 1,
+    },
+};
 
 export default class App extends Component {
     constructor(props) {
@@ -24,6 +35,7 @@ export default class App extends Component {
             currentDate: new Date(),
             currentViewName: "Week",
             drawerOpen: false,
+            create: false,
         };
         this.currentDateChange = this.currentDateChange.bind(this);
         this.currentViewNameChange = this.currentViewNameChange.bind(this);
@@ -43,6 +55,14 @@ export default class App extends Component {
 
     handleDrawerClose = () => {
         this.setState({ drawerOpen: false })
+    }
+
+    setCreateForm = () => {
+        this.setState({ create: true });
+    }
+
+    hideCreateForm = () => {
+        this.setState({ create: false });
     }
 
     refresh = (date) => {
@@ -124,7 +144,13 @@ export default class App extends Component {
                 <body style={{ margin: "0px" }}>
                     <ThemeProvider theme={theme}>
                         <div style={{ margin: "55px 0" }} />
-                        <CreateEventForm currentDate={this.state.currentDate} refresh={this.refresh} />
+                        <CreateEventForm
+                            key={this.state.create}
+                            open={this.state.create}
+                            currentDate={this.state.currentDate}
+                            refresh={this.refresh}
+                            onHide={this.hideCreateForm}
+                        />
                         <Calendar
                             key={this.state.currentViewName + this.state.currentDate}
                             currentDate={this.state.currentDate}
@@ -138,6 +164,11 @@ export default class App extends Component {
                             currentViewNameChange={this.currentViewNameChange}
                             drawerClose={this.handleDrawerClose}
                         />
+                        <Tooltip title="Create Event" placement="left" aria-label="add">
+                            <Fab color="primary" aria-label="add" style={styles.fab} onClick={this.setCreateForm}>
+                                <AddIcon />
+                            </Fab>
+                        </Tooltip>
                     </ThemeProvider>
                 </body>
             </div>
