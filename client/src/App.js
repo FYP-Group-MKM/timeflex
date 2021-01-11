@@ -90,14 +90,26 @@ export default class App extends Component {
                                             </Typography>
                                         </Hidden>
                                         <Hidden smUp>
-                                            <IconButton style={{ color: '#848485' }}
-                                                color="inherit"
-                                                aria-label="open drawer"
-                                                onClick={this.handleDrawerOpen}
-                                                edge="start"
-                                            >
-                                                <MenuIcon />
-                                            </IconButton>
+                                            <Grid container direction="row" alignItems="center">
+                                                <Grid item>
+                                                    <IconButton style={{ color: '#848485' }}
+                                                        color="inherit"
+                                                        aria-label="open drawer"
+                                                        onClick={this.handleDrawerOpen}
+                                                        edge="start"
+                                                    >
+                                                        <MenuIcon />
+                                                    </IconButton>
+                                                </Grid>
+                                                <Grid item>
+                                                    <DateNavigator
+                                                        key={this.state.currentDate + this.state.currentViewName}
+                                                        currentDate={this.state.currentDate}
+                                                        currentViewName={this.state.currentViewName}
+                                                        currentDateChange={this.currentDateChange}
+                                                    />
+                                                </Grid>
+                                            </Grid>
                                         </Hidden>
                                     </Grid>
                                     <Grid item>
@@ -107,23 +119,37 @@ export default class App extends Component {
                                             alignItems="center"
                                             spacing={1}
                                         >
+                                            <Hidden xsDown>
+                                                <Grid item>
+                                                    <DateNavigator
+                                                        key={this.state.currentDate + this.state.currentViewName}
+                                                        currentDate={this.state.currentDate}
+                                                        currentViewName={this.state.currentViewName}
+                                                        currentDateChange={this.currentDateChange}
+                                                    />
+                                                </Grid>
+                                            </Hidden>
                                             <Grid item>
-                                                <DateNavigator
-                                                    key={this.state.currentDate + this.state.currentViewName}
-                                                    currentDate={this.state.currentDate}
-                                                    currentViewName={this.state.currentViewName}
-                                                    currentDateChange={this.currentDateChange}
-                                                />
-                                            </Grid>
-                                            <Grid item>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() => { this.currentDateChange(new Date()) }}
-                                                >
-                                                    Today
-                                    </Button>
+                                                <Hidden xsDown>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={() => { this.currentDateChange(new Date()) }}
+                                                    >
+                                                        Today
+                                                    </Button>
+                                                </Hidden>
+                                                <Hidden smUp>
+                                                    <Button
+                                                        variant="outlined"
+                                                        size="small"
+                                                        style={{ color: "#616161" }}
+                                                        onClick={() => { this.currentDateChange(new Date()) }}
+                                                    >
+                                                        Today
+                                                    </Button>
+                                                </Hidden>
                                             </Grid>
                                             <Grid item>
                                                 <Hidden xsDown>

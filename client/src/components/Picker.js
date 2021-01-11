@@ -1,7 +1,8 @@
 import format from 'date-fns/format';
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import TodayIcon from '@material-ui/icons/Today';
+import Hidden from '@material-ui/core/Hidden';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DatePicker, } from '@material-ui/pickers';
 
@@ -51,13 +52,27 @@ export default class Picker extends Component {
                                 KeyboardButtonProps={{ 'aria-label': 'change date', }}
                             />
                         </MuiPickersUtilsProvider>
-                        : <Button
-                            endIcon={<TodayIcon />}
-                            onClick={() => { this.setPicker(true) }}
-                            style={{ color: "#616161" }}
-                        >
-                            {date}
-                        </Button>
+                        : <div>
+                            <Hidden smUp>
+                                <Button
+                                    endIcon={<ArrowDropDownIcon />}
+                                    onClick={() => { this.setPicker(true) }}
+                                    style={{ color: "#616161" }}
+                                >
+                                    {date}
+                                </Button>
+                            </Hidden>
+                            <Hidden xsDown>
+                                <Button
+                                    onClick={() => { this.setPicker(true) }}
+                                    style={{ color: "#616161" }}
+                                >
+                                    {date}
+                                </Button>
+                            </Hidden>
+                        </div>
+
+
                 }
             </div>
         )
