@@ -17,7 +17,10 @@ class CreateEventForm extends Component {
         super(props);
         this.state = {
             isOpen: this.props.open,
-            error: false,
+            titleEmpty: false,
+            exDurationEmpty: false,
+            minSessionEmpty: false,
+            maxSessionEmpty: false,
             simple: true,
             simpleAppointment: {
                 title: "",
@@ -31,10 +34,9 @@ class CreateEventForm extends Component {
                 deadline: new Date(),
                 exDuration: null,
                 divisible: true,
-                minSession: 60,
+                minSession: 1,
                 maxSession: null,
                 cushion: 0,
-                preference: null,
                 description: ""
             }
         };
@@ -45,27 +47,62 @@ class CreateEventForm extends Component {
     }
 
     handleSubmit = () => {
-        console.log(this.state.simpleAppointment.startDate);
-        console.log(this.state.simpleAppointment.endDate);
-        if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
-            this.setState({ error: true });
-        } else if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
-            alert("The start date cannot be later than the end date");
+        if (this.state.simple) {
+            if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
+                this.setState({ titleEmpty: true });
+            } else if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
+                alert("The start date cannot be later than the end date");
+            } else {
+                let appointment = {
+                    type: "simple",
+                    ...this.state.simpleAppointment
+                };
+                fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointment)
+                });
+                this.props.refresh();
+                this.handleClose();
+            }
         } else {
-            this.setState({ error: false });
-            let appointment = {
-                ...this.state.simpleAppointment
-            };
-            fetch('/api/appointments', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointment)
-            });
-            this.props.refresh();
-            this.handleClose();
+            if (!(this.state.smartAppointment.title && this.state.smartAppointment.deadline && this.state.smartAppointment.exDuration)) {
+                if (this.state.smartAppointment.title === null || this.state.smartAppointment.title === "") {
+                    this.setState({ titleEmpty: true });
+                }
+                if (this.state.smartAppointment.deadline < new Date()) {
+                    alert("The deadline cannot be earlier than this moment");
+                }
+                if (this.state.smartAppointment.exDuration === null) {
+                    this.setState({ exDurationEmpty: true });
+                }
+            } else if (this.state.smartAppointment.divisible && !(this.state.smartAppointment.minSession || this.state.smartAppointment.maxSession)) {
+                if (this.state.smartAppointment.minSession === null) {
+                    this.setState({ minSessionEmpty: true });
+                }
+                if (this.state.smartAppointment.maxSession === null) {
+                    this.setState({ maxSessionEmpty: true });
+                }
+                console.log("testing")
+            } else {
+                let appointment = {
+                    type: "smart",
+                    ...this.state.smartAppointment
+                };
+                fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointment)
+                });
+                this.props.refresh();
+                this.handleClose();
+            }
         }
     }
 
@@ -89,8 +126,12 @@ class CreateEventForm extends Component {
             simpleAppointment[nam] = val;
             this.setState({ simpleAppointment });
         } else {
-            let smartAppointment = { ...this.state.simpleAppointment };
+            let smartAppointment = { ...this.state.smartAppointment };
+            if (nam === "maxSession" || nam === "minSession" || nam === "exDuration") {
+                val = parseInt(val);
+            }
             smartAppointment[nam] = val;
+            smartAppointment.maxSession = smartAppointment.exDuration;
             this.setState({ smartAppointment });
         }
     }
@@ -133,8 +174,8 @@ class CreateEventForm extends Component {
                                 <TextField
                                     autoFocus
                                     required
-                                    error={this.state.error}
-                                    helperText={this.state.error ? "Title required" : ""}
+                                    error={this.state.titleEmpty}
+                                    helperText={this.state.titleEmpty ? "Title required" : ""}
                                     name="title"
                                     label="Title"
                                     onChange={this.handleTextFieldInput}
@@ -248,8 +289,8 @@ class CreateEventForm extends Component {
                                 <TextField
                                     autoFocus
                                     required
-                                    error={this.state.error}
-                                    helperText={this.state.error ? "Title required" : ""}
+                                    error={this.state.titleEmpty}
+                                    helperText={this.state.titleEmpty ? "Required" : ""}
                                     name="title"
                                     label="Title"
                                     onChange={this.handleTextFieldInput}
@@ -268,7 +309,11 @@ class CreateEventForm extends Component {
                                 <TextField
                                     id="standard-number"
                                     label="Duration (hours)"
+                                    name="exDuration"
+                                    error={this.state.exDurationEmpty}
+                                    helperText={this.state.exDurationEmpty ? "Required" : ""}
                                     type="number"
+                                    onChange={this.handleTextFieldInput}
                                     InputLabelProps={{ shrink: true }}
                                     style={{ margin: "10px 0" }}
                                 />
@@ -287,7 +332,12 @@ class CreateEventForm extends Component {
                                                 <TextField
                                                     id="standard-number"
                                                     label="Min. hours"
+                                                    name="minSession"
+                                                    defaultValue={this.state.smartAppointment.minSession}
+                                                    error={this.state.minSessionEmpty}
+                                                    helperText={this.state.minSessionEmpty ? "Required" : ""}
                                                     type="number"
+                                                    onChange={this.handleTextFieldInput}
                                                     InputLabelProps={{ shrink: true }}
                                                     style={{ margin: "10px 0" }}
                                                 />
@@ -296,9 +346,15 @@ class CreateEventForm extends Component {
                                         <Grid item style={{ maxWidth: "110px", marginLeft: "8px" }}>
                                             <Tooltip title="Maximum hours of a divided session" placement="top">
                                                 <TextField
+                                                    key={this.state.smartAppointment.exDuration}
                                                     id="standard-number"
                                                     label="Max. hours"
                                                     type="number"
+                                                    name="maxSession"
+                                                    defaultValue={this.state.smartAppointment.exDuration}
+                                                    error={this.state.maxSessionEmpty}
+                                                    helperText={this.state.maxSessionEmpty ? "Required" : ""}
+                                                    onChange={this.handleTextFieldInput}
                                                     InputLabelProps={{ shrink: true }}
                                                     style={{ margin: "10px 0" }}
                                                 />

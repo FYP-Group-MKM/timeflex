@@ -29,6 +29,7 @@ app.post('/api/appointments', (req, res) => {
         id: uuid.v4(),
         ...req.body,
     };
+    delete newAppointment.type;
     appointments.push(newAppointment);
 });
 
