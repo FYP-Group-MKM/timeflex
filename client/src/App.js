@@ -22,7 +22,7 @@ export default class App extends Component {
         super(props);
         this.state = {
             currentDate: new Date(),
-            currentViewName: "Month",
+            currentViewName: "Week",
             drawerOpen: false,
         };
         this.currentDateChange = this.currentDateChange.bind(this);
@@ -67,7 +67,7 @@ export default class App extends Component {
                                         <Hidden xsDown>
                                             <Typography variant="h6" style={{ color: "#616161" }}>
                                                 TimeFlex
-                                        </Typography>
+                                            </Typography>
                                         </Hidden>
                                         <Hidden smUp>
                                             <IconButton style={{ color: '#848485' }}
