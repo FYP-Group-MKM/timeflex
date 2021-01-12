@@ -28,9 +28,21 @@ app.post('/api/appointments', (req, res) => {
     const newAppointment = {
         id: uuid.v4(),
         ...req.body,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
     };
     delete newAppointment.type;
     appointments.push(newAppointment);
+});
+
+app.post('/api/smartplanning', (req, res) => {
+    appointment = {
+        ...req.body,
+        deadline: new Date(req.body.deadline)
+    };
+    delete appointment.type;
+    res.json(appointment);
+    console.log(appointment);
 });
 
 // Edit appointment by id
