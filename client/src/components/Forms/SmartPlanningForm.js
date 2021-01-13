@@ -12,7 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
 
-class CreateEventForm extends Component {
+class SmartPlanningForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -150,7 +150,7 @@ class CreateEventForm extends Component {
                                 this.state.smartAppointment.divisible
                                     ? <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                                         <Grid item style={{ maxWidth: "110px", marginLeft: "8px" }}>
-                                            <Tooltip title="Minimum hours of a divided session" placement="top">
+                                            <Tooltip title="Minimum hours per day" placement="top">
                                                 <TextField
                                                     id="standard-number"
                                                     label="Min. hours"
@@ -166,7 +166,7 @@ class CreateEventForm extends Component {
                                             </Tooltip>
                                         </Grid>
                                         <Grid item style={{ maxWidth: "110px", marginLeft: "8px" }}>
-                                            <Tooltip title="Maximum hours of a divided session" placement="top">
+                                            <Tooltip title="Maximum hours per day" placement="top">
                                                 <TextField
                                                     key={this.state.smartAppointment.exDuration}
                                                     id="standard-number"
@@ -227,4 +227,4 @@ class CreateEventForm extends Component {
     }
 }
 
-export default CreateEventForm;
+export default SmartPlanningForm;
