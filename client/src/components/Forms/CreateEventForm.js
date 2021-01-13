@@ -240,7 +240,7 @@ class CreateEventForm extends Component {
                 >
                     {this.state.simple
                         ? this.renderSimpleForm()
-                        : <SmartPlanningForm onClose={this.handleClose} />
+                        : <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />
                     }
                 </Dialog>
             </div>

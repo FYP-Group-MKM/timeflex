@@ -1,5 +1,6 @@
 const express = require('express');
 const uuid = require('uuid');
+const smartPlanning = require('./smartPlanning');
 const appointments = require('./appointments');
 
 const app = express();
@@ -35,14 +36,15 @@ app.post('/api/appointments', (req, res) => {
     appointments.push(newAppointment);
 });
 
+// Smart planning
 app.post('/api/smartplanning', (req, res) => {
-    appointment = {
+    let appointment = {
         ...req.body,
         deadline: new Date(req.body.deadline)
     };
     delete appointment.type;
-    res.json(appointment);
-    console.log(appointment);
+    suggestions = smartPlanning(appointment, appointments);
+    appointments.push(...suggestions);
 });
 
 // Edit appointment by id

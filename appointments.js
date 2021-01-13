@@ -1,4 +1,4 @@
-let appointments = [
+const appointments = [
     {
         "id": "c42ec32d-0709-4b82-8428-d10f79f36b44",
         "title": "FYP Presentation",
