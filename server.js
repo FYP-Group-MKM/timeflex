@@ -44,6 +44,9 @@ app.post('/api/smartplanning', (req, res) => {
     };
     delete appointment.type;
     suggestions = smartPlanning(appointment, appointments);
+    if (suggestions === false) {
+        console.log("no sol");
+    }
     appointments.push(...suggestions);
 });
 

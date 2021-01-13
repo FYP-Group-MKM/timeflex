@@ -71,14 +71,11 @@ function allocate(input, domain) {
     let minSlots = input.divisible ? input.minSession * 2 : remaining;
     let maxSlots = input.divisible ? input.maxSession * 2 : remaining;
 
-    // Looping through days in domain
     for (let i = 0; i < solution.length; i++) {
-        // Find out the maximum valid timeslot of a day 
+        day:
         for (let k = maxSlots; k >= minSlots; k--) {
-            // Looping timeslots in a day, 9am to 12pm in this case
-            for (let j = 18; j < 48; j++) {
-                let session = solution[i].slice(j, j + k)
-                if (session.every((slot) => { return slot === "occupied" ? false : true })) {
+            for (let j = 18; j < 48 - k; j++) {
+                if (solution[i].slice(j, j + k).every((slot) => { return slot === "occupied" ? false : true })) {
                     for (let m = j; m < j + k; m++) {
                         solution[i][m] = "picked";
                         remaining -= 1;
@@ -88,14 +85,14 @@ function allocate(input, domain) {
                             return solution;
                         }
                     }
-                    break;
+                    break day;
                 }
             }
             if (remaining > 0)
                 break;
         }
     }
-    return "No solution available";
+    return false;
 }
 
 function getResult(solution, input) {
@@ -131,7 +128,6 @@ function getResult(solution, input) {
                         description: input.description
                     }
                     result.push(appointment);
-                    break;
                 }
             }
             lowerTimePointer = new Date(new Date(lowerTimePointer).setMinutes(new Date(lowerTimePointer).getMinutes() + 30));
@@ -144,6 +140,9 @@ function getResult(solution, input) {
 function smartPlanning(input, appointments) {
     const domain = getDomain(input, appointments);
     const solution = allocate(input, domain);
+    if (solution === false) {
+        return false;
+    }
     const suggestions = getResult(solution, input);
     return suggestions;
 }
