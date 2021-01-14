@@ -1,3 +1,13 @@
+# Instructions
+### Go to the project's directory and install dependencies
+```
+npm install
+```
+### Start the server in dev mode
+```
+npm run dev
+```
+
 # timeflex - Calendar/Planner for Academia
 ### Project Background
 Existing calendar/planner apps are very good for handling tasks that will occupy
