@@ -1,78 +1,150 @@
+const PostMessage = require('./models/postMessages.js')
 const express = require('express');
 const uuid = require('uuid');
 const smartPlanning = require('./smartPlanning');
 const appointments = require('./appointments');
+const mongoose = require('mongoose')
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+const CONNECT_URL = 'mongodb+srv://kolpl:kolpl1997@memoryproject.vss6e.mongodb.net/<dbname>?retryWrites=true&w=majority'
 const idFilter = req => appointment => appointment.id === req.params.id;
+const PORT = 5000;
 
+mongoose.connect(CONNECT_URL,{useNewUrlParser:true,useUnifiedTopology:true})
+    .then(()=> app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT ${PORT}`)))
+    .catch((error) => console.log(error.message))
+
+mongoose.set('useFindAndModify',false)
 // Get all appointments
-app.get('/api/appointments', (req, res) => {
-    res.json(appointments);
+app.get('/api/appointments', async (req, res) => {
+    
+    try{
+        const postMessages =await PostMessage.find()
+        
+
+        res.status(200).json(postMessages)
+    }catch(error){
+        res.status(404).json({message:error.message})
+    }
+
 });
 
 // Get a single appointment by id
-app.get('/api/appointments/:id', (req, res) => {
-    const found = appointments.some(idFilter(req));
-
-    if (found) {
-        res.json(appointments.find(idFilter(req)));
-    } else {
-        res.status(400).json({ msg: `No appointment with the id of ${req.params.id}` });
+app.get('/api/appointments/:id',async (req, res) => {
+    const id = req.params.id
+    try {
+        const appointment = await PostMessage.findById(id)
+        res.status(200).json(appointment)
+    } catch (error) {
+        res.status(404).json({message:error.message})
+        
     }
+    // if (found) {
+    //     res.json(appointments.find(idFilter(req)));
+    // } else {
+    //     res.status(400).json({ msg: `No appointment with the id of ${req.params.id}` });
+    // }
 });
 
-app.post('/api/appointments', (req, res) => {
+//Post is for the creation of the appointment
+app.post('/api/appointments', async (req, res) => {
     const newAppointment = {
         id: uuid.v4(),
         ...req.body,
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
     };
-    delete newAppointment.type;
-    appointments.push(newAppointment);
+    // delete newAppointment.type;
+    // appointments.push(newAppointment);
+    const newPostMessage = new PostMessage(newAppointment)
+    try {
+        await newPostMessage.save();
+        console.log("Sucess for post/api/appointments")
+
+        res.status(201).json(newPostMessage );
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
 });
 
 // Smart planning
-app.post('/api/smartplanning', (req, res) => {
+app.post('/api/smartplanning', async (req, res) => {
     let appointment = {
         ...req.body,
         deadline: new Date(req.body.deadline)
     };
-    delete appointment.type;
+    // delete appointment.type;
     suggestions = smartPlanning(appointment, appointments);
     appointments.push(...suggestions);
-});
-
-// Edit appointment by id
-app.put('/api/appointments/:id', (req, res) => {
-    console.log(req.body)
-    const found = appointments.some(idFilter(req));
-
-    if (found) {
-        appointments.forEach((appointment, i) => {
-            if (idFilter(req)(appointment)) {
-                const editAppointment = { ...req.body };
-                appointments[i] = editAppointment;
-                res.json({ msg: 'Member updated', editAppointment });
-            }
-        });
-    } else {
-        res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
+    const newPostMessage = new PostMessage(suggestions)
+    try {
+        await newPostMessage.save();
+        console.log("The success of creating by smart planning /api/smartplanning")
+        res.status(201).json(newPostMessage );
+    } catch (error) {
+        res.status(409).json({ message: error.message });
     }
 });
 
-app.delete('/api/appointments/:id', (req, res) => {
-    const delAppointment = appointments.find(appointment => {
-        return appointment.id === req.params.id;
-    });
-    appointments.splice(appointments.indexOf(delAppointment), 1);
-    res.json(appointments);
+// Edit appointment by id
+app.put('/api/appointments/:id', async (req, res) => {
+    console.log(req.body)
+    // const found = appointments.some(idFilter(req));
+    const paraid = req.params.id
+    const { title, startDate, endDate, description} = req.body;
+    const updatedPost = { id, title, startDate, endDate, description };
+    try {
+        await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+        console.log("The success of updated")
+        res.status(201).json(updatedPost);
+        
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+        
+    }
+    // if(!mongoose.Types.ObjectId){
+    //     res.status(404).send(`No post with id: ${id}`)
+    // }
+    
+    res.json(updatedPost);
+    console.log("The update of api is successs")
+    // if (found) {
+    //     appointments.forEach((appointment, i) => {
+    //         if (idFilter(req)(appointment)) {
+    //             const editAppointment = { ...req.body };
+    //             appointments[i] = editAppointment;
+    //             res.json({ msg: 'Member updated', editAppointment });
+    //         }
+    //     });
+    // } else {
+    //     res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
+    // }
 });
 
-const PORT = 5000;
+app.delete('/api/appointments/:id', async(req, res) => {
+    const paraid = req.params.id
+    console.log(`The id is ${paraid}`)
+    try {
+        await PostMessage.findOneAndRemove({id:paraid})
+        console.log("The item has removed")
+        res.status(201).send("Delete Sucessfully")
 
-app.listen(PORT, () => `Server running on port ${PORT}`);
+        
+    } catch (error) {
+        
+        res.status(409).json({ message: error.message });
+
+    }
+    // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`)
+    // const delAppointment = appointments.find(appointment => {
+    //     return appointment.id === req.params.id;
+    // });
+    // appointments.splice(appointments.indexOf(delAppointment), 1);
+    // res.json(appointments);
+
+
+    // console.log("DeleteSuceessfully")
+});
+
