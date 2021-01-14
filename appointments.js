@@ -11,7 +11,7 @@ const appointments = [
         "title": "TimeFlex Development",
         "startDate": "2021-01-12T02:00:00.000Z",
         "endDate": "2021-01-12T09:00:00.000Z",
-        "description": null
+        "description": "Hi there"
     },
     {
         "id": "12ef9fb8-c699-4732-94a5-463333472755",
