@@ -1,4 +1,4 @@
-# timeflex
+# timeflex - Calendar/Planner for Academia
 ### Project Background
 Existing calendar/planner apps are very good for handling tasks that will occupy
 a fixed time-slot, such as a 2-hour lecture. For people working in academia (and
