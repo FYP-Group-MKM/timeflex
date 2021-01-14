@@ -34,14 +34,16 @@ lectures taught in two different days in a week)
 TimeFlex Planner will be available on web and mobile platforms. Below are the
 corresponding tools / technologies that will be applied during the development
 of TimeFlex’s web app and native mobile app:
-1. Front-end Web Development with React
+
+#### 1. Front-end Web Development with React
 The front-end of TimeFlex’s responsive web app is going to be built with
 React, an open-source library written in JavaScript for building user
 interfaces and also UI components. React can be used for developing
 single-page or mobile applications. The use of additional libraries for state
 management and routing, such as Redux and React Router are also
 possible depending on the actual situation during the development process.
-2. Native Mobile App Development with React Native
+
+#### 2. Native Mobile App Development with React Native
 Besides web version, TimeFlex will also be available on the iOS and
 Android platform and the native mobile app will be developed using React
 Native, which is a mobile app framework that has only slight differences
@@ -50,7 +52,7 @@ components and code can be reused, and hence the time required and
 complexity of this project can be greatly reduced, as the product on
 different platforms indeed share the same code base.
 
-### 3. Backend Development with Express (NodeJS)
+#### 3. Backend Development with Express (NodeJS)
 As for the backend, both the web and mobile version of TimeFlex will make
 use of the Express framework. It is a minimal and flexible Node.js backend
 web application framework that is designed for building web and mobile
