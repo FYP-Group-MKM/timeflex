@@ -8,6 +8,7 @@ npm install
 npm run dev
 ```
 
+
 # timeflex - Calendar/Planner for Academia
 ### Project Background
 Existing calendar/planner apps are very good for handling tasks that will occupy
