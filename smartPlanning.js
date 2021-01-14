@@ -98,7 +98,6 @@ function allocate(input, domain) {
 function getResult(solution, input) {
     const result = [];
     let firstDay = getFirstDay();
-    let id = uuid.v4();
 
     let lowerTimePointer = new Date(firstDay);
     lowerTimePointer = new Date(lowerTimePointer).setHours(0);
@@ -121,7 +120,7 @@ function getResult(solution, input) {
                 endDate = upperTimePointer;
                 if (solution[i][j + 1] !== "picked") {
                     let appointment = {
-                        id: id,
+                        id: uuid.v4(),
                         title: input.title,
                         startDate: new Date(startDate),
                         endDate: new Date(endDate),
