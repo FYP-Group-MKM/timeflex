@@ -44,10 +44,11 @@ app.post('/api/smartplanning', (req, res) => {
     };
     delete appointment.type;
     suggestions = smartPlanning(appointment, appointments);
-    if (suggestions === false) {
-        console.log("no sol");
+    if (suggestions) {
+        appointments.push(...suggestions);
+    } else {
+        console.log("No solution available");
     }
-    appointments.push(...suggestions);
 });
 
 // Edit appointment by id
