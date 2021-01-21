@@ -2,7 +2,6 @@ const uuid = require('uuid');
 
 function getFirstDay() {
     let firstDay = new Date();
-    // let firstDay = new Date("2021-01-12");
     if (firstDay.getHours() >= 9) {
         firstDay = new Date(firstDay.setDate(firstDay.getDate() + 1));
     }
@@ -88,8 +87,6 @@ function allocate(input, domain) {
                     break day;
                 }
             }
-            if (remaining > 0)
-                break;
         }
     }
     return false;
