@@ -44,7 +44,7 @@ class SmartPlanningForm extends Component {
             if (this.state.smartAppointment.exDuration === null) {
                 this.setState({ exDurationEmpty: true });
             }
-        } else if (this.state.smartAppointment.divisible && !(this.state.smartAppointment.minSession || this.state.smartAppointment.maxSession)) {
+        } else if (this.state.smartAppointment.divisible && !(this.state.smartAppointment.minSession && this.state.smartAppointment.maxSession)) {
             if (this.state.smartAppointment.minSession === null) {
                 this.setState({ minSessionEmpty: true });
             }
@@ -88,7 +88,7 @@ class SmartPlanningForm extends Component {
             val = parseInt(val);
         }
         smartAppointment[nam] = val;
-        smartAppointment.maxSession = smartAppointment.exDuration;
+        // smartAppointment.maxSession = smartAppointment.exDuration;
         this.setState({ smartAppointment });
     }
 
@@ -174,7 +174,6 @@ class SmartPlanningForm extends Component {
                                                     label="Max. hours"
                                                     type="number"
                                                     name="maxSession"
-                                                    defaultValue={this.state.smartAppointment.exDuration}
                                                     error={this.state.maxSessionEmpty}
                                                     helperText={this.state.maxSessionEmpty ? "Required" : ""}
                                                     onChange={this.handleTextFieldInput}

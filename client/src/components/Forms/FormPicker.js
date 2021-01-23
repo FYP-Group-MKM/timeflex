@@ -17,7 +17,8 @@ export default class FormPicker extends Component {
     }
 
     setPicker = (pickerIsOpen) => {
-        this.setState({ pickerIsOpen });
+        if (new Date(this.state.currentDate) > new Date())
+            this.setState({ pickerIsOpen });
     }
 
     handleDateChange = (currentDate) => {
@@ -38,6 +39,7 @@ export default class FormPicker extends Component {
                                         name={this.props.name}
                                         variant="dialog"
                                         value={this.state.currentDate}
+                                        readOnly={this.readOnly}
                                         onChange={this.handleDateChange}
                                         open={this.state.pickerIsOpen}
                                         onOpen={() => { this.setPicker(true) }}
@@ -50,6 +52,7 @@ export default class FormPicker extends Component {
                                         name={this.props.name}
                                         variant="dialog"
                                         value={this.state.currentDate}
+                                        readOnly={true}
                                         onChange={this.handleDateChange}
                                         open={this.state.pickerIsOpen}
                                         onOpen={() => { this.setPicker(true) }}

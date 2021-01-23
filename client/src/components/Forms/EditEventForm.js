@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -36,6 +36,13 @@ class EditEventForm extends Component {
             }));
     }
 
+    checkPast = () => {
+        if (new Date(this.state.editData.startDate) < new Date()) {
+            return true;
+        }
+        return false
+    }
+
     handleSubmit = () => {
         if (this.state.editData.title === null || this.state.editData.title === "") {
             this.setState({ error: true });
@@ -63,19 +70,24 @@ class EditEventForm extends Component {
     }
 
     handleTextFieldInput = (event) => {
-        let nam = event.target.name;
-        let val = event.target.value;
-        let editData = {
-            ...this.state.editData,
-            [nam]: val
+        if (!this.checkPast()) {
+            let nam = event.target.name;
+            let val = event.target.value;
+            let editData = {
+                ...this.state.editData,
+                [nam]: val
+            }
+            this.setState({ editData });
         }
-        this.setState({ editData });
     }
 
     handleStartDateInput = (date) => {
         let editData = {
             ...this.state.editData,
-            startDate: date
+            startDate: new Date(date)
+        }
+        if (new Date(editData.startDate) > new Date(editData.endDate)) {
+            editData.endDate = editData.startDate;
         }
         this.setState({ editData });
     }
@@ -99,68 +111,77 @@ class EditEventForm extends Component {
                             helperText={this.state.error ? "Title required" : ""}
                             name="title"
                             label="Title"
+                            disabled={this.checkPast()}
                             defaultValue={this.state.editData.title}
                             onChange={this.handleTextFieldInput}
                             fullWidth
                         />
                     </Grid>
                     <Grid item key={this.state.allDay}>
-                        {
-                            this.state.allDay
-                                ? <div label="allDay">
-                                    <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                                        <Grid item style={{ minWidth: "55px" }}>
-                                            <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <FormPicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
-                                        </Grid>
+                        {this.state.allDay
+                            ? <div label="allDay">
+                                <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
+                                    <Grid item style={{ minWidth: "55px" }}>
+                                        <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
                                     </Grid>
-                                    <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                                        <Grid item style={{ minWidth: "55px" }}>
-                                            <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <FormPicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
-                                        </Grid>
+                                    <Grid item>
+                                        <FormPicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
                                     </Grid>
-                                </div>
-                                : <div label="NonAllDay">
-                                    <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                                        <Grid item style={{ minWidth: "55px" }}>
-                                            <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <FormPicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} />
-                                        </Grid>
+                                </Grid>
+                                <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
+                                    <Grid item style={{ minWidth: "55px" }}>
+                                        <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
                                     </Grid>
-                                    <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                                        <Grid item style={{ minWidth: "55px" }}>
-                                            <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <FormPicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} />
-                                        </Grid>
+                                    <Grid item>
+                                        <FormPicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
                                     </Grid>
-                                </div>
+                                </Grid>
+                            </div>
+                            : <div label="NonAllDay">
+                                <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
+                                    <Grid item style={{ minWidth: "55px" }}>
+                                        <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <FormPicker
+                                            currentDate={this.state.editData.startDate}
+                                            handleFormChange={this.handleStartDateInput}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
+                                    <Grid item style={{ minWidth: "55px" }}>
+                                        <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <FormPicker
+                                            currentDate={this.state.editData.endDate}
+                                            handleFormChange={this.handleEndDateInput}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </div>
                         }
                     </Grid>
-                    <Grid container="row" justify="flex-start" style={{ margin: "10px 0" }}>
-                        <Grid item style={{ marginLeft: "10px" }}>
-                            <FormControlLabel
-                                value="start"
-                                control={<Switch color="primary" size="small" onChange={this.setAllDay} />}
-                                label="All day"
-                            />
+                    {!this.checkPast()
+                        ? <Grid container="row" justify="flex-start" style={{ margin: "10px 0" }}>
+                            <Grid item style={{ marginLeft: "10px" }}>
+                                <FormControlLabel
+                                    value="start"
+                                    control={<Switch color="primary" size="small" onChange={this.setAllDay} />}
+                                    label="All day"
+                                />
+                            </Grid>
+                            <Grid item style={{ marginLeft: "10px" }}>
+                                <FormControlLabel
+                                    value="start"
+                                    control={<Switch color="primary" size="small" />}
+                                    label="Repeat"
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item style={{ marginLeft: "10px" }}>
-                            <FormControlLabel
-                                value="start"
-                                control={<Switch color="primary" size="small" />}
-                                label="Repeat"
-                            />
-                        </Grid>
-                    </Grid>
+                        : null
+                    }
                     <Grid item>
                     </Grid>
                     <Grid item>
@@ -168,6 +189,7 @@ class EditEventForm extends Component {
                             name="description"
                             label="Description"
                             variant="outlined"
+                            disabled={this.checkPast()}
                             defaultValue={this.state.editData.description ? this.state.editData.description : " "}
                             onChange={this.handleTextFieldInput}
                             multiline rows="2"
@@ -194,12 +216,19 @@ class EditEventForm extends Component {
                         : <LinearProgress />
                 }
                 <DialogActions>
-                    <Button onClick={this.props.onClose} color="primary">
-                        Cancel
+                    {!this.checkPast()
+                        ? <Fragment>
+                            <Button onClick={this.props.onClose} color="primary">
+                                Cancel
                         </Button>
-                    <Button variant="contained" onClick={this.handleSubmit} color="primary" disableElevation>
-                        Save
+                            <Button variant="contained" onClick={this.handleSubmit} color="primary" disableElevation>
+                                Save
                         </Button>
+                        </Fragment>
+                        : <Button variant="contained" onClick={this.props.onClose} color="primary">
+                            Done
+                        </Button>
+                    }
                 </DialogActions>
             </Dialog>
         );

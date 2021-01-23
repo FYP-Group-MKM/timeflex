@@ -66,6 +66,7 @@ export default class Calendar extends Component {
     }
 
     AppointmentTooltipLayout = props => {
+
         return (
             <AppointmentTooltip.Layout
                 {...props}
@@ -88,14 +89,14 @@ export default class Calendar extends Component {
                         currentViewName={this.state.currentViewName}
                     />
                     <DayView
-                        startDayHour={0}
+                        startDayHour={9}
                         endDayHour={24}
                         cellDuration={60}
                     />
                     <WeekView
                         timeTableCellComponent={TimeTableCell}
                         dayScaleCellComponent={DayScaleCell}
-                        startDayHour={0}
+                        startDayHour={9}
                         endDayHour={24}
                         cellDuration={60}
                     />
