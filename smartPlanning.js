@@ -111,12 +111,11 @@ function getResult(solution, input) {
         let endDate = null;
         for (let j = 0; j < 48; j++) {
             if (solution[i][j] === "picked") {
-                if (startDate)
-                    endDate = upperTimePointer;
-                else
+                if (!startDate)
                     startDate = lowerTimePointer;
+                endDate = upperTimePointer;
                 if (solution[i][j + 1] !== "picked") {
-                    let appointment = {
+                    const appointment = {
                         id: uuid.v4(),
                         title: input.title,
                         startDate: new Date(startDate),
