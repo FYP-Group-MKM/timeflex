@@ -82,7 +82,6 @@ app.post('/api/smartplanning', async (req, res) => {
 // Edit appointment by id
 app.put('/api/appointments/:id', async (req, res) => {
     console.log(req.body)
-    // const found = appointments.some(idFilter(req));
     const paraid = req.params.id
     const { id, title, startDate, endDate, description } = req.body;
     const updatedPost = { id, title, startDate, endDate, description };
@@ -91,13 +90,9 @@ app.put('/api/appointments/:id', async (req, res) => {
         // await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
         console.log("Updated successfully")
         res.status(201).json(updatedPost);
-
     } catch (error) {
         res.status(409).json({ message: error.message });
-
     }
-    res.json(updatedPost);
-    console.log("The update of api is successs")
 });
 
 app.delete('/api/appointments/:id', async (req, res) => {
