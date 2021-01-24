@@ -84,11 +84,12 @@ app.put('/api/appointments/:id', async (req, res) => {
     console.log(req.body)
     // const found = appointments.some(idFilter(req));
     const paraid = req.params.id
-    const { title, startDate, endDate, description } = req.body;
+    const { id, title, startDate, endDate, description } = req.body;
     const updatedPost = { id, title, startDate, endDate, description };
     try {
-        await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
-        console.log("The success of updated")
+        await PostMessage.findOneAndUpdate({ id: paraid }, updatedPost);
+        // await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+        console.log("Updated successfully")
         res.status(201).json(updatedPost);
 
     } catch (error) {
