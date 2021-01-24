@@ -4,13 +4,13 @@ const postSchema = mongoose.Schema(
     {
         id: String,
         title: String,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         description: String
     },
 
 )
 
-var PostMessage = mongoose.model('PostMessage',postSchema)
+var PostMessage = mongoose.model('PostMessage', postSchema)
 
 module.exports = PostMessage

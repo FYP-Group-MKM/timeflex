@@ -38,7 +38,7 @@ export default class FormPicker extends Component {
                                     ? <DatePicker
                                         name={this.props.name}
                                         variant="dialog"
-                                        value={this.state.currentDate}
+                                        value={new Date(this.state.currentDate)}
                                         readOnly={this.readOnly}
                                         onChange={this.handleDateChange}
                                         open={this.state.pickerIsOpen}
@@ -51,7 +51,7 @@ export default class FormPicker extends Component {
                                     : <DateTimePicker
                                         name={this.props.name}
                                         variant="dialog"
-                                        value={this.state.currentDate}
+                                        value={new Date(this.state.currentDate)}
                                         readOnly={true}
                                         onChange={this.handleDateChange}
                                         open={this.state.pickerIsOpen}

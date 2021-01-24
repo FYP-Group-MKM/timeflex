@@ -12,30 +12,33 @@ const CONNECT_URL = 'mongodb+srv://kolpl:kolpl1997@memoryproject.vss6e.mongodb.n
 const idFilter = req => appointment => appointment.id === req.params.id;
 const PORT = 5000;
 
-mongoose.connect(CONNECT_URL,{useNewUrlParser:true,useUnifiedTopology:true})
-    .then(()=> app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT ${PORT}`)))
+mongoose.connect(CONNECT_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT ${PORT}`)))
     .catch((error) => console.log(error.message))
 
-mongoose.set('useFindAndModify',false)
+mongoose.set('useFindAndModify', false)
+
 // Get all appointments
 app.get('/api/appointments', async (req, res) => {
-    try{
-        const postMessages =await PostMessage.find()        
+    try {
+        const postMessages = await PostMessage.find()
         res.status(200).json(postMessages)
-    }catch(error){
-        res.status(404).json({message:error.message})
+    } catch (error) {
+        res.status(404).json({ message: error.message })
     }
 });
 
 // Get a single appointment by id
-app.get('/api/appointments/:id',async (req, res) => {
+app.get('/api/appointments/:id', async (req, res) => {
     const id = req.params.id
     try {
-        const appointment = await PostMessage.findById(id)
+        const appointment = await PostMessage.findOne({ id: id })
+        // const appointment = await PostMessage.findById(id)
         res.status(200).json(appointment)
+        // console.log(appointment);
     } catch (error) {
-        res.status(404).json({message:error.message})
-        
+        console.log("error")
+        res.status(404).json({ message: error.message })
     }
     // if (found) {
     //     res.json(appointments.find(idFilter(req)));
@@ -58,8 +61,7 @@ app.post('/api/appointments', async (req, res) => {
     try {
         await newPostMessage.save();
         console.log("Sucess for post/api/appointments")
-
-        res.status(201).json(newPostMessage );
+        res.status(201).json(newPostMessage);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -78,7 +80,7 @@ app.post('/api/smartplanning', async (req, res) => {
     try {
         await newPostMessage.save();
         console.log("The success of creating by smart planning /api/smartplanning")
-        res.status(201).json(newPostMessage );
+        res.status(201).json(newPostMessage);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -89,21 +91,21 @@ app.put('/api/appointments/:id', async (req, res) => {
     console.log(req.body)
     // const found = appointments.some(idFilter(req));
     const paraid = req.params.id
-    const { title, startDate, endDate, description} = req.body;
+    const { title, startDate, endDate, description } = req.body;
     const updatedPost = { id, title, startDate, endDate, description };
     try {
         await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
         console.log("The success of updated")
         res.status(201).json(updatedPost);
-        
+
     } catch (error) {
         res.status(409).json({ message: error.message });
-        
+
     }
     // if(!mongoose.Types.ObjectId){
     //     res.status(404).send(`No post with id: ${id}`)
     // }
-    
+
     res.json(updatedPost);
     console.log("The update of api is successs")
     // if (found) {
@@ -119,17 +121,17 @@ app.put('/api/appointments/:id', async (req, res) => {
     // }
 });
 
-app.delete('/api/appointments/:id', async(req, res) => {
+app.delete('/api/appointments/:id', async (req, res) => {
     const paraid = req.params.id
     console.log(`The id is ${paraid}`)
     try {
-        await PostMessage.findOneAndRemove({id:paraid})
+        await PostMessage.findOneAndRemove({ id: paraid })
         console.log("The item has removed")
         res.status(201).send("Delete Sucessfully")
 
-        
+
     } catch (error) {
-        
+
         res.status(409).json({ message: error.message });
 
     }
