@@ -1,9 +1,8 @@
-const PostMessage = require('./models/postMessages.js')
 const express = require('express');
+const PostMessage = require('./models/postMessages.js');
 const uuid = require('uuid');
 const smartPlanning = require('./smartPlanning');
-const appointments = require('./appointments');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(express.json());
@@ -62,20 +61,25 @@ app.post('/api/appointments', async (req, res) => {
 
 // Smart planning
 app.post('/api/smartplanning', async (req, res) => {
-    let appointment = {
+    const appointment = {
         ...req.body,
         deadline: new Date(req.body.deadline)
     };
-    // delete appointment.type;
+    const appointments = await PostMessage.find();
     suggestions = smartPlanning(appointment, appointments);
-    appointments.push(...suggestions);
-    const newPostMessage = new PostMessage(suggestions)
-    try {
-        await newPostMessage.save();
-        console.log("The success of creating by smart planning /api/smartplanning")
-        res.status(201).json(newPostMessage);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+    console.log(suggestions);
+    if (suggestions) {
+        try {
+            await suggestions.forEach(suggestion => {
+                const newPostMessage = new PostMessage(suggestion)
+                newPostMessage.save();
+            });
+            console.log("Successfully created appointments with Smart Planning");
+        } catch (error) {
+            res.status(409).json({ message: error.message });
+        }
+    } else {
+        res.json({ message: "no solution available" })
     }
 });
 
