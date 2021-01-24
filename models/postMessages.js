@@ -4,8 +4,8 @@ const postSchema = mongoose.Schema(
     {
         id: String,
         title: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         description: String
     },
 

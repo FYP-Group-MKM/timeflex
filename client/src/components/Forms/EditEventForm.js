@@ -40,7 +40,7 @@ class EditEventForm extends Component {
         if (new Date(this.state.editData.startDate) < new Date()) {
             return true;
         }
-        return false
+        return false;
     }
 
     handleSubmit = () => {

@@ -40,11 +40,6 @@ app.get('/api/appointments/:id', async (req, res) => {
         console.log("error")
         res.status(404).json({ message: error.message })
     }
-    // if (found) {
-    //     res.json(appointments.find(idFilter(req)));
-    // } else {
-    //     res.status(400).json({ msg: `No appointment with the id of ${req.params.id}` });
-    // }
 });
 
 //Post is for the creation of the appointment
@@ -55,8 +50,6 @@ app.post('/api/appointments', async (req, res) => {
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
     };
-    // delete newAppointment.type;
-    // appointments.push(newAppointment);
     const newPostMessage = new PostMessage(newAppointment)
     try {
         await newPostMessage.save();
@@ -102,23 +95,8 @@ app.put('/api/appointments/:id', async (req, res) => {
         res.status(409).json({ message: error.message });
 
     }
-    // if(!mongoose.Types.ObjectId){
-    //     res.status(404).send(`No post with id: ${id}`)
-    // }
-
     res.json(updatedPost);
     console.log("The update of api is successs")
-    // if (found) {
-    //     appointments.forEach((appointment, i) => {
-    //         if (idFilter(req)(appointment)) {
-    //             const editAppointment = { ...req.body };
-    //             appointments[i] = editAppointment;
-    //             res.json({ msg: 'Member updated', editAppointment });
-    //         }
-    //     });
-    // } else {
-    //     res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
-    // }
 });
 
 app.delete('/api/appointments/:id', async (req, res) => {
@@ -135,14 +113,5 @@ app.delete('/api/appointments/:id', async (req, res) => {
         res.status(409).json({ message: error.message });
 
     }
-    // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`)
-    // const delAppointment = appointments.find(appointment => {
-    //     return appointment.id === req.params.id;
-    // });
-    // appointments.splice(appointments.indexOf(delAppointment), 1);
-    // res.json(appointments);
-
-
-    // console.log("DeleteSuceessfully")
 });
 
