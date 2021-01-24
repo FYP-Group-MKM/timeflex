@@ -3,13 +3,12 @@ const PostMessage = require('./models/postMessages.js');
 const uuid = require('uuid');
 const smartPlanning = require('./smartPlanning');
 const mongoose = require('mongoose');
-
 const app = express();
+const CONNECT_URL = 'mongodb+srv://kolpl:kolpl1997@memoryproject.vss6e.mongodb.net/<dbname>?retryWrites=true&w=majority'
+const PORT = 5000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-const CONNECT_URL = 'mongodb+srv://kolpl:kolpl1997@memoryproject.vss6e.mongodb.net/<dbname>?retryWrites=true&w=majority'
-const idFilter = req => appointment => appointment.id === req.params.id;
-const PORT = 5000;
 
 mongoose.connect(CONNECT_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT ${PORT}`)))
@@ -91,7 +90,6 @@ app.put('/api/appointments/:id', async (req, res) => {
     const updatedPost = { id, title, startDate, endDate, description };
     try {
         await PostMessage.findOneAndUpdate({ id: paraid }, updatedPost);
-        // await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
         console.log("Updated successfully")
         res.status(201).json(updatedPost);
     } catch (error) {
@@ -106,12 +104,8 @@ app.delete('/api/appointments/:id', async (req, res) => {
         await PostMessage.findOneAndRemove({ id: paraid })
         console.log("The item has removed")
         res.status(201).send("Delete Sucessfully")
-
-
     } catch (error) {
-
         res.status(409).json({ message: error.message });
-
     }
 });
 
