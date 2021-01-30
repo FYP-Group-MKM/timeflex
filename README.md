@@ -10,7 +10,7 @@ npm run dev
 
 
 # timeflex - Calendar/Planner for Academia
-### Project Background
+### Motivation
 Existing calendar/planner apps are very good for handling tasks that will occupy
 a fixed time-slot, such as a 2-hour lecture. For people working in academia (and
 potentially in other professions as well), there are tasks that cannot be
@@ -24,7 +24,7 @@ somewhat flexible which 20 hours are used for this task. It is easy to lose trac
 on the number of "flexible" tasks one has committed to, resulting in poor time
 management.
 
-### Project Objectives
+### Objectives
 This project aims to provide a tailor-made solution for academia, allowing them
 to allocate timeslot for tasks that take dynamic time length to complete.
 TimeFlex, a web / mobile app will be developed in this project and it will provide
@@ -41,7 +41,7 @@ hours”, then the event will be automatically set as a task that has to be
 handled at least once every week (e.g. a course has a total of 3-hour
 lectures taught in two different days in a week)
 
-### Project Methodology
+### Methodologies
 TimeFlex Planner will be available on web and mobile platforms. Below are the
 corresponding tools / technologies that will be applied during the development
 of TimeFlex’s web app and native mobile app:
