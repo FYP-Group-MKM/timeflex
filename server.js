@@ -40,7 +40,7 @@ app.get('/api/appointments/:id', async (req, res) => {
     }
 });
 
-//Post is for the creation of the appointment
+// Appointment creation
 app.post('/api/appointments', async (req, res) => {
     const newAppointment = {
         id: uuid.v4(),

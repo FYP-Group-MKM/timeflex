@@ -14,7 +14,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
 import DateNavigator from './components/AppBar/DateNavigator';
-import CreateEventForm from './components/Forms/CreateEventForm';
+import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
@@ -170,7 +170,7 @@ export default class App extends Component {
                 <body style={{ margin: "0px" }}>
                     <ThemeProvider theme={theme}>
                         <div style={{ margin: "55px 0" }} />
-                        <CreateEventForm
+                        <SimpleEventForm
                             key={this.state.create}
                             open={this.state.create}
                             currentDate={this.state.currentDate}

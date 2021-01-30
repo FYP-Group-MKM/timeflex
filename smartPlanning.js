@@ -11,10 +11,10 @@ function getFirstDay() {
     return firstDay;
 }
 
-function getDomain(input, appointments) {
+function getArrayCalendar(input, appointments) {
     let firstDay = getFirstDay();
     let deadlineDate = new Date(input.deadline).getDate();
-    const domain = [];
+    const arrayCalendar = [];
     let availDays = deadlineDate - firstDay.getDate();
 
     for (let i = 0; i < availDays; i++) {
@@ -22,7 +22,7 @@ function getDomain(input, appointments) {
         for (j = 0; j < 48; j++) {
             day.push("free");
         }
-        domain.push(day);
+        arrayCalendar.push(day);
     }
 
     // This alogrithm does not consider cross-day case e.g. 23:30 15/1 ~ 01:30 16/1
@@ -57,15 +57,15 @@ function getDomain(input, appointments) {
             }
 
             for (let i = startMark; i <= endMark; i++) {
-                domain[dayNum][i] = "occupied";
+                arrayCalendar[dayNum][i] = "occupied";
             }
         }
     });
-    return domain;
+    return arrayCalendar;
 }
 
-function allocate(input, domain) {
-    const solution = [...domain];
+function allocate(input, arrayCalendar) {
+    const solution = [...arrayCalendar];
     let remaining = input.exDuration * 2;
     let minSlots = input.divisible ? input.minSession * 2 : remaining;
     let maxSlots = input.divisible ? input.maxSession * 2 : remaining;
@@ -92,7 +92,7 @@ function allocate(input, domain) {
     return false;
 }
 
-function getResult(solution, input) {
+function convertToJSON(solution, input) {
     const result = [];
     let firstDay = getFirstDay();
 
@@ -133,13 +133,9 @@ function getResult(solution, input) {
 }
 
 function smartPlanning(input, appointments) {
-    const domain = getDomain(input, appointments);
-    const solution = allocate(input, domain);
-    if (solution === false) {
-        return false;
-    }
-    const suggestions = getResult(solution, input);
-    return suggestions;
+    const arrayCalendar = getArrayCalendar(input, appointments);
+    const solution = allocate(input, arrayCalendar);
+    return solution ? convertToJSON(solution, input) : false;
 }
 
 module.exports = smartPlanning;
