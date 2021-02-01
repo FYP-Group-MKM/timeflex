@@ -5,7 +5,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 export default class Dropdown extends Component {
-
     constructor(props) {
         super(props);
         this.state = {

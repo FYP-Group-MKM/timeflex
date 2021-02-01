@@ -23,7 +23,7 @@ class SmartPlanningForm extends Component {
             maxSessionEmpty: false,
             smartAppointment: {
                 title: "",
-                deadline: new Date().setDate(new Date().getDate() + 7),
+                deadline: new Date(new Date(new Date().setDate(new Date().getDate() + 7)).setHours(23)).setMinutes(59),
                 exDuration: null,
                 divisible: true,
                 minSession: 1,

@@ -68,7 +68,7 @@ export default class FormPicker extends Component {
                             onClick={() => { this.setPicker(true) }}
                             style={{ color: "#424242" }}
                         >
-                            {this.state.allDay ? format(this.state.currentDate, 'P') : format(this.state.currentDate, 'Pp')}
+                            {this.state.allDay ? format(this.state.currentDate, 'E, dd MMM u') : format(this.state.currentDate, 'E, dd MMM u - p')}
                         </Button>
                 }
             </div>

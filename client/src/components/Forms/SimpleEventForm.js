@@ -1,3 +1,4 @@
+import format from 'date-fns/format';
 import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -8,9 +9,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 
 class SimpleEventForm extends Component {
@@ -21,6 +25,7 @@ class SimpleEventForm extends Component {
             titleEmpty: false,
             simple: true,
             recurrence: false,
+            recurMenuAnchorEl: null,
             simpleAppointment: {
                 title: "",
                 allDay: false,
@@ -31,6 +36,8 @@ class SimpleEventForm extends Component {
                 description: null,
             },
         };
+        this.handleRecurMenuOpen = this.handleRecurMenuOpen.bind(this);
+        this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
     }
 
     handleClose = () => {
@@ -72,6 +79,16 @@ class SimpleEventForm extends Component {
         const simpleAppointment = { ...this.state.simpleAppointment };
         simpleAppointment.allDay = !simpleAppointment.allDay;
         this.setState({ simpleAppointment });
+    }
+
+    setRecurrence = () => {
+        if (this.state.recurrence) {
+            const simpleAppointment = { ...this.state.simpleAppointment };
+            simpleAppointment.rRule = null;
+            simpleAppointment.exDate = null;
+            this.setState({ simpleAppointment });
+        }
+        this.setState({ recurrence: false });
     }
 
     setDivisible = () => {
@@ -119,6 +136,33 @@ class SimpleEventForm extends Component {
         this.setState({ simple: true });
     }
 
+    handleRecurMenuOpen = event => {
+        this.setState({ recurMenuAnchorEl: event.currentTarget });
+    }
+
+    handleRecurMenuClose = event => {
+        const { startDate } = this.state.simpleAppointment;
+        this.setState({ recurMenuAnchorEl: null });
+        if (event.currentTarget.title) {
+            this.setState({ recurrence: event.currentTarget.title })
+            let rRule = "";
+            if (event.currentTarget.title === "Daily") {
+                rRule = "FREQ=DAILY;INTERVAL=1";
+            }
+            if (event.currentTarget.title === "Weekly") {
+                let dayOfWeek = format(startDate, "EEEEEE").toUpperCase();
+                rRule = `FREQ=WEEKLY;BYDAY=${dayOfWeek};INTERVAL=1`;
+            }
+            if (event.currentTarget.title === "Monthly") {
+                let dayOfMonth = format(startDate, "d");
+                rRule = `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth};INTERVAL=1`;
+            }
+            const simpleAppointment = { ...this.state.simpleAppointment };
+            simpleAppointment.rRule = rRule;
+            this.setState({ simpleAppointment });
+        }
+    }
+
     renderTitleTextField = () => {
         return (
             <Grid item>
@@ -141,7 +185,7 @@ class SimpleEventForm extends Component {
             <div label="allDay">
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                     <Grid item style={{ minWidth: "55px" }}>
-                        <Typography variant="caption" style={{ color: "#757575" }}>From</Typography>
+                        <Typography variant="caption" style={{ color: "#757575" }}>All Day</Typography>
                     </Grid>
                     <Grid item>
                         <FormPicker currentDate={this.state.simpleAppointment.startDate} handleFormChange={this.handleStartDateInput} allDay />
@@ -176,26 +220,49 @@ class SimpleEventForm extends Component {
 
     renderOptions = () => {
         return (
-            <Grid container="row" justify="flex-start" style={{ margin: "10px 0" }}>
+            <Grid container="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
                 <Grid item style={{ marginLeft: "15px" }}>
                     <FormControlLabel
                         control={<Switch color="primary" size="small" onChange={this.setAllDay} />}
                         label="All day"
                     />
                 </Grid>
-                <Grid item style={{ marginLeft: "10px" }}>
-                    <FormControlLabel
-                        control={<Switch color="primary" size="small" />}
-                        label="Repeat"
-                    />
+                <Grid item>
+                    <Button
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={this.handleRecurMenuOpen}
+                        size="small"
+                        endIcon={<ArrowDropDownIcon />}
+                    >
+                        <Typography variant="button">
+                            {this.state.recurrence ? this.state.recurrence : "Doesn't repeat"}
+                        </Typography>
+                    </Button >
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={this.state.recurMenuAnchorEl}
+                        keepMounted
+                        open={Boolean(this.state.recurMenuAnchorEl)}
+                        onClose={this.handleRecurMenuClose}
+                    >
+                        <MenuItem title="None" onClick={this.handleRecurMenuClose}>
+                            <Typography variant="button">Doesn't repeat</Typography>
+                        </MenuItem>
+                        <MenuItem title="Daily" onClick={this.handleRecurMenuClose}>
+                            <Typography variant="button">Daily</Typography>
+                        </MenuItem>
+                        <MenuItem title="Weekly" onClick={this.handleRecurMenuClose}>
+                            <Typography variant="button">Weekly</Typography>
+                        </MenuItem>
+                        <MenuItem title="Monthly" onClick={this.handleRecurMenuClose}>
+                            <Typography variant="button">Monthly</Typography>
+                        </MenuItem>
+                    </Menu>
                 </Grid>
             </Grid>
         );
     }
-
-    // renderRecurrenceForm = () => {
-
-    // }
 
     renderSmartPlanningButton = () => {
         return (
@@ -240,8 +307,8 @@ class SimpleEventForm extends Component {
                             {this.renderTitleTextField()}
                             <Grid item key={this.state.allDay}>
                                 {
-                                    this.state.allDay
-                                        ? this.renderNonAllDay()
+                                    this.state.simpleAppointment.allDay
+                                        ? this.renderAllDay()
                                         : this.renderNonAllDay()
                                 }
                             </Grid>
