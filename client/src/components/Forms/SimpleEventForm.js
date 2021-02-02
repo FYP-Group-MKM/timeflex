@@ -1,5 +1,4 @@
 import format from 'date-fns/format';
-import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -15,7 +14,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
-import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from '@material-ui/pickers';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 
