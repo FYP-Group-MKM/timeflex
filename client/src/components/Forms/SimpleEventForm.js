@@ -1,4 +1,5 @@
 import format from 'date-fns/format';
+import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -14,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
+import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from '@material-ui/pickers';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 
@@ -59,9 +61,15 @@ class SimpleEventForm extends Component {
                 alert("The start date cannot be later than the end date");
             }
         } else {
-            const appointment = {
-                ...this.state.simpleAppointment
-            };
+            const appointment = { ...this.state.simpleAppointment };
+            if (appointment.allDay) {
+                appointment.startDate = new Date(appointment.startDate);
+                appointment.endDate = new Date(appointment.endDate);
+                appointment.startDate.setHours(0);
+                appointment.startDate.setMinutes(0);
+                appointment.endDate.setHours(23);
+                appointment.endDate.setMinutes(59);
+            }
             fetch('/api/appointments', {
                 method: 'POST',
                 headers: {
@@ -180,30 +188,19 @@ class SimpleEventForm extends Component {
         );
     }
 
-    renderAllDay = () => {
+    renderPickers = () => {
         return (
-            <div label="allDay">
-                <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
-                    <Grid item style={{ minWidth: "55px" }}>
-                        <Typography variant="caption" style={{ color: "#757575" }}>All Day</Typography>
-                    </Grid>
-                    <Grid item>
-                        <FormPicker currentDate={this.state.simpleAppointment.startDate} handleFormChange={this.handleStartDateInput} allDay />
-                    </Grid>
-                </Grid>
-            </div>
-        );
-    }
-
-    renderNonAllDay = () => {
-        return (
-            <div label="NonAllDay">
+            <Grid item key={this.state.simpleAppointment.allDay}>
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                     <Grid item style={{ minWidth: "55px" }}>
                         <Typography variant="caption" style={{ color: "#757575" }}>From</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker currentDate={this.state.simpleAppointment.startDate} handleFormChange={this.handleStartDateInput} />
+                        <FormPicker
+                            allDay={this.state.simpleAppointment.allDay}
+                            currentDate={this.state.simpleAppointment.startDate}
+                            handleFormChange={this.handleStartDateInput}
+                        />
                     </Grid>
                 </Grid>
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
@@ -211,10 +208,14 @@ class SimpleEventForm extends Component {
                         <Typography variant="caption" style={{ color: "#757575" }}>Until</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker key={this.state.simpleAppointment.endDate} currentDate={this.state.simpleAppointment.endDate} handleFormChange={this.handleEndDateInput} />
+                        <FormPicker
+                            allDay={this.state.simpleAppointment.allDay}
+                            currentDate={this.state.simpleAppointment.endDate}
+                            handleFormChange={this.handleEndDateInput}
+                        />
                     </Grid>
                 </Grid>
-            </div>
+            </Grid>
         );
     }
 
@@ -305,13 +306,7 @@ class SimpleEventForm extends Component {
                     <form autoComplete="off">
                         <Grid container direction="column" spacing={2} justify="space-evenly">
                             {this.renderTitleTextField()}
-                            <Grid item key={this.state.allDay}>
-                                {
-                                    this.state.simpleAppointment.allDay
-                                        ? this.renderAllDay()
-                                        : this.renderNonAllDay()
-                                }
-                            </Grid>
+                            {this.renderPickers()}
                             {this.renderOptions()}
                             {this.renderSmartPlanningButton()}
                             {this.renderDescriptionTextField()}
