@@ -11,6 +11,59 @@ function getFirstDay() {
     return firstDay;
 }
 
+function duplicateRecurringAppointments(input, appointments) {
+    const recurAppointments = [...appointments];
+    appointments.forEach(appointment => {
+        if (appointment.rRule) {
+            let recurStartDate = new Date(appointment.startDate);
+            let recurEndDate = new Date(appointment.endDate);
+            if (appointment.rRule.includes("FREQ=MONTHLY")) {
+                while (new Date(recurStartDate) <= new Date(input.deadline)) {
+                    recurStartDate = new Date(
+                        recurStartDate.setMonth(
+                            new Date(recurStartDate).getMonth() + daysToAdd
+                        )
+                    );
+                    recurEndDate = new Date(
+                        recurEndDate.setMonth(
+                            new Date(recurEndDate).getMonth() + daysToAdd
+                        )
+                    );
+                    const recurAppointment = { ...appointment };
+                    recurAppointment.startDate = new Date(recurStartDate);
+                    recurAppointment.endDate = new Date(recurEndDate);
+                    recurAppointments.push(recurAppointment);
+                }
+            } else {
+                let daysToAdd = 0;
+                if (appointment.rRule === "FREQ=DAILY;INTERVAL=1") {
+                    daysToAdd = 1;
+                }
+                if (appointment.rRule.includes("FREQ=WEEKLY")) {
+                    daysToAdd = 7;
+                }
+                while (new Date(recurStartDate) <= new Date(input.deadline)) {
+                    recurStartDate = new Date(
+                        recurStartDate.setDate(
+                            new Date(recurStartDate).getDate() + daysToAdd
+                        )
+                    );
+                    recurEndDate = new Date(
+                        recurEndDate.setDate(
+                            new Date(recurEndDate).getDate() + daysToAdd
+                        )
+                    );
+                    const recurAppointment = { ...appointment };
+                    recurAppointment.startDate = new Date(recurStartDate);
+                    recurAppointment.endDate = new Date(recurEndDate);
+                    recurAppointments.push(recurAppointment);
+                }
+            }
+        }
+    });
+    return recurAppointments;
+}
+
 function getArrayCalendar(input, appointments) {
     let firstDay = getFirstDay();
     let deadlineDate = new Date(input.deadline).getDate();
@@ -92,7 +145,7 @@ function allocate(input, arrayCalendar) {
     return false;
 }
 
-function convertToJSON(solution, input) {
+function convertToJSON(input, solution) {
     const result = [];
     let firstDay = getFirstDay();
 
@@ -133,9 +186,10 @@ function convertToJSON(solution, input) {
 }
 
 function smartPlanning(input, appointments) {
-    const arrayCalendar = getArrayCalendar(input, appointments);
+    const recurringAppointments = duplicateRecurringAppointments(input, appointments);
+    const arrayCalendar = getArrayCalendar(input, recurringAppointments);
     const solution = allocate(input, arrayCalendar);
-    return solution ? convertToJSON(solution, input) : false;
+    return solution ? convertToJSON(input, solution) : false;
 }
 
 module.exports = smartPlanning;
