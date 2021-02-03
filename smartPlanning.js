@@ -28,7 +28,7 @@ function getArrayCalendar(input, appointments) {
     // This alogrithm does not consider cross-day case e.g. 23:30 15/1 ~ 01:30 16/1
     appointments.forEach(appointment => {
         let dayNum = new Date(appointment.startDate).getDate() - firstDay.getDate();
-        if (dayNum >= 0) {
+        if (dayNum >= 0 && dayNum < arrayCalendar.length) {
             let startDate = new Date(appointment.startDate);
             let endDate = new Date(appointment.endDate);
             let startMark = 0;

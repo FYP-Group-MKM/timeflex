@@ -66,7 +66,6 @@ app.post('/api/smartplanning', async (req, res) => {
     };
     const appointments = await PostMessage.find();
     suggestions = smartPlanning(appointment, appointments);
-    console.log(suggestions);
     if (suggestions) {
         try {
             await suggestions.forEach(suggestion => {
