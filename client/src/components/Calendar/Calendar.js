@@ -87,14 +87,14 @@ export default class Calendar extends Component {
                         currentViewName={this.state.currentViewName}
                     />
                     <DayView
-                        startDayHour={9}
+                        startDayHour={0}
                         endDayHour={24}
                         cellDuration={60}
                     />
                     <WeekView
                         timeTableCellComponent={TimeTableCell}
                         dayScaleCellComponent={DayScaleCell}
-                        startDayHour={9}
+                        startDayHour={0}
                         endDayHour={24}
                         cellDuration={60}
                     />
