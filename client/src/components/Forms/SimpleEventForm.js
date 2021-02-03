@@ -191,7 +191,7 @@ class SimpleEventForm extends Component {
             <Grid item key={this.state.simpleAppointment.allDay}>
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                     <Grid item style={{ minWidth: "55px" }}>
-                        <Typography variant="caption" style={{ color: "#757575" }}>From</Typography>
+                        <Typography variant="button" style={{ color: "#757575" }}>From</Typography>
                     </Grid>
                     <Grid item>
                         <FormPicker
@@ -203,7 +203,7 @@ class SimpleEventForm extends Component {
                 </Grid>
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                     <Grid item style={{ minWidth: "55px" }}>
-                        <Typography variant="caption" style={{ color: "#757575" }}>Until</Typography>
+                        <Typography variant="button" style={{ color: "#757575" }}>Until</Typography>
                     </Grid>
                     <Grid item>
                         <FormPicker
@@ -324,6 +324,9 @@ class SimpleEventForm extends Component {
     }
 
     render() {
+        let formLayout = this.renderSimpleForm();
+        if (!this.state.simple)
+            formLayout = <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />;
         return (
             <Dialog
                 aria-labelledby="form-dialog-title"
@@ -331,10 +334,7 @@ class SimpleEventForm extends Component {
                 onClose={this.handleClose}
                 fullWidth maxWidth="xs"
             >
-                {this.state.simple
-                    ? this.renderSimpleForm()
-                    : <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />
-                }
+                {formLayout}
             </Dialog>
         );
     }
