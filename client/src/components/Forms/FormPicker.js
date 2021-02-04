@@ -5,73 +5,71 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from '@material-ui/pickers';
 
 export default class FormPicker extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            currentDate: this.props.currentDate,
-            currentViewName: "Day",
-            pickerIsOpen: false,
+            open: false,
+            currentDate: new Date(this.props.currentDate),
             allDay: this.props.allDay,
         };
     }
 
-    setPicker = (pickerIsOpen) => {
+    setPicker = open => {
         if (new Date(this.state.currentDate) > new Date())
-            this.setState({ pickerIsOpen });
+            this.setState({ open });
     }
 
-    handleDateChange = (currentDate) => {
+    handleDateChange = currentDate => {
         this.setState({ currentDate });
         this.props.handleFormChange(currentDate);
     }
 
-    render() {
-        return (
-            <div>
-                {
-                    this.state.pickerIsOpen
-                        ?
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            {
-                                this.state.allDay
-                                    ? <DatePicker
-                                        name={this.props.name}
-                                        variant="dialog"
-                                        value={new Date(this.state.currentDate)}
-                                        readOnly={this.readOnly}
-                                        onChange={this.handleDateChange}
-                                        open={this.state.pickerIsOpen}
-                                        onOpen={() => { this.setPicker(true) }}
-                                        onClose={() => { this.setPicker(false) }}
-                                        KeyboardButtonProps={{ 'aria-label': 'change date', }}
-                                        disablePast
-                                        showTodayButton
-                                    />
-                                    : <DateTimePicker
-                                        name={this.props.name}
-                                        variant="dialog"
-                                        value={new Date(this.state.currentDate)}
-                                        readOnly={true}
-                                        onChange={this.handleDateChange}
-                                        open={this.state.pickerIsOpen}
-                                        onOpen={() => { this.setPicker(true) }}
-                                        onClose={() => { this.setPicker(false) }}
-                                        KeyboardButtonProps={{ 'aria-label': 'change date', }}
-                                        disablePast
-                                        showTodayButton
-                                    />
-                            }
+    renderPicker = () => {
+        if (this.state.allDay) {
+            return (
+                <DatePicker
+                    variant="dialog"
+                    value={new Date(this.state.currentDate)}
+                    onChange={this.handleDateChange}
+                    open={this.state.open}
+                    onOpen={() => { this.setPicker(true) }}
+                    onClose={() => { this.setPicker(false) }}
+                    disablePast
+                    showTodayButton
+                />
+            );
+        } else {
+            return (
+                <DateTimePicker
+                    variant="dialog"
+                    value={new Date(this.state.currentDate)}
+                    onChange={this.handleDateChange}
+                    open={this.state.open}
+                    onOpen={() => { this.setPicker(true) }}
+                    onClose={() => { this.setPicker(false) }}
+                    disablePast
+                    showTodayButton
+                />
+            );
+        }
+    }
 
-                        </MuiPickersUtilsProvider>
-                        : <Button
-                            onClick={() => { this.setPicker(true) }}
-                            style={{ color: "#424242" }}
-                        >
-                            {this.state.allDay ? format(this.state.currentDate, 'P') : format(this.state.currentDate, 'Pp')}
-                        </Button>
-                }
-            </div>
-        )
+    render() {
+        if (this.state.open) {
+            return (
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    {this.renderPicker()}
+                </MuiPickersUtilsProvider>
+            );
+        } else {
+            return (
+                <Button onClick={() => { this.setPicker(true) }} style={{ color: "#424242" }}>
+                    {this.state.allDay
+                        ? format(this.state.currentDate, 'E, dd MMM u')
+                        : format(this.state.currentDate, 'E, dd MMM u ． p')
+                    }
+                </Button>
+            );
+        }
     }
 }

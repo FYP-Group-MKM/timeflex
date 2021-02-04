@@ -4,9 +4,12 @@ const postSchema = mongoose.Schema(
     {
         id: String,
         title: String,
+        allDay: Boolean,
         startDate: String,
         endDate: String,
-        description: String
+        rRule: String,
+        exDate: String,
+        description: String,
     },
 
 )

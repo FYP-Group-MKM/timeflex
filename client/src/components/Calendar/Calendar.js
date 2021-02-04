@@ -45,7 +45,6 @@ export default class Calendar extends Component {
         this.setState({ height: window.innerHeight });
     }
 
-
     handleDelete = deleteAppointmentId => {
         fetch('/api/appointments/' + deleteAppointmentId, {
             method: 'DELETE',
@@ -66,7 +65,6 @@ export default class Calendar extends Component {
     }
 
     AppointmentTooltipLayout = props => {
-
         return (
             <AppointmentTooltip.Layout
                 {...props}
@@ -89,14 +87,14 @@ export default class Calendar extends Component {
                         currentViewName={this.state.currentViewName}
                     />
                     <DayView
-                        startDayHour={9}
+                        startDayHour={0}
                         endDayHour={24}
                         cellDuration={60}
                     />
                     <WeekView
                         timeTableCellComponent={TimeTableCell}
                         dayScaleCellComponent={DayScaleCell}
-                        startDayHour={9}
+                        startDayHour={0}
                         endDayHour={24}
                         cellDuration={60}
                     />

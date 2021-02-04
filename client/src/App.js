@@ -169,7 +169,7 @@ export default class App extends Component {
                 </header>
                 <body style={{ margin: "0px" }}>
                     <ThemeProvider theme={theme}>
-                        <div style={{ margin: "55px 0" }} />
+                        <div style={{ marginTop: "60px" }} />
                         <SimpleEventForm
                             key={this.state.create}
                             open={this.state.create}
