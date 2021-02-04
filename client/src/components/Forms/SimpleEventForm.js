@@ -63,10 +63,10 @@ class SimpleEventForm extends Component {
             if (appointment.allDay) {
                 appointment.startDate = new Date(appointment.startDate);
                 appointment.endDate = new Date(appointment.endDate);
-                appointment.startDate.setHours(0);
-                appointment.startDate.setMinutes(0);
-                appointment.endDate.setHours(23);
-                appointment.endDate.setMinutes(59);
+                appointment.startDate = new Date(appointment.startDate).setHours(0);
+                appointment.startDate = new Date(appointment.startDate).setMinutes(0);
+                appointment.endDate = new Date(appointment.endDate).setHours(23);
+                appointment.endDate = new Date(appointment.endDate).setMinutes(59);
             }
             fetch('/api/appointments', {
                 method: 'POST',
