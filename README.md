@@ -1,15 +1,15 @@
-# Instructions
-### Go to the project's directory and install dependencies
+
+# TimeFlex - Calendar/Planner for Academia
+### Instructions
+#### Go to the project's directory and install dependencies
 ```
 npm install
 ```
-### Start the server in dev mode
+#### Start the server in dev mode
 ```
 npm run dev
 ```
 
-
-# timeflex - Calendar/Planner for Academia
 ### Motivation
 Existing calendar/planner apps are very good for handling tasks that will occupy
 a fixed time-slot, such as a 2-hour lecture. For people working in academia (and
@@ -29,14 +29,14 @@ This project aims to provide a tailor-made solution for academia, allowing them
 to allocate timeslot for tasks that take dynamic time length to complete.
 TimeFlex, a web / mobile app will be developed in this project and it will provide
 the following features:
-1) Features that the existing usual planner apps can provide e.g. create
+- Features that the existing usual planner apps can provide e.g. create
 events, display the events in the app’s calendar and event notifications;
-2) More than a usual planner, TimeFlex provides an intelligent planning
+- More than a usual planner, TimeFlex provides an intelligent planning
 feature that allows users to create events that do not have a designated
 timeslot, users only need to provide the duration of the event and the
 intelligent planner of TimeFlex will automatically allocate a timeslot for that
 tasks according to the user’s preference
-3) TimeFlex allows academia to add their events as “class” or “consultation
+- TimeFlex allows academia to add their events as “class” or “consultation
 hours”, then the event will be automatically set as a task that has to be
 handled at least once every week (e.g. a course has a total of 3-hour
 lectures taught in two different days in a week)
