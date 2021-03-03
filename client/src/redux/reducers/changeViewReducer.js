@@ -1,4 +1,4 @@
-const changeDateReducer = (state = new Date(), action) => {
+const changeViewReducer = (state = 'Week', action) => {
     switch(action.type){
         case 'change_current_date':
             return state = action.payload
@@ -8,4 +8,4 @@ const changeDateReducer = (state = new Date(), action) => {
     }
 } 
 
-export default changeDateReducer
+export default changeViewReducer
