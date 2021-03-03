@@ -1,6 +1,0 @@
-export const CHANGE_CURRENT_DATE = 'CHANGE_CURRENT_DATE'
-export const CHANGE_CURRENT_VIEW = 'CHANGE_CURRENT_VIEW'
-export const drawerOpen = 'openDrawer'
-export const drawerClose = 'drawerClose'
-export const showCreateFrom = 'showCreateFrom'
-export const hideCreateForm = 'hideCreateFrom'

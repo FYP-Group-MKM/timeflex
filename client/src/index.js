@@ -1,19 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import store from './redux/store'
+import {createStore,applyMiddleware} from 'redux'
+import {composeWithDevTools} from 'redux-devtools-extension'
 import {Provider} from 'react-redux'
 
-
+//Create the store
+const store = createStore()
 
 ReactDOM.render(
+    <Provider>
     <React.StrictMode>
-    <Provider store={store}>
-
-        <App />
-    </Provider>
-
+    <App />
     </React.StrictMode>
+    </Provider>
+    
     ,
     document.getElementById('root')
 );
