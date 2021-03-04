@@ -6,7 +6,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Picker from '../Picker';
 
-export default class DateNavigator extends Component {
+class DateNavigator extends Component {
 
     constructor(props) {
         super(props);
@@ -72,3 +72,16 @@ export default class DateNavigator extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        numOfCakes:state.cake.numOfCakes
+    }
+}
+
+const mapDispatcToProps = dispatch => {
+    return {
+        buyCake:() => dispatch(buyCake())
+    }
+}
+export default DateNavigator

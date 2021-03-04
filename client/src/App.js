@@ -18,7 +18,7 @@ import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
-import {useSelector,useDispatch} from 'react-redux'
+
 
 const styles = {
     fab: {
