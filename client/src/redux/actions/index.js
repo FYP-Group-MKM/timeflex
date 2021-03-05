@@ -12,9 +12,10 @@ export const changeView = (view) => {
     }
 }
 
-export const switch_Drawer = () => {
+export const switch_Drawer = (value) => {
     return{
         type:'switch_Drawer',
+        payload:value
     }
 }
 

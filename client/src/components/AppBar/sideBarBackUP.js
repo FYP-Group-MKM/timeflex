@@ -9,8 +9,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import {useDispatch, useSelector} from 'react-redux'
-import { changeView,switch_Drawer } from '../../redux/actions';
 
 const drawerWidth = 240;
 
@@ -74,27 +72,23 @@ const useStyles = makeStyles((theme) => ({
 export default function SideBar(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const dispatch = useDispatch();
-    const drawerOpen = useSelector(state => state.drawer.drawer)
-    
+    // const dispatch = useDispatch();
 
     const handleClickDay = () => {
-        dispatch(changeView('Day'))
-        dispatch(switch_Drawer())
+        props.currentViewNameChange("Day")
+        // dispatch(changeView('Day'))
+        props.drawerClose()
     }
     const handleClickWeek = () => {
-        dispatch(changeView('Week'))
-        dispatch(switch_Drawer())
-        
+        props.currentViewNameChange("Week")
+        // dispatch(changeView('Week'))
+        props.drawerClose()
     }
 
     const handleClickMonth = () => {
-        dispatch(changeView('Month'))
-        dispatch(switch_Drawer())
-        
-    }
-    const handleDrawerClose = () => {
-        dispatch(switch_Drawer(false))
+        props.currentViewNameChange("Month")
+        // dispatch(changeView('Month'))
+        props.drawerClose()
     }
     return (
         <div className={classes.root}>
@@ -102,7 +96,7 @@ export default function SideBar(props) {
                 className={classes.drawer}
                 variant="persistent"
                 anchor="left"
-                open={drawerOpen}
+                open={props.drawerOpen}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
@@ -112,7 +106,7 @@ export default function SideBar(props) {
                         TimeFlex
                     </Typography>
                     {/* <h6>TimeFlex</h6> */}
-                    <IconButton onClick={handleDrawerClose} style={{ color: '#616161' }}>
+                    <IconButton onClick={props.handleDrawerClose} style={{ color: '#616161' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </div>

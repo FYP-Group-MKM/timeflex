@@ -1,76 +1,66 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Picker from '../Picker';
-
-class DateNavigator extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentDate: this.props.currentDate,
-            currentViewName: this.props.currentViewName,
-            pickerIsOpen: false,
-        };
+import {useSelector,useDispatch} from 'react-redux'
+import {changeCurrentDate} from '../../redux/actions/index'
+const DateNavigator = () => {
+    const dispatch = useDispatch()
+    const currentDate = useSelector(state => state.currentDate.date)
+    const currentView = useSelector(state => state.view.view)
+    
+    const handleNavNext = () => {
+        let date = new Date(currentDate)
+        if(currentDate === "Day"){
+            date.setDate(date.getDate() + 1)
+        }
+        if(currentDate === "Week"){
+            date.setDate(date.getDate() + 7)
+        }
+        if(currentDate === "Month"){
+            date.setDate(date.getMonth() + 1)
+        }
+        dispatch(changeCurrentDate(date))
+        
+    }
+    
+    const handleNavPrev = () =>{
+        let date = new Date(currentDate)
+        if(currentDate === 'Day'){
+            date.setDate(date.getDate() - 1)
+        }
+        if(currentDate === 'Week'){
+            date.setDate(date.getDate() - 7)
+        }
+        if(currentDate === 'Month'){
+            date.setMonth(date.getMonth() - 1)
+        }
+        dispatch(changeCurrentDate(date))
     }
 
-    setPicker = (pickerIsOpen) => {
-        this.setState({ pickerIsOpen });
-    }
-
-    handleNavNext = () => {
-        let date = new Date(this.state.currentDate);
-        if (this.state.currentViewName === "Day") {
-            date.setDate(date.getDate() + 1);
-        }
-        if (this.state.currentViewName === "Week") {
-            date.setDate(date.getDate() + 7);
-        }
-        if (this.state.currentViewName === "Month") {
-            date.setMonth(date.getMonth() + 1);
-        }
-        this.props.currentDateChange(date);
-    }
-
-    handleNavPrev = () => {
-        let date = new Date(this.state.currentDate);
-        if (this.state.currentViewName === "Day") {
-            date.setDate(date.getDate() - 1);
-        }
-        if (this.state.currentViewName === "Week") {
-            date.setDate(date.getDate() - 7);
-        }
-        if (this.state.currentViewName === "Month") {
-            date.setMonth(date.getMonth() - 1);
-        }
-        this.props.currentDateChange(date);
-    }
-
-    render() {
-        return (
-            <Grid container direction="row" alignItems="center">
+    return (
+        <Grid container direction="row" alignItems="center">
                 <Hidden xsDown>
-                    <IconButton onClick={this.handleNavPrev}>
+                    <IconButton onClick={handleNavPrev}>
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                 </Hidden>
                 <Picker
-                    key={this.state.currentDate + this.currentViewName}
-                    currentDate={this.state.currentDate}
-                    currentViewName={this.state.currentViewName}
-                    handleSelectedDate={this.props.currentDateChange}
+                    key={currentDate + currentView}
+                    // currentDate={this.state.currentDate}
+                    // currentViewName={this.state.currentViewName}
+                    // handleSelectedDate={this.props.currentDateChange}
                 />
                 <Hidden xsDown>
-                    <IconButton onClick={this.handleNavNext}>
+                    <IconButton onClick={handleNavNext}>
                         <KeyboardArrowRightIcon />
                     </IconButton>
                 </Hidden>
             </Grid>
-        )
-    }
+    )
 }
 
 export default DateNavigator

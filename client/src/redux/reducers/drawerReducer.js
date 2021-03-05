@@ -6,7 +6,7 @@ const drawerReducer = (state = initialState , action) => {
     switch(action.type){
         case 'switch_Drawer':
             return {
-                drawer:!state,
+                drawer:action.payload,
             }
         default:
             return state

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -18,7 +18,7 @@ import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
-import {changeCurrentDate,changeView,switch_Drawer,createFrom} from './redux/actions/index'
+import {changeCurrentDate,switch_Drawer,createFrom} from './redux/actions/index'
 import {useSelector,useDispatch} from 'react-redux'
 const styles = {
     fab: {
@@ -34,7 +34,7 @@ const App = (props) => {
     const dispatch = useDispatch()
     const currentDate = useSelector(state => state.currentDate.date)
     const currentView = useSelector(state => state.view.view)
-    const drawerOpen = useSelector(state => state.drawer.drawer)
+    // const drawerOpen = useSelector(state => state.drawer.drawer)
     const create = useSelector(state => state.create.create)
 
     return (
@@ -62,7 +62,7 @@ const App = (props) => {
                                                     <IconButton style={{ color: '#848485' }}
                                                         color="inherit"
                                                         aria-label="open drawer"
-                                                        onClick={() => dispatch(switch_Drawer())}
+                                                        onClick={() => dispatch(switch_Drawer(true))}
                                                         edge="start"
                                                     >
                                                         <MenuIcon />

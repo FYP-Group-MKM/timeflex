@@ -1,60 +1,51 @@
-import React, { Component } from 'react';
+import React,{useState} from 'react'
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import {useSelector,useDispatch} from 'react-redux'
+import {changeView} from '../../redux/actions/index'
 
-export default class Dropdown extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            anchorEl: null,
-            currentViewName: this.props.currentViewName,
-        };
-        this.handleClick = this.handleClick.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+const Dropdown = () => {
+    const [anchorEl,setanchorEl] = useState(null)
+    const currentView = useSelector(state => state.view.view)
+    const dispatch = useDispatch()
+    const handleClick = (event) => {
+        setanchorEl(event.currentTarget)
     }
-
-    handleClick = (event) => {
-        this.setState({
-            anchorEl: event.currentTarget,
-        });
-    };
-
-    handleClose = (event) => {
-        this.setState({
-            anchorEl: null,
-        });
-        if (event.currentTarget.title) {
-            this.props.currentViewNameChange(event.currentTarget.title);
+    const handleClose = (event) => {
+        setanchorEl(null)
+        if(event.currentTarget.title){
+            dispatch(changeView(event.currentTarget.title))
         }
-    };
+    }
+ 
 
-    render() {
-        return (
-            <div>
+    return (
+        <div>
                 <Button
                     aria-controls="simple-menu"
                     aria-haspopup="true"
-                    onClick={this.handleClick}
+                    onClick={handleClick}
                     variant="outlined"
                     size="small"
                     endIcon={<ArrowDropDownIcon />}
                 >
-                    {this.state.currentViewName}
+                    {currentView}
                 </Button >
                 <Menu
                     id="simple-menu"
-                    anchorEl={this.state.anchorEl}
+                    anchorEl={anchorEl}
                     keepMounted
-                    open={Boolean(this.state.anchorEl)}
-                    onClose={this.handleClose}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
                 >
-                    <MenuItem title="Day" onClick={this.handleClose}>Day</MenuItem>
-                    <MenuItem title="Week" onClick={this.handleClose}>Week</MenuItem>
-                    <MenuItem title="Month" onClick={this.handleClose}>Month</MenuItem>
+                    <MenuItem title="Day" onClick={handleClose}>Day</MenuItem>
+                    <MenuItem title="Week" onClick={handleClose}>Week</MenuItem>
+                    <MenuItem title="Month" onClick={handleClose}>Month</MenuItem>
                 </Menu>
             </div>
-        )
-    }
+    )
 }
+
+export default Dropdown
