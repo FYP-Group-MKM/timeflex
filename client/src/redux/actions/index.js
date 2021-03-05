@@ -5,9 +5,10 @@ export const changeCurrentDate = (currentDate) => {
     }
 }
 
-export const changeView = () => {
+export const changeView = (view) => {
     return{
-        type:'change_view'
+        type:'change_view',
+        payload:view,
     }
 }
 

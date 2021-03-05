@@ -1,7 +1,13 @@
-const changeViewReducer = (state = 'Week', action) => {
+const initialState = {
+    view:'Week'
+}
+
+const changeViewReducer = (state = initialState, action) => {
     switch(action.type){
-        case 'change_current_date':
-            return state = action.payload
+        case 'change_view':
+            return {
+                view:action.payload
+            }
         default:
             return state
         
