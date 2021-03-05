@@ -18,9 +18,8 @@ import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
-import {changeCurrentDate,changeView,switch_Drawer} from './redux/actions/index'
-import {connect} from 'react-redux'
-
+import {changeCurrentDate,changeView,switch_Drawer,createFrom} from './redux/actions/index'
+import {useSelector,useDispatch} from 'react-redux'
 const styles = {
     fab: {
         position: "absolute",
@@ -30,56 +29,16 @@ const styles = {
     },
 };
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentDate: new Date(),
-            currentViewName: "Week",
-            drawerOpen: false,
-            create: false,
-        };
-        this.currentDateChange = this.currentDateChange.bind(this);
-        this.currentViewNameChange = this.currentViewNameChange.bind(this);
-    };
 
-    currentDateChange = (currentDate) => {
-        this.setState({ currentDate });
-        this.props.changeCurrentDate(currentDate)
+const App = (props) => {
+    const dispatch = useDispatch()
+    const currentDate = useSelector(state => state.currentDate.date)
+    const currentView = useSelector(state => state.view.view)
+    const drawerOpen = useSelector(state => state.drawer.drawer)
+    const create = useSelector(state => state.create.create)
 
-    }
-
-    currentViewNameChange = (currentViewName) => {
-        this.setState({ currentViewName });
-        this.props.changeView(currentViewName)
-        
-    }
-
-    handleDrawerOpen = () => {
-        this.setState({ drawerOpen: true })
-        this.props.switch_Drawer(true)
-    }
-
-    handleDrawerClose = () => {
-        this.setState({ drawerOpen: false })
-        this.props.switch_Drawer(false)
-    }
-
-    setCreateForm = () => {
-        this.setState({ create: true });
-    }
-
-    hideCreateForm = () => {
-        this.setState({ create: false });
-    }
-
-    refresh = (date) => {
-        this.setState({ currentDate: date ? date : new Date() });
-    }
-
-    render() {
-        return (
-            <div>
+    return (
+        <div>
                 <header>
                     <ThemeProvider theme={theme}>
                         <AppBar color="inherit" elevation={1}>
@@ -103,7 +62,7 @@ class App extends Component {
                                                     <IconButton style={{ color: '#848485' }}
                                                         color="inherit"
                                                         aria-label="open drawer"
-                                                        onClick={this.handleDrawerOpen}
+                                                        onClick={() => dispatch(switch_Drawer())}
                                                         edge="start"
                                                     >
                                                         <MenuIcon />
@@ -111,11 +70,7 @@ class App extends Component {
                                                 </Grid>
                                                 <Grid item>
                                                     <DateNavigator
-                                                        key={this.state.currentDate + this.state.currentViewName}
-                                                        currentDate={this.state.currentDate}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentDateChange={this.currentDateChange}
-                                                    />
+                                                        key={currentDate + currentView}/>
                                                 </Grid>
                                             </Grid>
                                         </Hidden>
@@ -130,11 +85,7 @@ class App extends Component {
                                             <Hidden xsDown>
                                                 <Grid item>
                                                     <DateNavigator
-                                                        key={this.state.currentDate + this.state.currentViewName}
-                                                        currentDate={this.state.currentDate}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentDateChange={this.currentDateChange}
-                                                    />
+                                                        key={currentDate + currentView} />
                                                 </Grid>
                                             </Hidden>
                                             <Grid item>
@@ -143,7 +94,7 @@ class App extends Component {
                                                         variant="contained"
                                                         color="primary"
                                                         size="small"
-                                                        onClick={() => { this.currentDateChange(new Date()) }}
+                                                        onClick={() => dispatch(changeCurrentDate(new Date()))}
                                                     >
                                                         Today
                                                     </Button>
@@ -153,7 +104,7 @@ class App extends Component {
                                                         variant="outlined"
                                                         size="small"
                                                         style={{ color: "#616161" }}
-                                                        onClick={() => { this.currentDateChange(new Date()) }}
+                                                        onClick={() => dispatch(changeCurrentDate(new Date()))}
                                                     >
                                                         Today
                                                     </Button>
@@ -162,9 +113,9 @@ class App extends Component {
                                             <Grid item>
                                                 <Hidden xsDown>
                                                     <Dropdown
-                                                        key={this.state.currentViewName}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentViewNameChange={this.currentViewNameChange}
+                                                        key={currentView}
+                                                        // currentViewName={this.state.currentViewName}
+                                                        // currentViewNameChange={this.currentViewNameChange}
                                                     />
                                                 </Hidden>
                                             </Grid>
@@ -179,49 +130,36 @@ class App extends Component {
                     <ThemeProvider theme={theme}>
                         <div style={{ marginTop: "60px" }} />
                         <SimpleEventForm
-                            key={this.state.create}
-                            open={this.state.create}
-                            currentDate={this.state.currentDate}
-                            refresh={this.refresh}
-                            onHide={this.hideCreateForm}
+                            key={create}
+                            // open={this.state.create}
+                            // currentDate={this.state.currentDate}
+                            // refresh={this.refresh}
+                            // onHide={this.hideCreateForm}
                         />
                         <Calendar
-                            key={this.state.currentViewName + this.state.currentDate}
-                            currentDate={this.state.currentDate}
-                            currentViewName={this.state.currentViewName}
-                            currentViewNameChange={this.state.currentViewNameChange}
-                            refresh={this.refresh}
+                            key={currentView + currentDate}
+                            // currentDate={this.state.currentDate}
+                            // currentViewName={this.state.currentViewName}
+                            // currentViewNameChange={this.state.currentViewNameChange}
+                            // refresh={this.refresh}
                         />
                         <SideBar
-                            drawerOpen={this.state.drawerOpen}
-                            handleDrawerClose={this.handleDrawerClose}
-                            currentViewNameChange={this.currentViewNameChange}
-                            drawerClose={this.handleDrawerClose}
+                            // drawerOpen={this.state.drawerOpen}
+                            // handleDrawerClose={this.handleDrawerClose}
+                            // currentViewNameChange={this.currentViewNameChange}
+                            // drawerClose={this.handleDrawerClose}
                         />
                         <Tooltip title="Create Event" placement="left" aria-label="add">
-                            <Fab color="primary" aria-label="add" style={styles.fab} onClick={this.setCreateForm}>
+                            <Fab color="primary" aria-label="add" style={styles.fab} 
+                            onClick={() => dispatch(createFrom(true))}
+                            >
                                 <AddIcon />
                             </Fab>
                         </Tooltip>
                     </ThemeProvider>
                 </body>
             </div>
-        );
-    }
+    )
 }
 
-const mapStateToProps = state => {
-    return {
-        currentDate : state.currentDate.date,
-        view        : state.view.view,
-        drawer      : state.drawer.drawer,
-    }
-}
-
-const mapDispatchToProps =  {
-        changeCurrentDate,
-        changeView,
-        switch_Drawer,
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(App)
+export default App

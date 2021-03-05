@@ -18,8 +18,9 @@ export const switch_Drawer = () => {
     }
 }
 
-export const create = () => {
+export const createFrom = (value) => {
     return {
-        type:'create'
+        type:'create',
+        payload:value,
     }
 }
