@@ -18,7 +18,8 @@ import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
-
+import {changeCurrentDate,changeView,switch_Drawer} from './redux/actions/index'
+import {connect} from 'react-redux'
 
 const styles = {
     fab: {
@@ -29,7 +30,7 @@ const styles = {
     },
 };
 
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,20 +45,24 @@ export default class App extends Component {
 
     currentDateChange = (currentDate) => {
         this.setState({ currentDate });
-        // const dispatch = useDispatch()
+        this.props.changeCurrentDate(currentDate)
 
     }
 
     currentViewNameChange = (currentViewName) => {
         this.setState({ currentViewName });
+        this.props.changeView(currentViewName)
+        
     }
 
     handleDrawerOpen = () => {
         this.setState({ drawerOpen: true })
+        this.props.switch_Drawer(true)
     }
 
     handleDrawerClose = () => {
         this.setState({ drawerOpen: false })
+        this.props.switch_Drawer(false)
     }
 
     setCreateForm = () => {
@@ -204,3 +209,19 @@ export default class App extends Component {
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        currentDate : state.currentDate.date,
+        view        : state.view.view,
+        drawer      : state.drawer.drawer,
+    }
+}
+
+const mapDispatchToProps =  {
+        changeCurrentDate,
+        changeView,
+        switch_Drawer,
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(App)

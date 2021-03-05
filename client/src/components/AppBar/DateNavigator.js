@@ -73,15 +73,4 @@ class DateNavigator extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        // numOfCakes:state.cake.numOfCakes
-    }
-}
-
-const mapDispatcToProps = dispatch => {
-    return {
-        // buyCake:() => dispatch(buyCake())
-    }
-}
 export default DateNavigator
