@@ -4,6 +4,7 @@
 #### Go to the project's directory and install dependencies
 ```
 npm install
+npm run client-install
 ```
 #### Start the server in dev mode
 ```
