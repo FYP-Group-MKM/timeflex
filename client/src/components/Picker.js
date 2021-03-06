@@ -11,19 +11,27 @@ import {changeCurrentDate} from '../redux/actions/index'
 const Picker = () => {
     const dispatch    = useDispatch()
     const currentDate = useSelector(state => state.currentDate.date)
+    const currentView = useSelector(state => state.view.view)
     const [pickerIsOpen, setPickerIsOpen] = useState(false)
 
-    const handleSelcetedDate = () => {
+    // const setPicker = (pickerIsOpen) => {
+    //     setPickerIsOpen(pickerIsOpen)
+    // }
+   
+
+    const handleDateChange = (currentDate) => {
         dispatch(changeCurrentDate(currentDate))
+        
     }
-
-
 
     let pickerFormat = "MMMM yyyy"
-    if(currentDate === "Day"){
+    let date = format(currentDate,"MMM yyy")
+    if(currentView === "Day"){
         pickerFormat = "d MMMM yyyy"
+        date = format(this.state.currentDate, 'd MMM yyyy');
+
     }
-    let date = format(currentDate,pickerFormat)
+    
     
     return (
         <div>
@@ -35,7 +43,7 @@ const Picker = () => {
                                 format={pickerFormat}
                                 disableToolbar={false}
                                 value={currentDate}
-                                onChange={handleSelcetedDate}
+                                onChange={handleDateChange}
                                 open={pickerIsOpen}
                                 onOpen={() => { setPickerIsOpen(true) }}
                                 onClose={() => { setPickerIsOpen(false) }}

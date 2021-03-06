@@ -14,31 +14,33 @@ const DateNavigator = () => {
     
     const handleNavNext = () => {
         let date = new Date(currentDate)
-        if(currentDate === "Day"){
+        if(currentView === "Day"){
             date.setDate(date.getDate() + 1)
         }
-        if(currentDate === "Week"){
+        if(currentView === "Week"){
             date.setDate(date.getDate() + 7)
         }
-        if(currentDate === "Month"){
+        if(currentView === "Month"){
             date.setDate(date.getMonth() + 1)
         }
+        
         dispatch(changeCurrentDate(date))
         
     }
     
     const handleNavPrev = () =>{
         let date = new Date(currentDate)
-        if(currentDate === 'Day'){
+        if(currentView === 'Day'){
             date.setDate(date.getDate() - 1)
         }
-        if(currentDate === 'Week'){
+        if(currentView === 'Week'){
             date.setDate(date.getDate() - 7)
         }
-        if(currentDate === 'Month'){
+        if(currentView === 'Month'){
             date.setMonth(date.getMonth() - 1)
         }
         dispatch(changeCurrentDate(date))
+        
     }
 
     return (
