@@ -129,13 +129,13 @@ const App = (props) => {
                 <body style={{ margin: "0px" }}>
                     <ThemeProvider theme={theme}>
                         <div style={{ marginTop: "60px" }} />
-                        <SimpleEventForm
+                        {/* <SimpleEventForm
                             key={create}
                             // open={this.state.create}
                             // currentDate={this.state.currentDate}
                             // refresh={this.refresh}
                             // onHide={this.hideCreateForm}
-                        />
+                        /> */}
                         <Calendar
                             key={currentView + currentDate}
                             // currentDate={this.state.currentDate}

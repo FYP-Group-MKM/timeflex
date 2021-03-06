@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React,{useState,useEffect} from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
@@ -12,79 +12,76 @@ import {
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
+import {changeCurrentDate} from '../../redux/actions/index'
+import {useSelector,useDispatch} from 'react-redux'
 
-export default class Calendar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            height: window.innerHeight,
-            editing: false,
-            editDataId: "",
-            appointments: [],
-            editingAppointment: undefined,
-            currentDate: this.props.currentDate,
-            currentViewName: this.props.currentViewName,
-        };
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+const Calendar = () => {
+    const dispatch = useDispatch()
+    const [height,setHeight] = useState(window.innerHeight)
+    const [editing,setEditing] = useState(false)
+    const [editDataId,setEditDataId] = useState("")
+    const [appointments,setAppointments] = useState([])
+    const [editingAppointment,setEditingAppointments] = useState(undefined)
+    const currentView = useSelector(state => state.view.view)
+    const currentDate = useSelector(state => state.currentDate.date)
+    
+    const refresh = (date) => {
+        currentDate ? dispatch(changeCurrentDate(date)): dispatch(changeCurrentDate(new Date()))
+        
     }
-
-    componentDidMount() {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-
-        fetch('/api/appointments')
-            .then(res => res.json())
-            .then(appointments => this.setState({ appointments }));
+    const updateWindowDimensions = () => {
+        setHeight(window.innerHeight)
     }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
-    updateWindowDimensions() {
-        this.setState({ height: window.innerHeight });
-    }
-
-    handleDelete = deleteAppointmentId => {
-        fetch('/api/appointments/' + deleteAppointmentId, {
+    const handleDelete = deleteAppointmentId => {
+        fetch('/api/appointments/' + deleteAppointmentId,{
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
         });
-        this.props.refresh();
-    };
-
-    handleTooltipOpen = editDataId => {
-        this.setState({ editDataId, editing: true });
+        refresh();
+    }
+    const handleTooltipOPen = editDataId => {
+        setEditDataId(editDataId)
+        setEditing(true)
+        
+    }
+    const handleTooltipClose = () => {
+        setEditing(false)
     }
 
-    handleTooltipClose = () => {
-        this.setState({ editing: false });
-    }
-
-    AppointmentTooltipLayout = props => {
-        return (
+    const AppointmentTooltipLayout = props => {
+        return(
             <AppointmentTooltip.Layout
-                {...props}
-                onDeleteButtonClick={() => { this.handleDelete(props.appointmentMeta.data.id) }}
-                onOpenButtonClick={() => { this.handleTooltipOpen(props.appointmentMeta.data.id) }}
+            {...props}
+            onDeleteButtonClick={() => handleDelete(props.appointmentMeta.data.id)}
+            onOpenButtonClick={() => handleTooltipOPen(props.appointmentMeta.data.id)}
             />
-        );
+        )
     }
 
-    render() {
-        return (
-            <div>
+    useEffect(() => {
+        updateWindowDimensions();
+        window.addEventListener('resize',updateWindowDimensions());
+        fetch('/api/appointments')
+            .then(res => res.json())
+            .then(appointments => setAppointments(appointments));
+        return () => {
+            window.removeEventListener('resize',updateWindowDimensions())
+        }
+    },[])
+
+    return (
+        <div>
                 <Scheduler
-                    data={this.state.appointments}
+                    data={appointments}
                     height={window.innerHeight - 70}
                     firstDayOfWeek={1}
                 >
                     <ViewState
-                        currentDate={this.state.currentDate}
-                        currentViewName={this.state.currentViewName}
+                        currentDate={currentDate}
+                        currentViewName={currentView}
                     />
                     <DayView
                         startDayHour={0}
@@ -105,22 +102,26 @@ export default class Calendar extends Component {
                         showCloseButton
                         showOpenButton
                         showDeleteButton
-                        layoutComponent={this.AppointmentTooltipLayout}
+                        layoutComponent={AppointmentTooltipLayout}
                     >
                     </AppointmentTooltip>
                 </Scheduler >
                 {
-                    (this.state.editDataId !== "" && this.state.editDataId !== null)
+                    (editDataId !== "" && editDataId !== null)
                         ? <EditEventForm
-                            key={this.state.editing}
-                            open={this.state.editing}
-                            onClose={this.handleTooltipClose}
-                            editDataId={this.state.editDataId}
-                            refresh={this.props.refresh}
+                            key={editing}
+                            open={editing}
+                            onClose={handleTooltipClose}
+                            editDataId={editDataId}
+                            refresh={refresh}
                         />
                         : null
                 }
             </div>
-        );
-    }
+    )
 }
+
+export default Calendar
+
+
+
