@@ -8,6 +8,7 @@
         "start": "node server.js",
         "server": "nodemon server.js",
         "client": "npm start --prefix client",
+        "clear": "killall -9 node",
         "dev": "killall -9 node && concurrently \"npm run server\" \"npm run client\""
     },
     "author": "Darren Leung",
