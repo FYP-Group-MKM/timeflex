@@ -1,18 +1,18 @@
 const express = require('express');
-const PostMessage = require('./models/postMessages.js');
+const mongoose = require('mongoose');
 const uuid = require('uuid');
 const smartPlanning = require('./smartPlanning');
-const mongoose = require('mongoose');
+const Appointment = require('./models/Appointment.js');
+const keys = require('./config/key');
 
 const app = express();
-const CONNECT_URL = 'mongodb+srv://kolpl:kolpl1997@memoryproject.vss6e.mongodb.net/<dbname>?retryWrites=true&w=majority'
-const PORT = 5000;
+const port = 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-mongoose.connect(CONNECT_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
+mongoose.connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => app.listen(port, () => console.log(`Server running on port: ${port}`)))
     .catch((error) => console.log(error.message));
 
 mongoose.set('useFindAndModify', false);
@@ -20,10 +20,10 @@ mongoose.set('useFindAndModify', false);
 // Get all appointments
 app.get('/api/appointments', async (req, res) => {
     try {
-        const postMessages = await PostMessage.find()
-        res.status(200).json(postMessages)
+        const appointments = await Appointment.find();
+        res.status(200).json(appointments);
     } catch (error) {
-        res.status(404).json({ message: error.message })
+        res.status(404).json({ message: error.message });
     }
 });
 
@@ -31,8 +31,8 @@ app.get('/api/appointments', async (req, res) => {
 app.get('/api/appointments/:id', async (req, res) => {
     const id = req.params.id
     try {
-        const appointment = await PostMessage.findOne({ id: id })
-        res.status(200).json(appointment)
+        const appointment = await Appointment.findOne({ id: id });
+        res.status(200).json(appointment);
     } catch (error) {
         console.log("error")
         res.status(404).json({ message: error.message })
@@ -41,16 +41,15 @@ app.get('/api/appointments/:id', async (req, res) => {
 
 // Appointment creation
 app.post('/api/appointments', async (req, res) => {
-    const newAppointment = {
+    const newAppointment = new Appointment({
         id: uuid.v4(),
         ...req.body,
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
-    };
-    const newPostMessage = new PostMessage(newAppointment)
+    });
     try {
-        await newPostMessage.save();
-        console.log("Successfully created appointments")
+        await newAppointment.save();
+        console.log("Successfully created appointments");
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -62,31 +61,31 @@ app.post('/api/smartplanning', async (req, res) => {
         ...req.body,
         deadline: new Date(req.body.deadline)
     };
-    const appointments = await PostMessage.find().lean();
+    const appointments = await Appointment.find().lean();
     suggestions = smartPlanning(appointment, appointments);
     if (suggestions) {
         try {
             await suggestions.forEach(suggestion => {
-                const newPostMessage = new PostMessage(suggestion)
-                newPostMessage.save();
+                const newAppointment = new Appointment(suggestion);
+                newAppointment.save();
             });
             console.log("Successfully created appointments with Smart Planning");
         } catch (error) {
             res.status(409).json({ message: error.message });
         }
     } else {
-        res.json({ message: "no solution available" })
+        res.json({ message: "no solution available" });
     }
 });
 
 // Edit appointment by id
 app.put('/api/appointments/:id', async (req, res) => {
-    console.log(req.body)
-    const paramId = req.params.id
+    console.log(req.body);
+    const paramId = req.params.id;
     const { id, title, startDate, endDate, description } = req.body;
     const updatedPost = { id, title, startDate, endDate, description };
     try {
-        await PostMessage.findOneAndUpdate({ id: paramId }, updatedPost);
+        await Appointment.findOneAndUpdate({ id: paramId }, updatedPost);
         console.log("Updated successfully")
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -96,7 +95,7 @@ app.put('/api/appointments/:id', async (req, res) => {
 app.delete('/api/appointments/:id', async (req, res) => {
     const paramId = req.params.id
     try {
-        await PostMessage.findOneAndRemove({ id: paramId })
+        await Appointment.findOneAndRemove({ id: paramId })
         console.log(`Deleted appointment with ID ${paramId} successfully`);
     } catch (error) {
         res.status(409).json({ message: error.message });
