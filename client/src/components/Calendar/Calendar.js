@@ -29,9 +29,27 @@ const Calendar = () => {
         currentDate ? dispatch(changeCurrentDate(date)): dispatch(changeCurrentDate(new Date()))
         
     }
+
     const updateWindowDimensions = () => {
         setHeight(window.innerHeight)
     }
+    //componetDidMount
+    useEffect(() => {
+        updateWindowDimensions();
+        window.addEventListener('resize',updateWindowDimensions());
+        
+        // console.log('UsingEffect')
+        
+        fetch('/api/appointments')
+            .then(res => res.json())
+            .then(appointments => setAppointments(appointments));
+    //componentWillUnmount
+            return () => {
+            window.removeEventListener('resize',updateWindowDimensions())
+        }
+    },[])
+
+
     const handleDelete = deleteAppointmentId => {
         fetch('/api/appointments/' + deleteAppointmentId,{
             method: 'DELETE',
@@ -42,11 +60,13 @@ const Calendar = () => {
         });
         refresh();
     }
-    const handleTooltipOPen = editDataId => {
+
+    const handleTooltipOpen = editDataId => {
         setEditDataId(editDataId)
         setEditing(true)
         
     }
+
     const handleTooltipClose = () => {
         setEditing(false)
     }
@@ -56,21 +76,12 @@ const Calendar = () => {
             <AppointmentTooltip.Layout
             {...props}
             onDeleteButtonClick={() => handleDelete(props.appointmentMeta.data.id)}
-            onOpenButtonClick={() => handleTooltipOPen(props.appointmentMeta.data.id)}
+            onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
             />
         )
     }
 
-    useEffect(() => {
-        updateWindowDimensions();
-        window.addEventListener('resize',updateWindowDimensions());
-        fetch('/api/appointments')
-            .then(res => res.json())
-            .then(appointments => setAppointments(appointments));
-        return () => {
-            window.removeEventListener('resize',updateWindowDimensions())
-        }
-    },[])
+    
 
     return (
         <div>

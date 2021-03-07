@@ -1,5 +1,5 @@
 import format from 'date-fns/format';
-import React,{useState} from 'react';
+import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -16,62 +16,58 @@ import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
-import {changeCurrentDate,createFrom} from '../../redux/actions/index'
-import {useSelector,useDispatch} from 'react-redux'
-
-
-
-const SimpleEventForm = () => {
-    const dispatch = useDispatch()
-    const openCreate = useSelector(state => state.create.create)
-    const currentDate = useSelector(state => state.currentDate.date)
-    const [titleEmpty,setTitleEmpty] = useState(false)
-    const [simple,setSimple] = useState(true)
-    const [recurrence,setStateRecurrence] = useState(false)
-    const [recurMenuAnchorEl,setRecurMenuAnchorEl] = useState(null)
-    const [simpleAppointment,setSimpleAppointment] = useState({
-        title: "",
-        allDay: false,
-        startDate: new Date(new Date().setHours(new Date().getHours() + 1)).setMinutes(0),
-        endDate: new Date(new Date().setHours(new Date().getHours() + 2)).setMinutes(0),
-        rRule: null,
-        exDate: null,
-        description: null,
-    })
-    const [smartAppointment,setSmartAppointment] = useState(null)
-    
-    const refresh = (date) => {
-        currentDate ? dispatch(changeCurrentDate(date)): dispatch(changeCurrentDate(new Date()))
-        
-    }
-    
-    const handleClose = () => {
-        setSimple(true);
-        dispatch(createFrom(false))
+import {connect} from 'react-redux'
+import {changeCurrentDate,createForm} from '../../redux/actions/index'
+class SimpleEventForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: this.props.open,
+            titleEmpty: false,
+            simple: true,
+            recurrence: false,
+            recurMenuAnchorEl: null,
+            simpleAppointment: {
+                title: "",
+                allDay: false,
+                startDate: new Date(new Date().setHours(new Date().getHours() + 1)).setMinutes(0),
+                endDate: new Date(new Date().setHours(new Date().getHours() + 2)).setMinutes(0),
+                rRule: null,
+                exDate: null,
+                description: null,
+            },
+        };
+        this.handleRecurMenuOpen = this.handleRecurMenuOpen.bind(this);
+        this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
     }
 
-    const handleSubmit = () => {
-        if(!simpleAppointment.title
-            || (new Date(simpleAppointment.startDate) < new Date())
-            || (new Date (simpleAppointment.startDate) > new Date(simpleAppointment.endDate))){
-                if(simpleAppointment.title === null || simpleAppointment.title === ""){
-                    setTitleEmpty(true)
-                }
-                if(new Date(simpleAppointment.startDate) < new Date()){
-                    alert("The start date cannot be in the past");
-                }
-                if(new Date(simpleAppointment.startDate) > new Date(simpleAppointment.endDate)){
-                    alert("The start date cannot be later than the end date")
-                }
+    handleClose = () => {
+        this.setState({ simple: true });
+        this.props.onHide();
+    }
+
+    handleSubmit = () => {
+        if (!this.state.simpleAppointment.title
+            || (new Date(this.state.simpleAppointment.startDate) < new Date())
+            || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
+            if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
+                this.setState({ titleEmpty: true });
+            }
+            if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
+                alert("The start date cannot be in the past");
+            }
+            if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
+                alert("The start date cannot be later than the end date");
+            }
         } else {
-            const appointment = {...simpleAppointment}
-            if(appointment.allDay){
-                appointment.startDate = new Date(appointment.startDate)
-                appointment.endDate = new Date (appointment.endDate)
-                appointment.startDate = new Date (appointment.startDate).setHours(0);
-                appointment.startDate = new Date (appointment.startDate).setMinutes(0);
-                appointment.endDate   = new Date (appointment.endDate).setHours(23);
-                appointment.endDate   = new Date (appointment.endDate).setMinutes(59);
+            const appointment = { ...this.state.simpleAppointment };
+            if (appointment.allDay) {
+                appointment.startDate = new Date(appointment.startDate);
+                appointment.endDate = new Date(appointment.endDate);
+                appointment.startDate = new Date(appointment.startDate).setHours(0);
+                appointment.startDate = new Date(appointment.startDate).setMinutes(0);
+                appointment.endDate = new Date(appointment.endDate).setHours(23);
+                appointment.endDate = new Date(appointment.endDate).setMinutes(59);
             }
             fetch('/api/appointments', {
                 method: 'POST',
@@ -81,84 +77,83 @@ const SimpleEventForm = () => {
                 },
                 body: JSON.stringify(appointment)
             });
-            refresh();
-            handleClose();
-            
+            this.props.refresh();
+            this.handleClose();
         }
     }
 
-    const setAllDay = () => {
-        let sipAppointment = {...simpleAppointment}
-        sipAppointment.allDay = !sipAppointment.allDay
-        setSimpleAppointment(sipAppointment)
+    setAllDay = () => {
+        const simpleAppointment = { ...this.state.simpleAppointment };
+        simpleAppointment.allDay = !simpleAppointment.allDay;
+        this.setState({ simpleAppointment });
     }
 
-    const setRecurrence = () => {
-        if(recurrence){
-            const sipAppointment = {...simpleAppointment}
-            sipAppointment.rRule = null;
-            sipAppointment.exDate = null;
-            setSimpleAppointment = (sipAppointment);
+    setRecurrence = () => {
+        if (this.state.recurrence) {
+            const simpleAppointment = { ...this.state.simpleAppointment };
+            simpleAppointment.rRule = null;
+            simpleAppointment.exDate = null;
+            this.setState({ simpleAppointment });
         }
-        setStateRecurrence(false)
+        this.setState({ recurrence: false });
     }
 
-    const setDivisible = () => {
-        const stAppointment = {...smartAppointment}
-        stAppointment.divisible = !stAppointment.divisible
-        setSmartAppointment(stAppointment)
+    setDivisible = () => {
+        const smartAppointment = { ...this.state.smartAppointment };
+        smartAppointment.divisible = !smartAppointment.divisible;
+        this.setState({ smartAppointment });
     }
 
-    const handleTextFieldInput = (event) => {
+    handleTextFieldInput = (event) => {
         let nam = event.target.name;
         let val = event.target.value;
-        if(simple){
-            let sipAppointment = {...simpleAppointment}
-            sipAppointment[nam] = val
-            setSimpleAppointment(sipAppointment)
+        if (this.state.simple) {
+            let simpleAppointment = { ...this.state.simpleAppointment };
+            simpleAppointment[nam] = val;
+            this.setState({ simpleAppointment });
         } else {
-            const smtAppointment = {...smartAppointment};
-            if(nam === "maxSession" || nam === "minSession" || nam === "exDuration") {
+            const smartAppointment = { ...this.state.smartAppointment };
+            if (nam === "maxSession" || nam === "minSession" || nam === "exDuration") {
                 val = parseInt(val);
-            } 
-            smtAppointment[nam] = val;
-            smtAppointment.maxSession = smtAppointment.exDuration
-            setSmartAppointment(smtAppointment)
+            }
+            smartAppointment[nam] = val;
+            smartAppointment.maxSession = smartAppointment.exDuration;
+            this.setState({ smartAppointment });
         }
     }
 
-    const handleStartDateInput = (date) => {
-        const sipAppointment = {...simpleAppointment};
-        sipAppointment.startDate = date;
-        sipAppointment.endDate = date;
-        setSimpleAppointment(sipAppointment)
+    handleStartDateInput = (date) => {
+        const simpleAppointment = { ...this.state.simpleAppointment };
+        simpleAppointment.startDate = date;
+        simpleAppointment.endDate = date;
+        this.setState({ simpleAppointment });
     }
 
-    const handleEndDateInput = (date) => {
-        const sipAppointment = {...simpleAppointment};
-        sipAppointment.endDate = date;
-        setSimpleAppointment(sipAppointment)
+    handleEndDateInput = (date) => {
+        const simpleAppointment = { ...this.state.simpleAppointment };
+        simpleAppointment.endDate = date;
+        this.setState({ simpleAppointment });
     }
 
-    const setSmartPlanningForm = () => {
-        setSimple(false)
+    setSmartPlanningForm = () => {
+        this.setState({ simple: false });
     }
 
-    const setSimpleForm = () => {
-        setSimple(true)
+    setSimpleForm = () => {
+        this.setState({ simple: true });
     }
 
-    const handleRecurMenuOpen = event => {
-        setRecurMenuAnchorEl(event.currentTarget)
+    handleRecurMenuOpen = event => {
+        this.setState({ recurMenuAnchorEl: event.currentTarget });
     }
 
-    const handleRecurMenuClose = event => {
-        const {startDate} = simpleAppointment
-        setRecurMenuAnchorEl(null)
-        if(event.currentTarget.title) {
-            setRecurrence(event.currentTarget.title)
+    handleRecurMenuClose = event => {
+        const { startDate } = this.state.simpleAppointment;
+        this.setState({ recurMenuAnchorEl: null });
+        if (event.currentTarget.title) {
+            this.setState({ recurrence: event.currentTarget.title })
             let rRule = "";
-            if(event.currentTarget.title === "Daily") {
+            if (event.currentTarget.title === "Daily") {
                 rRule = "FREQ=DAILY;INTERVAL=1";
             }
             if (event.currentTarget.title === "Weekly") {
@@ -169,41 +164,41 @@ const SimpleEventForm = () => {
                 let dayOfMonth = format(startDate, "d");
                 rRule = `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth};INTERVAL=1`;
             }
-            const simAppointment = {...simpleAppointment}
-            simAppointment.rRule = rRule;
-            setSimpleAppointment(simAppointment);
+            const simpleAppointment = { ...this.state.simpleAppointment };
+            simpleAppointment.rRule = rRule;
+            this.setState({ simpleAppointment });
         }
     }
 
-    const renderTitleTextField = () => {
+    renderTitleTextField = () => {
         return (
             <Grid item>
                 <TextField
                     autoFocus
                     required
-                    error={titleEmpty}
-                    helperText={titleEmpty ? "Title required" : ""}
+                    error={this.state.titleEmpty}
+                    helperText={this.state.titleEmpty ? "Title required" : ""}
                     name="title"
                     label="Title"
-                    onChange={handleTextFieldInput}
+                    onChange={this.handleTextFieldInput}
                     fullWidth
                 />
             </Grid>
-        )
+        );
     }
 
-    const renderPickers = () => {
+    renderPickers = () => {
         return (
-            <Grid item key={simpleAppointment.allDay}>
+            <Grid item key={this.state.simpleAppointment.allDay}>
                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
                     <Grid item style={{ minWidth: "55px" }}>
                         <Typography variant="button" style={{ color: "#757575" }}>From</Typography>
                     </Grid>
                     <Grid item>
                         <FormPicker
-                            allDay={simpleAppointment.allDay}
-                            currentDate={simpleAppointment.startDate}
-                            handleFormChange={handleStartDateInput}
+                            allDay={this.state.simpleAppointment.allDay}
+                            currentDate={this.state.simpleAppointment.startDate}
+                            handleFormChange={this.handleStartDateInput}
                         />
                     </Grid>
                 </Grid>
@@ -213,9 +208,9 @@ const SimpleEventForm = () => {
                     </Grid>
                     <Grid item>
                         <FormPicker
-                            allDay={simpleAppointment.allDay}
-                            currentDate={simpleAppointment.endDate}
-                            handleFormChange={handleEndDateInput}
+                            allDay={this.state.simpleAppointment.allDay}
+                            currentDate={this.state.simpleAppointment.endDate}
+                            handleFormChange={this.handleEndDateInput}
                         />
                     </Grid>
                 </Grid>
@@ -223,12 +218,12 @@ const SimpleEventForm = () => {
         );
     }
 
-    const renderOptions = () => {
+    renderOptions = () => {
         return (
             <Grid container="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
                 <Grid item style={{ marginLeft: "15px" }}>
                     <FormControlLabel
-                        control={<Switch color="primary" size="small" onChange={setAllDay} />}
+                        control={<Switch color="primary" size="small" onChange={this.setAllDay} />}
                         label="All day"
                     />
                 </Grid>
@@ -236,31 +231,31 @@ const SimpleEventForm = () => {
                     <Button
                         aria-controls="simple-menu"
                         aria-haspopup="true"
-                        onClick={handleRecurMenuOpen}
+                        onClick={this.handleRecurMenuOpen}
                         size="small"
                         endIcon={<ArrowDropDownIcon />}
                     >
                         <Typography variant="button">
-                            {recurrence ? recurrence : "Doesn't repeat"}
+                            {this.state.recurrence ? this.state.recurrence : "Doesn't repeat"}
                         </Typography>
                     </Button >
                     <Menu
                         id="simple-menu"
-                        anchorEl={recurMenuAnchorEl}
+                        anchorEl={this.state.recurMenuAnchorEl}
                         keepMounted
-                        open={Boolean(recurMenuAnchorEl)}
-                        onClose={handleRecurMenuClose}
+                        open={Boolean(this.state.recurMenuAnchorEl)}
+                        onClose={this.handleRecurMenuClose}
                     >
-                        <MenuItem title="None" onClick={handleRecurMenuClose}>
+                        <MenuItem title="None" onClick={this.handleRecurMenuClose}>
                             <Typography variant="button">Doesn't repeat</Typography>
                         </MenuItem>
-                        <MenuItem title="Daily" onClick={handleRecurMenuClose}>
+                        <MenuItem title="Daily" onClick={this.handleRecurMenuClose}>
                             <Typography variant="button">Daily</Typography>
                         </MenuItem>
-                        <MenuItem title="Weekly" onClick={handleRecurMenuClose}>
+                        <MenuItem title="Weekly" onClick={this.handleRecurMenuClose}>
                             <Typography variant="button">Weekly</Typography>
                         </MenuItem>
-                        <MenuItem title="Monthly" onClick={handleRecurMenuClose}>
+                        <MenuItem title="Monthly" onClick={this.handleRecurMenuClose}>
                             <Typography variant="button">Monthly</Typography>
                         </MenuItem>
                     </Menu>
@@ -268,15 +263,15 @@ const SimpleEventForm = () => {
             </Grid>
         );
     }
-    
-    const renderSmartPlanningButton = () => {
+
+    renderSmartPlanningButton = () => {
         return (
             <Grid item>
                 <Tooltip title="Find a timeslot for a task that does not have a fixed one" placement="top">
                     <Button
                         variant="outlined"
                         size="small"
-                        onClick={setSmartPlanningForm}
+                        onClick={this.setSmartPlanningForm}
                         style={{ margin: "10px 0px" }}
                     >
                         Smart Planning
@@ -286,7 +281,7 @@ const SimpleEventForm = () => {
         );
     }
 
-    const renderDescriptionTextField = () => {
+    renderDescriptionTextField = () => {
         return (
             <Grid item style={{ margin: "10px 0" }}>
                 <TextField
@@ -301,8 +296,8 @@ const SimpleEventForm = () => {
             </Grid>
         );
     }
-    
-    const renderSimpleForm = () => {
+
+    renderSimpleForm = () => {
         return (
             <>
                 <DialogTitle id="form-dialog-title">Create Event</DialogTitle>
@@ -328,23 +323,35 @@ const SimpleEventForm = () => {
             </ >
         );
     }
-    
-    let formLayout = renderSimpleForm()
-    if(!simple){
-        formLayout = <SmartPlanningForm onClose={handleClose} refresh={refresh} />;
-    }
 
-    return (
-        
-        <Dialog
+    render() {
+        let formLayout = this.renderSimpleForm();
+        if (!this.state.simple)
+            formLayout = <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />;
+        return (
+            <Dialog
                 aria-labelledby="form-dialog-title"
-                open={openCreate}
-                onClose={handleClose}
+                open={this.state.open}
+                onClose={this.handleClose}
                 fullWidth maxWidth="xs"
             >
                 {formLayout}
-        </Dialog>
-    )
+            </Dialog>
+        );
+    }
+}
+const mapStateToProps = state => {
+    return {
+        currentDate:state.currentDate.date,
+        create:state.create.create,
+    }
 }
 
-export default SimpleEventForm
+const mapDispatchToProps = dispatch => {
+    return {
+        changeDate:() => dispatch(changeCurrentDate()),
+        changeCreate:() => dispatch(createForm()),
+    }
+}
+
+export default SimpleEventForm;

@@ -21,7 +21,7 @@ export const switch_Drawer = (value) => {
 
 export const createFrom = (value) => {
     return {
-        type:'create',
+        type:'change_create',
         payload:value,
     }
 }
