@@ -65,8 +65,11 @@ class SmartPlanningForm extends Component {
                 body: JSON.stringify(appointment)
             });
             this.onClose();
-            this.props.refresh();
+            this.refresh();
         }
+    }
+    refresh = (date) => {
+        this.setState({ currentDate: date ? date : new Date() });
     }
 
     onClose = () => {

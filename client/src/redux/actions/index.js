@@ -19,7 +19,7 @@ export const switch_Drawer = (value) => {
     }
 }
 
-export const createFrom = (value) => {
+export const createForm = (value) => {
     return {
         type:'change_create',
         payload:value,

@@ -22,7 +22,7 @@ class SimpleEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: this.props.open,
+            open: this.props.create,
             titleEmpty: false,
             simple: true,
             recurrence: false,
@@ -39,11 +39,12 @@ class SimpleEventForm extends Component {
         };
         this.handleRecurMenuOpen = this.handleRecurMenuOpen.bind(this);
         this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     handleClose = () => {
         this.setState({ simple: true });
-        this.props.onHide();
+        this.props.changeCreate(false);
     }
 
     handleSubmit = () => {
@@ -77,9 +78,13 @@ class SimpleEventForm extends Component {
                 },
                 body: JSON.stringify(appointment)
             });
-            this.props.refresh();
-            this.handleClose();
+            this.refresh();
+            this.props.changeCreate(false);
         }
+    }
+
+    refresh = (date) => {
+        this.props.currentDate ? this.props.changeCurrentDate(date) : this.props.changeCurrentDate(new Date())
     }
 
     setAllDay = () => {
@@ -349,9 +354,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeDate:() => dispatch(changeCurrentDate()),
-        changeCreate:() => dispatch(createForm()),
+        changeDate:(currentDate) => dispatch(changeCurrentDate(currentDate)),
+        changeCreate:(value) => dispatch(createForm(value)),
     }
 }
 
-export default SimpleEventForm;
+export default connect(mapStateToProps,mapDispatchToProps)(SimpleEventForm);

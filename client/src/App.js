@@ -18,7 +18,7 @@ import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import theme from './components/theme';
 import 'fontsource-roboto';
-import {changeCurrentDate,switch_Drawer,createFrom} from './redux/actions/index'
+import {changeCurrentDate,switch_Drawer,createForm} from './redux/actions/index'
 import {useSelector,useDispatch} from 'react-redux'
 const styles = {
     fab: {
@@ -151,7 +151,7 @@ const App = (props) => {
                         />
                         <Tooltip title="Create Event" placement="left" aria-label="add">
                             <Fab color="primary" aria-label="add" style={styles.fab} 
-                            onClick={() => dispatch(createFrom(true))}
+                            onClick={() => dispatch(createForm(true))}
                             >
                                 <AddIcon />
                             </Fab>
