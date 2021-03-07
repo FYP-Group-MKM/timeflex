@@ -36,7 +36,7 @@ const App = (props) => {
     const currentView = useSelector(state => state.view.view)
     // const drawerOpen = useSelector(state => state.drawer.drawer)
     const create = useSelector(state => state.create.create)
-
+    
     return (
         <div>
                 <header>
@@ -70,7 +70,8 @@ const App = (props) => {
                                                 </Grid>
                                                 <Grid item>
                                                     <DateNavigator
-                                                        key={currentDate + currentView}/>
+                                                        // key={currentDate + currentView}
+                                                        />
                                                 </Grid>
                                             </Grid>
                                         </Hidden>
@@ -85,7 +86,8 @@ const App = (props) => {
                                             <Hidden xsDown>
                                                 <Grid item>
                                                     <DateNavigator
-                                                        key={currentDate + currentView} />
+                                                        key={currentDate + currentView} 
+                                                        />
                                                 </Grid>
                                             </Hidden>
                                             <Grid item>

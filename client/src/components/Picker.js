@@ -1,52 +1,54 @@
 import format from 'date-fns/format';
-import React ,{useState}from 'react';
+import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DatePicker, } from '@material-ui/pickers';
-import {useSelector,useDispatch} from 'react-redux'
-import {changeCurrentDate} from '../redux/actions/index'
+import {connect} from 'react-redux'
+import {changeView,changeCurrentDate} from '../redux/actions/index'
+class Picker extends Component {
 
-const Picker = () => {
-    const dispatch    = useDispatch()
-    const currentDate = useSelector(state => state.currentDate.date)
-    const currentView = useSelector(state => state.view.view)
-    const [pickerIsOpen, setPickerIsOpen] = useState(false)
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentDate:this.props.currentDate,
+            pickerIsOpen: false,
+        };
+    }
 
-    // const setPicker = (pickerIsOpen) => {
-    //     setPickerIsOpen(pickerIsOpen)
-    // }
-   
+    setPicker = (pickerIsOpen) => {
+        this.setState({ pickerIsOpen });
+    }
+    
+    handleSelectedDate = (currentDate) => {
+        this.setState({ currentDate });
+        this.props.changeCurrentDate(currentDate)
+    }
 
-    const handleDateChange = (currentDate) => {
-        dispatch(changeCurrentDate(currentDate))
+    render() {
         
-    }
+        let pickerFormat = "MMMM yyyy";
+        let date = format(this.state.currentDate, 'MMM yyyy');
+        if (this.props.currentViewName === "Day") {
+            pickerFormat = "d MMMM yyyy";
+            date = format(this.state.currentDate, 'd MMM yyyy');
+        }
 
-    let pickerFormat = "MMMM yyyy"
-    let date = format(currentDate,'MMM yyyy')
-    if(currentView === "Day"){
-        pickerFormat = "d MMMM yyyy"
-        date = format(currentDate, 'd MMM yyyy');
-
-    }
-    
-    
-    return (
-        <div>
+        return (
+            <div>
                 {
-                    pickerIsOpen
+                    this.state.pickerIsOpen
                         ? <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
                                 variant="dialog"
                                 format={pickerFormat}
                                 disableToolbar={false}
-                                value={currentDate}
-                                onChange={handleDateChange}
-                                open={pickerIsOpen}
-                                onOpen={() => { setPickerIsOpen(true) }}
-                                onClose={() => { setPickerIsOpen(false) }}
+                                value={this.props.currentDate}
+                                onChange={this.handleSelectedDate}
+                                open={this.state.pickerIsOpen}
+                                onOpen={() => { this.setPicker(true) }}
+                                onClose={() => { this.setPicker(false) }}
                                 KeyboardButtonProps={{ 'aria-label': 'change date', }}
                             />
                         </MuiPickersUtilsProvider>
@@ -54,7 +56,7 @@ const Picker = () => {
                             <Hidden smUp>
                                 <Button
                                     endIcon={<ArrowDropDownIcon />}
-                                    onClick={() => { setPickerIsOpen(true) }}
+                                    onClick={() => { this.setPicker(true) }}
                                     style={{ color: "#616161" }}
                                 >
                                     {date}
@@ -62,7 +64,7 @@ const Picker = () => {
                             </Hidden>
                             <Hidden xsDown>
                                 <Button
-                                    onClick={() => { setPickerIsOpen(true) }}
+                                    onClick={() => { this.setPicker(true) }}
                                     style={{ color: "#616161" }}
                                 >
                                     {date}
@@ -73,7 +75,22 @@ const Picker = () => {
 
                 }
             </div>
-    )
+        )
+    }
 }
 
-export default Picker
+const mapStateToProps = state => {
+    return {
+        currentDate:state.currentDate.date,
+        currentViewName:state.view.view,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        changeDate:(currentDate) => dispatch(changeCurrentDate(currentDate)),
+        changeView:(view) => dispatch(changeView(view)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Picker);

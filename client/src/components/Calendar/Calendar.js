@@ -26,7 +26,8 @@ const Calendar = () => {
     const currentDate = useSelector(state => state.currentDate.date)
     
     const refresh = (date) => {
-        currentDate ? dispatch(changeCurrentDate(date)): dispatch(changeCurrentDate(new Date()))
+        
+        currentDate ? dispatch(changeCurrentDate(new Date())): dispatch(changeCurrentDate(new Date()))
         
     }
 

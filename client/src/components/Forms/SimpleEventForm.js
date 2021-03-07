@@ -83,8 +83,8 @@ class SimpleEventForm extends Component {
         }
     }
 
-    refresh = (date) => {
-        this.props.currentDate ? this.props.changeCurrentDate(date) : this.props.changeCurrentDate(new Date())
+    refresh = () => {
+        this.props.currentDate ? this.props.changeDate(this.props.currentDate) : this.props.changeCurrentDate(new Date())
     }
 
     setAllDay = () => {
