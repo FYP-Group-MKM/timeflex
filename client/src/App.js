@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -69,105 +75,120 @@ export default class App extends Component {
         this.setState({ currentDate: date ? date : new Date() });
     }
 
+    loginOnClick = () => {
+        window.open("http://localhost:5000/auth/google", "_self");
+    }
+
+    renderAppBar = () => {
+        return (
+            <AppBar color="inherit" elevation={1}>
+                <Toolbar variant="dense">
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justify="space-between"
+                        spacing={1}
+                    >
+                        <Grid item>
+                            <Hidden xsDown>
+                                <Typography variant="h6" style={{ color: "#616161" }}>
+                                    TimeFlex
+                                </Typography>
+                            </Hidden>
+                            <Hidden smUp>
+                                <Grid container direction="row" alignItems="center">
+                                    <Grid item>
+                                        <IconButton style={{ color: '#848485' }}
+                                            color="inherit"
+                                            aria-label="open drawer"
+                                            onClick={this.handleDrawerOpen}
+                                            edge="start"
+                                        >
+                                            <MenuIcon />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        <DateNavigator
+                                            key={this.state.currentDate + this.state.currentViewName}
+                                            currentDate={this.state.currentDate}
+                                            currentViewName={this.state.currentViewName}
+                                            currentDateChange={this.currentDateChange}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Hidden>
+                        </Grid>
+                        <Grid item>
+                            <Grid
+                                container
+                                direction="row"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <Hidden xsDown>
+                                    <Grid item>
+                                        <DateNavigator
+                                            key={this.state.currentDate + this.state.currentViewName}
+                                            currentDate={this.state.currentDate}
+                                            currentViewName={this.state.currentViewName}
+                                            currentDateChange={this.currentDateChange}
+                                        />
+                                    </Grid>
+                                </Hidden>
+                                <Grid item>
+                                    <Hidden xsDown>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => { this.currentDateChange(new Date()) }}
+                                        >
+                                            Today
+                                        </Button>
+                                    </Hidden>
+                                    <Hidden smUp>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            style={{ color: "#616161" }}
+                                            onClick={() => { this.currentDateChange(new Date()) }}
+                                        >
+                                            Today
+                                        </Button>
+                                    </Hidden>
+                                </Grid>
+                                <Grid item>
+                                    <Hidden xsDown>
+                                        <Dropdown
+                                            key={this.state.currentViewName}
+                                            currentViewName={this.state.currentViewName}
+                                            currentViewNameChange={this.currentViewNameChange}
+                                        />
+                                    </Hidden>
+                                </Grid>
+                                <Grid item>
+                                    {/* <Button variant="outlined" href="http://google.com">Login</Button> */}
+                                    {/* <Button variant="outlined" href="http://localhost:5000/auth/google">Login</Button> */}
+                                    <Button variant="outlined" onClick={this.loginOnClick}>Login</Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Toolbar>
+            </AppBar>
+        );
+    }
+
     render() {
         return (
             <div>
                 <header>
                     <ThemeProvider theme={theme}>
-                        <AppBar color="inherit" elevation={1}>
-                            <Toolbar variant="dense">
-                                <Grid
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                    justify="space-between"
-                                    spacing={1}
-                                >
-                                    <Grid item>
-                                        <Hidden xsDown>
-                                            <Typography variant="h6" style={{ color: "#616161" }}>
-                                                TimeFlex
-                                            </Typography>
-                                        </Hidden>
-                                        <Hidden smUp>
-                                            <Grid container direction="row" alignItems="center">
-                                                <Grid item>
-                                                    <IconButton style={{ color: '#848485' }}
-                                                        color="inherit"
-                                                        aria-label="open drawer"
-                                                        onClick={this.handleDrawerOpen}
-                                                        edge="start"
-                                                    >
-                                                        <MenuIcon />
-                                                    </IconButton>
-                                                </Grid>
-                                                <Grid item>
-                                                    <DateNavigator
-                                                        key={this.state.currentDate + this.state.currentViewName}
-                                                        currentDate={this.state.currentDate}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentDateChange={this.currentDateChange}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                        </Hidden>
-                                    </Grid>
-                                    <Grid item>
-                                        <Grid
-                                            container
-                                            direction="row"
-                                            alignItems="center"
-                                            spacing={1}
-                                        >
-                                            <Hidden xsDown>
-                                                <Grid item>
-                                                    <DateNavigator
-                                                        key={this.state.currentDate + this.state.currentViewName}
-                                                        currentDate={this.state.currentDate}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentDateChange={this.currentDateChange}
-                                                    />
-                                                </Grid>
-                                            </Hidden>
-                                            <Grid item>
-                                                <Hidden xsDown>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        size="small"
-                                                        onClick={() => { this.currentDateChange(new Date()) }}
-                                                    >
-                                                        Today
-                                                    </Button>
-                                                </Hidden>
-                                                <Hidden smUp>
-                                                    <Button
-                                                        variant="outlined"
-                                                        size="small"
-                                                        style={{ color: "#616161" }}
-                                                        onClick={() => { this.currentDateChange(new Date()) }}
-                                                    >
-                                                        Today
-                                                    </Button>
-                                                </Hidden>
-                                            </Grid>
-                                            <Grid item>
-                                                <Hidden xsDown>
-                                                    <Dropdown
-                                                        key={this.state.currentViewName}
-                                                        currentViewName={this.state.currentViewName}
-                                                        currentViewNameChange={this.currentViewNameChange}
-                                                    />
-                                                </Hidden>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Toolbar>
-                        </AppBar>
+                        {this.renderAppBar()}
                     </ThemeProvider>
                 </header>
-                <body style={{ margin: "0px" }}>
+                <div style={{ margin: "0px" }}>
                     <ThemeProvider theme={theme}>
                         <div style={{ marginTop: "60px" }} />
                         <SimpleEventForm
@@ -196,8 +217,23 @@ export default class App extends Component {
                             </Fab>
                         </Tooltip>
                     </ThemeProvider>
-                </body>
+                </div>
             </div>
         );
     }
+}
+
+const Login = props => {
+    const onClick = () => {
+        fetch('/auth/google')
+            .then(res => res.json())
+            .then(res => console.log(res.message));
+    }
+
+    return (
+        <div style={{ textAlign: "center" }}>
+            <h1>Welcome to TimeFlex</h1>
+            <Button onClick={onClick}>Login with Google</Button>
+        </div>
+    );
 }
