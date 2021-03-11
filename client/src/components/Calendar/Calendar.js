@@ -12,20 +12,14 @@ import {
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
-import { setCurrentDate } from '../../actions';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 const Calendar = props => {
-    const dispatch = useDispatch();
     const [isEditing, setEditing] = useState(false);
     const [editDataId, setEditDataId] = useState("");
     const [appointments, setAppointments] = useState([]);
-    const currentView = useSelector(state => state.view.view);
-    const currentDate = useSelector(state => state.currentDate.currentDate);
-
-    const refresh = (date) => {
-        currentDate ? dispatch(setCurrentDate(new Date())) : dispatch(setCurrentDate(new Date()));
-    }
+    const currentView = props.currentView;
+    const currentDate = props.currentDate;
 
     //componetDidMount
     useEffect(() => {
@@ -54,6 +48,10 @@ const Calendar = props => {
     const handleTooltipClose = () => {
         setEditing(false);
         setEditDataId("");
+    }
+
+    const refresh = () => {
+
     }
 
     const AppointmentTooltipLayout = props => {
@@ -104,9 +102,14 @@ const Calendar = props => {
             {renderEditEventForm()}
         </div >
     )
-}
+};
 
-export default Calendar;
+const mapStateToProps = state => ({
+    currentDate: state.calendar.currentDate,
+    currentView: state.calendar.currentView
+});
+
+export default connect(mapStateToProps)(Calendar);
 
 
 

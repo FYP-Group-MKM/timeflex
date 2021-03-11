@@ -7,93 +7,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, DatePicker, } from '@material-ui/pickers';
 import { connect } from 'react-redux';
-import { changeView, setCurrentDate } from '../actions';
-
-// class Picker extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             currentDate: this.props.currentDate,
-//             pickerIsOpen: false,
-//         };
-//     }
-
-//     setPicker = (pickerIsOpen) => {
-//         this.setState({ pickerIsOpen });
-//     }
-
-//     handleSelectedDate = (currentDate) => {
-//         this.setState({ currentDate });
-//         this.props.setCurrentDate(currentDate)
-//     }
-
-//     render() {
-//         let pickerFormat = "MMMM yyyy";
-//         let date = format(this.state.currentDate, 'MMM yyyy');
-//         if (this.props.currentViewName === "Day") {
-//             pickerFormat = "d MMMM yyyy";
-//             date = format(this.state.currentDate, 'd MMM yyyy');
-//         }
-
-//         return (
-//             <div>
-//                 {
-//                     this.state.pickerIsOpen
-//                         ? <MuiPickersUtilsProvider utils={DateFnsUtils}>
-//                             <DatePicker
-//                                 variant="dialog"
-//                                 format={pickerFormat}
-//                                 disableToolbar={false}
-//                                 value={this.props.currentDate}
-//                                 onChange={this.handleSelectedDate}
-//                                 open={this.state.pickerIsOpen}
-//                                 onOpen={() => { this.setPicker(true) }}
-//                                 onClose={() => { this.setPicker(false) }}
-//                                 KeyboardButtonProps={{ 'aria-label': 'change date', }}
-//                             />
-//                         </MuiPickersUtilsProvider>
-//                         : <div>
-//                             <Hidden smUp>
-//                                 <Button
-//                                     endIcon={<ArrowDropDownIcon />}
-//                                     onClick={() => { this.setPicker(true) }}
-//                                     style={{ color: "#616161" }}
-//                                 >
-//                                     {date}
-//                                 </Button>
-//                             </Hidden>
-//                             <Hidden xsDown>
-//                                 <Button
-//                                     onClick={() => { this.setPicker(true) }}
-//                                     style={{ color: "#616161" }}
-//                                 >
-//                                     {date}
-//                                 </Button>
-//                             </Hidden>
-//                         </div>
-
-
-//                 }
-//             </div>
-//         )
-//     }
-// }
-
-// const mapStateToProps = state => {
-//     return {
-//         currentDate: state.currentDate.currentDate,
-//         currentViewName: state.view.view,
-//     }
-// }
-
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         changeDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
-//         changeView: (view) => dispatch(changeView(view)),
-//     }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Picker);
+import { setCurrentView, setCurrentDate } from '../actions';
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -103,7 +17,8 @@ const useStyles = makeStyles(theme => ({
 
 const ButtonDatePicker = props => {
     const classes = useStyles();
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const currentDate = props.currentDate;
+    const currentView = props.currentView;
     const [isOpen, setOpen] = useState(false);
 
     const handleDatePicked = date => {
@@ -112,8 +27,8 @@ const ButtonDatePicker = props => {
     }
 
     const renderButton = () => {
-        let dateString = format(currentDate, "MMMM yyyy");
-        if (props.currentViewName === "Day")
+        let dateString = format(props.currentDate, "MMMM yyyy");
+        if (currentView === "Day")
             dateString = format(currentDate, "d MMM yyyy");
 
         const renderArrowDropdownIcon = () => (
@@ -123,15 +38,41 @@ const ButtonDatePicker = props => {
         );
 
         return (
-            <Button endIcon={renderArrowDropdownIcon} onClick={() => setOpen(true)} className={classes.button}>
+            <Button endIcon={renderArrowDropdownIcon()} onClick={() => setOpen(true)} className={classes.button}>
                 {dateString}
             </Button >
         );
     }
 
-    return (
-        renderButton()
+    const renderDatePicker = () => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DatePicker
+                variant="dialog"
+                format="d MMMM yyy"
+                value={currentDate}
+                onChange={handleDatePicked}
+                open={isOpen}
+                onOpen={() => setOpen(true)}
+                onClose={() => setOpen(false)}
+            />
+        </MuiPickersUtilsProvider>
     );
+
+    if (isOpen)
+        return renderDatePicker();
+    else
+        return renderButton();
 };
 
-export default ButtonDatePicker;
+const mapStateToProps = state => ({
+    currentDate: state.calendar.currentDate
+});
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+        setCurrentView: (view) => dispatch(setCurrentView(view)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonDatePicker);

@@ -4,8 +4,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux'
-import { changeView } from '../../actions'
+import { connect } from 'react-redux'
+import { setCurrentView } from '../../actions'
 
 const useStyles = makeStyles(theme => ({
     menuItem: {
@@ -16,11 +16,10 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const Dropdown = () => {
+const Dropdown = props => {
     const classes = useStyles();
-    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
-    const currentView = useSelector(state => state.view.view);
+    const currentView = props.currentView;
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
@@ -28,7 +27,7 @@ const Dropdown = () => {
     const handleClose = (event) => {
         setAnchorEl(null);
         if (event.currentTarget.title) {
-            dispatch(changeView(event.currentTarget.title));
+            setCurrentView(event.currentTarget.title);
         }
     }
 
@@ -52,4 +51,12 @@ const Dropdown = () => {
     )
 }
 
-export default Dropdown
+const mapStateToProps = state => ({
+    currentView: state.calendar.currentView
+});
+
+const mapDispatchToProps = dispatch => ({
+    setCurrentView: (view) => dispatch(setCurrentView(view))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dropdown);

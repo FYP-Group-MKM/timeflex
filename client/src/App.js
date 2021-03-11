@@ -1,5 +1,5 @@
 import 'fontsource-roboto';
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -19,8 +19,9 @@ import DateNavigator from './components/AppBar/DateNavigator';
 import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import { makeStyles } from '@material-ui/core/styles';
-import { setCurrentDate, switch_Drawer, createForm } from './actions';
-import { useSelector, useDispatch, connect } from 'react-redux';
+import { setCurrentDate, setSimpleEventForm, switch_Drawer } from './actions';
+import { connect } from 'react-redux';
+import styles from './style.css';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -46,11 +47,9 @@ const useStyles = makeStyles(theme => ({
 
 const App = props => {
     const classes = useStyles();
-    const dispatch = useDispatch()
-    const create = useSelector(state => state.create.create);
 
     return (
-        <div className={classes.root}>
+        <div className={`${classes.root} ${styles}`}>
             <AppBar color="inherit">
                 <Toolbar variant="dense">
                     <Typography variant="h6" className={classes.title}>
@@ -61,12 +60,12 @@ const App = props => {
                     <Dropdown />
                 </Toolbar>
             </AppBar>
-            <Toolbar />
-            <Calendar />
-            <SimpleEventForm key={create} />
             <SideBar />
+            <div style={{ height: "50px" }} />
+            <Calendar />
+            <SimpleEventForm />
             <Tooltip title="Create Event" placement="left" aria-label="add">
-                <Fab className={classes.fab} color="primary" aria-label="add" onClick={() => dispatch(createForm(true))}>
+                <Fab className={classes.fab} color="primary" onClick={props.setSimpleEventForm}>
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -74,12 +73,10 @@ const App = props => {
     );
 };
 
-const mapStateToProps = state => ({
-
-});
 
 const mapDispatchToProps = dispatch => ({
-    navigateToday: () => dispatch(setCurrentDate(new Date()))
+    navigateToday: () => dispatch(setCurrentDate(new Date())),
+    setSimpleEventForm: () => dispatch(setSimpleEventForm(true))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

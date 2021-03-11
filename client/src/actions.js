@@ -2,26 +2,26 @@ export const setCurrentDate = (date) => {
     return {
         type: 'SET_CURRENT_DATE',
         payload: date,
-    }
-}
+    };
+};
 
-export const changeView = (view) => {
+export const setCurrentView = (view) => {
     return {
-        type: 'change_view',
+        type: 'SET_CURRENT_VIEW',
         payload: view,
-    }
-}
+    };
+};
 
 export const switch_Drawer = (value) => {
     return {
         type: 'switch_Drawer',
         payload: value
-    }
-}
+    };
+};
 
-export const createForm = (value) => {
+export const setSimpleEventForm = (value) => {
     return {
-        type: 'change_create',
+        type: 'SET_SIMPLE_EVENT_FORM',
         payload: value,
-    }
-}
+    };
+};

@@ -5,7 +5,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Hidden from '@material-ui/core/Hidden';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonDatePicker from '../ButtonDatePicker';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { setCurrentDate } from '../../actions';
 
 const useStyles = makeStyles(theme => ({
@@ -15,14 +15,13 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const DateNavigator = () => {
+const DateNavigator = props => {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const currentDate = useSelector(state => state.currentDate.currentDate);
-    const currentView = useSelector(state => state.view.view);
+    const currentDate = props.currentDate;
+    const currentView = props.currentView;
 
     const handleNavNext = () => {
-        let date = new Date(currentDate)
+        let date = new Date(currentDate);
         if (currentView === "Day") {
             date.setDate(date.getDate() + 1);
         }
@@ -32,11 +31,11 @@ const DateNavigator = () => {
         if (currentView === "Month") {
             date.setDate(date.getMonth() + 1);
         }
-        dispatch(setCurrentDate(date));
+        props.setCurrentDate(date);
     };
 
     const handleNavPrev = () => {
-        let date = new Date(currentDate)
+        let date = new Date(currentDate);
         if (currentView === 'Day') {
             date.setDate(date.getDate() - 1);
         }
@@ -46,7 +45,7 @@ const DateNavigator = () => {
         if (currentView === 'Month') {
             date.setMonth(date.getMonth() - 1);
         }
-        dispatch(setCurrentDate(date));
+        props.setCurrentDate(date);
     };
 
     return (
@@ -64,6 +63,15 @@ const DateNavigator = () => {
             </Hidden>
         </div >
     );
-}
+};
 
-export default DateNavigator;
+const mapStateToProps = state => ({
+    currentView: state.calendar.currentView,
+    currentDate: state.calendar.currentDate,
+});
+
+const mapDispatchToProps = dispatch => ({
+    setCurrentDate: (date) => dispatch(setCurrentDate(date))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DateNavigator);

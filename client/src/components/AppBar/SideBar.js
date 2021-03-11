@@ -10,7 +10,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useDispatch, useSelector } from 'react-redux'
-import { changeView, switch_Drawer } from '../../actions';
+import { setCurrentView, switch_Drawer } from '../../actions';
 
 const drawerWidth = 240;
 
@@ -71,25 +71,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SideBar(props) {
+const SideBar = props => {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
     const drawerOpen = useSelector(state => state.drawer.drawer)
 
-
     const handleClickDay = () => {
-        dispatch(changeView('Day'))
+        dispatch(setCurrentView('Day'))
         dispatch(switch_Drawer())
     }
 
     const handleClickWeek = () => {
-        dispatch(changeView('Week'))
+        dispatch(setCurrentView('Week'))
         dispatch(switch_Drawer())
     }
 
     const handleClickMonth = () => {
-        dispatch(changeView('Month'))
+        dispatch(setCurrentView('Month'))
         dispatch(switch_Drawer())
     }
 
@@ -134,3 +133,5 @@ export default function SideBar(props) {
         </div>
     );
 }
+
+export default SideBar;

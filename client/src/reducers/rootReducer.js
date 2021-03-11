@@ -1,15 +1,12 @@
-import currentDateReducer from './currentDateReducer'
-import changeViewReducer from './changeViewReducer'
-import drawerReducer from './drawerReducer'
-import createReducer from './createReducer'
-import { combineReducers } from 'redux'
+import drawerReducer from './drawerReducer';
+import simpleEventFormReducer from './simpleEventFormReducer';
+import calendarReducer from './calendarReducer';
+import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
-    currentDate: currentDateReducer,
-    view: changeViewReducer,
+    calendar: calendarReducer,
+    simpleEventForm: simpleEventFormReducer,
     drawer: drawerReducer,
-    create: createReducer,
 })
 
-
-export default rootReducer
+export default rootReducer;

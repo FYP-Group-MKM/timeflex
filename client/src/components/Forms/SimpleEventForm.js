@@ -17,12 +17,13 @@ import FormPicker from './FormPicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 import { connect } from 'react-redux'
-import { setCurrentDate, createForm } from '../../actions'
+import { setCurrentDate, setSimpleEventForm } from '../../actions';
+
 class SimpleEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: this.props.create,
+            open: this.props.isOpen,
             titleEmpty: false,
             simple: true,
             recurrence: false,
@@ -44,7 +45,7 @@ class SimpleEventForm extends Component {
 
     handleClose = () => {
         this.setState({ simple: true });
-        this.props.changeCreate(false);
+        this.props.setSimpleEventForm(false);
     }
 
     handleSubmit = () => {
@@ -84,7 +85,7 @@ class SimpleEventForm extends Component {
     }
 
     refresh = () => {
-        this.props.currentDate ? this.props.changeDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
+        this.props.currentDate ? this.props.setCurrentDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
     }
 
     setAllDay = () => {
@@ -335,8 +336,7 @@ class SimpleEventForm extends Component {
             formLayout = <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />;
         return (
             <Dialog
-                aria-labelledby="form-dialog-title"
-                open={this.state.open}
+                open={this.props.isOpen}
                 onClose={this.handleClose}
                 fullWidth maxWidth="xs"
             >
@@ -344,18 +344,19 @@ class SimpleEventForm extends Component {
             </Dialog>
         );
     }
-}
+};
+
 const mapStateToProps = state => {
     return {
-        currentDate: state.currentDate.currentDate,
-        create: state.create.create,
+        currentDate: state.calendar.currentDate,
+        isOpen: state.simpleEventForm.isOpen
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
-        changeCreate: (value) => dispatch(createForm(value)),
+        setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+        setSimpleEventForm: (value) => dispatch(setSimpleEventForm(value)),
     }
 }
 

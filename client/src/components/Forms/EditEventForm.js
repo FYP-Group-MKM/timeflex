@@ -39,7 +39,7 @@ class EditEventForm extends Component {
     }
 
     refresh = () => {
-        this.props.currentDate ? this.props.changeDate(this.props.currentDate) : this.props.changeDate(new Date())
+        this.props.currentDate ? this.props.setCurrentDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
     }
 
     checkPast = () => {
@@ -242,13 +242,13 @@ class EditEventForm extends Component {
 }
 const mapStateToProps = state => {
     return {
-        currentDate: state.currentDate.currentDate,
+        currentDate: state.calendar.currentDate,
 
     }
 }
 const mapDispatchToProps = dispatch => {
     return {
-        changeDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+        setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm);
