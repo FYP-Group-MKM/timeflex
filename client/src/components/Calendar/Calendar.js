@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
@@ -12,47 +12,31 @@ import {
 import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
-import {changeCurrentDate} from '../../redux/actions/index'
-import {useSelector,useDispatch} from 'react-redux'
+import { setCurrentDate } from '../../actions';
+import { useSelector, useDispatch } from 'react-redux';
 
-const Calendar = () => {
-    const dispatch = useDispatch()
-    const [height,setHeight] = useState(window.innerHeight)
-    const [editing,setEditing] = useState(false)
-    const [editDataId,setEditDataId] = useState("")
-    const [appointments,setAppointments] = useState([])
-    const [editingAppointment,setEditingAppointments] = useState(undefined)
-    const currentView = useSelector(state => state.view.view)
-    const currentDate = useSelector(state => state.currentDate.date)
-    
+const Calendar = props => {
+    const dispatch = useDispatch();
+    const [isEditing, setEditing] = useState(false);
+    const [editDataId, setEditDataId] = useState("");
+    const [appointments, setAppointments] = useState([]);
+    const currentView = useSelector(state => state.view.view);
+    const currentDate = useSelector(state => state.currentDate.currentDate);
+
     const refresh = (date) => {
-        
-        currentDate ? dispatch(changeCurrentDate(new Date())): dispatch(changeCurrentDate(new Date()))
-        
+        currentDate ? dispatch(setCurrentDate(new Date())) : dispatch(setCurrentDate(new Date()));
     }
 
-    const updateWindowDimensions = () => {
-        setHeight(window.innerHeight)
-    }
     //componetDidMount
     useEffect(() => {
-        updateWindowDimensions();
-        window.addEventListener('resize',updateWindowDimensions());
-        
-        // console.log('UsingEffect')
-        
         fetch('/api/appointments')
             .then(res => res.json())
             .then(appointments => setAppointments(appointments));
-    //componentWillUnmount
-            return () => {
-            window.removeEventListener('resize',updateWindowDimensions())
-        }
-    },[])
+    }, []);
 
 
-    const handleDelete = deleteAppointmentId => {
-        fetch('/api/appointments/' + deleteAppointmentId,{
+    const handleAppointmentDelete = deleteAppointmentId => {
+        fetch('/api/appointments/' + deleteAppointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -63,77 +47,66 @@ const Calendar = () => {
     }
 
     const handleTooltipOpen = editDataId => {
-        setEditDataId(editDataId)
-        setEditing(true)
-        
+        setEditDataId(editDataId);
+        setEditing(true);
     }
 
     const handleTooltipClose = () => {
-        setEditing(false)
+        setEditing(false);
+        setEditDataId("");
     }
 
     const AppointmentTooltipLayout = props => {
-        return(
+        return (
             <AppointmentTooltip.Layout
-            {...props}
-            onDeleteButtonClick={() => handleDelete(props.appointmentMeta.data.id)}
-            onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
+                {...props}
+                onDeleteButtonClick={() => handleAppointmentDelete(props.appointmentMeta.data.id)}
+                onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
             />
-        )
+        );
     }
 
-    
+    const renderEditEventForm = () => {
+        if (editDataId)
+            return (
+                <EditEventForm
+                    key={isEditing}
+                    open={isEditing}
+                    onClose={handleTooltipClose}
+                    editDataId={editDataId}
+                    refresh={refresh}
+                />
+            );
+    };
 
     return (
         <div>
-                <Scheduler
-                    data={appointments}
-                    height={window.innerHeight - 70}
-                    firstDayOfWeek={1}
-                >
-                    <ViewState
-                        currentDate={currentDate}
-                        currentViewName={currentView}
-                    />
-                    <DayView
-                        startDayHour={0}
-                        endDayHour={24}
-                        cellDuration={60}
-                    />
-                    <WeekView
-                        timeTableCellComponent={TimeTableCell}
-                        dayScaleCellComponent={DayScaleCell}
-                        startDayHour={0}
-                        endDayHour={24}
-                        cellDuration={60}
-                    />
-                    <MonthView />
-                    <AllDayPanel />
-                    <Appointments />
-                    <AppointmentTooltip
-                        showCloseButton
-                        showOpenButton
-                        showDeleteButton
-                        layoutComponent={AppointmentTooltipLayout}
-                    >
-                    </AppointmentTooltip>
-                </Scheduler >
-                {
-                    (editDataId !== "" && editDataId !== null)
-                        ? <EditEventForm
-                            key={editing}
-                            open={editing}
-                            onClose={handleTooltipClose}
-                            editDataId={editDataId}
-                            refresh={refresh}
-                        />
-                        : null
-                }
-            </div>
+            <Scheduler data={appointments} firstDayOfWeek={1}>
+                <ViewState currentDate={currentDate} currentViewName={currentView} />
+                <DayView startDayHour={0} endDayHour={24} cellDuration={60} />
+                <WeekView
+                    timeTableCellComponent={TimeTableCell}
+                    dayScaleCellComponent={DayScaleCell}
+                    startDayHour={0}
+                    endDayHour={24}
+                    cellDuration={60}
+                />
+                <MonthView />
+                <AllDayPanel />
+                <Appointments />
+                <AppointmentTooltip
+                    showCloseButton
+                    showOpenButton
+                    showDeleteButton
+                    layoutComponent={AppointmentTooltipLayout}
+                />
+            </Scheduler >
+            {renderEditEventForm()}
+        </div >
     )
 }
 
-export default Calendar
+export default Calendar;
 
 
 

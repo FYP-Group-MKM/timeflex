@@ -11,8 +11,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {connect} from 'react-redux'
-import {changeCurrentDate} from '../../redux/actions/index'
+import { connect } from 'react-redux'
+import { setCurrentDate } from '../../actions'
+
 class EditEventForm extends Component {
     constructor(props) {
         super(props);
@@ -240,14 +241,14 @@ class EditEventForm extends Component {
     }
 }
 const mapStateToProps = state => {
-    return{
-        currentDate:state.currentDate.date,
+    return {
+        currentDate: state.currentDate.currentDate,
 
     }
 }
 const mapDispatchToProps = dispatch => {
     return {
-        changeDate:(currentDate) => dispatch(changeCurrentDate(currentDate)),
+        changeDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(EditEventForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm);

@@ -16,8 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import FormPicker from './FormPicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
-import {connect} from 'react-redux'
-import {changeCurrentDate,createForm} from '../../redux/actions/index'
+import { connect } from 'react-redux'
+import { setCurrentDate, createForm } from '../../actions'
 class SimpleEventForm extends Component {
     constructor(props) {
         super(props);
@@ -84,7 +84,7 @@ class SimpleEventForm extends Component {
     }
 
     refresh = () => {
-        this.props.currentDate ? this.props.changeDate(this.props.currentDate) : this.props.changeCurrentDate(new Date())
+        this.props.currentDate ? this.props.changeDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
     }
 
     setAllDay = () => {
@@ -347,16 +347,16 @@ class SimpleEventForm extends Component {
 }
 const mapStateToProps = state => {
     return {
-        currentDate:state.currentDate.date,
-        create:state.create.create,
+        currentDate: state.currentDate.currentDate,
+        create: state.create.create,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeDate:(currentDate) => dispatch(changeCurrentDate(currentDate)),
-        changeCreate:(value) => dispatch(createForm(value)),
+        changeDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+        changeCreate: (value) => dispatch(createForm(value)),
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(SimpleEventForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SimpleEventForm);

@@ -9,8 +9,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import {useDispatch, useSelector} from 'react-redux'
-import { changeView,switch_Drawer } from '../../redux/actions';
+import { useDispatch, useSelector } from 'react-redux'
+import { changeView, switch_Drawer } from '../../actions';
 
 const drawerWidth = 240;
 
@@ -76,26 +76,27 @@ export default function SideBar(props) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const drawerOpen = useSelector(state => state.drawer.drawer)
-    
+
 
     const handleClickDay = () => {
         dispatch(changeView('Day'))
         dispatch(switch_Drawer())
     }
+
     const handleClickWeek = () => {
         dispatch(changeView('Week'))
         dispatch(switch_Drawer())
-        
     }
 
     const handleClickMonth = () => {
         dispatch(changeView('Month'))
         dispatch(switch_Drawer())
-        
     }
+
     const handleDrawerClose = () => {
         dispatch(switch_Drawer(false))
     }
+
     return (
         <div className={classes.root}>
             <Drawer
@@ -111,7 +112,6 @@ export default function SideBar(props) {
                     <Typography variant="h6" style={{ color: "#616161" }}>
                         TimeFlex
                     </Typography>
-                    {/* <h6>TimeFlex</h6> */}
                     <IconButton onClick={handleDrawerClose} style={{ color: '#616161' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
