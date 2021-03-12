@@ -54,6 +54,7 @@ const ButtonDatePicker = props => {
                 open={isOpen}
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
+                showTodayButton
             />
         </MuiPickersUtilsProvider>
     );

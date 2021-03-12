@@ -12,16 +12,16 @@ export const setCurrentView = (view) => {
     };
 };
 
-export const switch_Drawer = (value) => {
+export const setSideBar = (isOpen) => {
     return {
-        type: 'switch_Drawer',
-        payload: value
+        type: 'SET_SIDEBAR',
+        payload: isOpen
     };
 };
 
-export const setSimpleEventForm = (value) => {
+export const setSimpleEventForm = (isOpen) => {
     return {
         type: 'SET_SIMPLE_EVENT_FORM',
-        payload: value,
+        payload: isOpen,
     };
 };
