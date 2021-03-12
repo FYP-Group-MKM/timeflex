@@ -12,13 +12,6 @@ export const setCurrentView = (view) => {
     };
 };
 
-export const setSideBar = (isOpen) => {
-    return {
-        type: 'SET_SIDEBAR',
-        payload: isOpen
-    };
-};
-
 export const setSimpleEventForm = (isOpen) => {
     return {
         type: 'SET_SIMPLE_EVENT_FORM',
