@@ -20,7 +20,10 @@ import styles from './style.css';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        flexGrow: 1,
+        flexGrow: 1
+    },
+    appbar: {
+        overflow: "hidden"
     },
     title: {
         flexGrow: 1,
@@ -45,7 +48,7 @@ const App = props => {
 
     return (
         <div className={`${classes.root} ${styles}`}>
-            <AppBar color="inherit">
+            <AppBar color="inherit" className={classes.appbar}>
                 <Toolbar variant="dense">
                     <Hidden smUp>
                         <SideBar />
@@ -56,8 +59,8 @@ const App = props => {
                         </Typography>
                     </Hidden>
                     <DateNavigator className={classes.dateNavigator} />
-                    <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                     <Hidden xsDown>
+                        <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                         <Dropdown />
                     </Hidden>
                 </Toolbar>

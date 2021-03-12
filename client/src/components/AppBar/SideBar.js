@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { connect } from 'react-redux'
@@ -39,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     hide: {
         display: 'none',
     },
-    isOpen: {
+    drawer: {
         width: drawerWidth,
         flexShrink: 0,
     },
@@ -74,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SideBar = props => {
     const classes = useStyles();
-    const theme = useTheme();
     const [isOpen, setOpen] = useState(false);
 
     const handleDayClicked = (view) => {
@@ -97,7 +95,7 @@ const SideBar = props => {
                             TimeFlex
                         </Typography>
                         <IconButton onClick={() => setOpen(false)} style={{ color: '#616161' }}>
-                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            <ChevronLeftIcon />
                         </IconButton>
                     </div>
                     <Divider />
@@ -119,12 +117,7 @@ const SideBar = props => {
         );
     else
         return (
-            <IconButton
-                color="#616161"
-                onClick={() => setOpen(true)}
-                edge="start"
-            // className={clsx(classes.menuButton, open && classes.hide)}
-            >
+            <IconButton color="#616161" onClick={() => setOpen(true)} edge="start">
                 <MenuIcon />
             </IconButton>
         );
