@@ -24,13 +24,13 @@ const Dropdown = props => {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
+
     const handleClose = (event) => {
         setAnchorEl(null);
         if (event.currentTarget.title) {
-            setCurrentView(event.currentTarget.title);
+            props.setCurrentView(event.currentTarget.title);
         }
     }
-
 
     return (
         <div className={classes.root}>

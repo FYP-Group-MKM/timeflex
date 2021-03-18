@@ -17,7 +17,7 @@ import FormPicker from './FormPicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 import { connect } from 'react-redux'
-import { setCurrentDate, setSimpleEventForm } from '../../actions';
+import { setCurrentDate, setSimpleEventForm, postAppointment, fetchAppointments } from '../../actions';
 
 class SimpleEventForm extends Component {
     constructor(props) {
@@ -71,16 +71,9 @@ class SimpleEventForm extends Component {
                 appointment.endDate = new Date(appointment.endDate).setHours(23);
                 appointment.endDate = new Date(appointment.endDate).setMinutes(59);
             }
-            fetch('/api/appointments', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointment)
-            });
-            this.refresh();
-            this.props.changeCreate(false);
+            postAppointment(appointment);
+            this.props.fetchAppointments();
+            this.props.setSimpleEventForm(false);
         }
     }
 
@@ -357,6 +350,7 @@ const mapDispatchToProps = dispatch => {
     return {
         setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
         setSimpleEventForm: (value) => dispatch(setSimpleEventForm(value)),
+        fetchAppointments: () => dispatch(fetchAppointments())
     }
 }
 

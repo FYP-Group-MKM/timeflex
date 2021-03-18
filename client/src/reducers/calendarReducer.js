@@ -14,7 +14,7 @@ const calendarReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentView: action.payload
-            }
+            };
         default:
             return state;
     };

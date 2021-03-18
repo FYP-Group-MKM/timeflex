@@ -18,30 +18,6 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
-    appBar: {
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarShift: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    hide: {
-        display: 'none',
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
     drawerPaper: {
         width: drawerWidth,
     },
@@ -52,22 +28,6 @@ const useStyles = makeStyles((theme) => ({
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
         justifyContent: 'flex-end',
-    },
-    content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-        transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        marginLeft: -drawerWidth,
-    },
-    contentShift: {
-        transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
     },
 }));
 
@@ -80,47 +40,42 @@ const SideBar = props => {
         setOpen(false);
     }
 
-    if (isOpen)
-        return (
-            <div className={classes.root}>
-                <Drawer
-                    className={classes.drawer}
-                    variant="persistent"
-                    anchor="left"
-                    open={isOpen}
-                    classes={{ paper: classes.drawerPaper }}
-                >
-                    <div className={classes.drawerHeader}>
-                        <Typography variant="h6" style={{ color: "#616161" }}>
-                            TimeFlex
-                        </Typography>
-                        <IconButton onClick={() => setOpen(false)} style={{ color: '#616161' }}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    </div>
-                    <Divider />
-                    <List>
-                        <ListItem button key="Day View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Day")} value="Day">
-                            <ListItemText primary="Day View" />
-                        </ListItem>
-
-                        <ListItem button key="Week View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Week")} value="Week">
-                            <ListItemText primary="Week View" />
-                        </ListItem>
-
-                        <ListItem button key="Month View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Month")} value="Month">
-                            <ListItemText primary="Month View" />
-                        </ListItem>
-                    </List>
-                </Drawer>
-            </div>
-        );
-    else
-        return (
+    return (
+        <div>
             <IconButton color="#616161" onClick={() => setOpen(true)} edge="start">
                 <MenuIcon />
             </IconButton>
-        );
+            <Drawer
+                variant="persistent"
+                anchor="left"
+                open={isOpen}
+                classes={{ paper: classes.drawerPaper }}
+            >
+                <div className={classes.drawerHeader}>
+                    <Typography variant="h6" style={{ color: "#616161" }}>
+                        TimeFlex
+                        </Typography>
+                    <IconButton onClick={() => setOpen(false)} style={{ color: '#616161' }}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </div>
+                <Divider />
+                <List>
+                    <ListItem button key="Day View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Day")} value="Day">
+                        <ListItemText primary="Day View" />
+                    </ListItem>
+
+                    <ListItem button key="Week View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Week")} value="Week">
+                        <ListItemText primary="Week View" />
+                    </ListItem>
+
+                    <ListItem button key="Month View" style={{ color: '#616161' }} onClick={() => handleDayClicked("Month")} value="Month">
+                        <ListItemText primary="Month View" />
+                    </ListItem>
+                </List>
+            </Drawer>
+        </div>
+    );
 }
 
 const mapDispatchToProps = dispatch => ({

@@ -13,21 +13,19 @@ import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
+import { fetchAppointments } from '../../actions';
 
 const Calendar = props => {
     const [isEditing, setEditing] = useState(false);
     const [editDataId, setEditDataId] = useState("");
-    const [appointments, setAppointments] = useState([]);
     const currentView = props.currentView;
     const currentDate = props.currentDate;
+    const appointments = props.appointments;
+    const fetchAppointments = () => props.fetchAppointments();
 
-    //componetDidMount
     useEffect(() => {
-        fetch('/api/appointments')
-            .then(res => res.json())
-            .then(appointments => setAppointments(appointments));
+        fetchAppointments();
     }, []);
-
 
     const handleAppointmentDelete = deleteAppointmentId => {
         fetch('/api/appointments/' + deleteAppointmentId, {
@@ -106,10 +104,15 @@ const Calendar = props => {
 
 const mapStateToProps = state => ({
     currentDate: state.calendar.currentDate,
-    currentView: state.calendar.currentView
+    currentView: state.calendar.currentView,
+    appointments: state.data.appointments
 });
 
-export default connect(mapStateToProps)(Calendar);
+const mapDispatchToProps = dispatch => ({
+    fetchAppointments: () => dispatch(fetchAppointments())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
 
 
 
