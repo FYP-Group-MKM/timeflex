@@ -13,7 +13,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 import { connect } from 'react-redux'
@@ -40,7 +40,6 @@ class SimpleEventForm extends Component {
         };
         this.handleRecurMenuOpen = this.handleRecurMenuOpen.bind(this);
         this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
-        this.refresh = this.refresh.bind(this);
     }
 
     handleClose = () => {
@@ -62,28 +61,27 @@ class SimpleEventForm extends Component {
                 alert("The start date cannot be later than the end date");
             }
         } else {
-            const appointment = { ...this.state.simpleAppointment };
-            if (appointment.allDay) {
-                appointment.startDate = new Date(appointment.startDate);
-                appointment.endDate = new Date(appointment.endDate);
-                appointment.startDate = new Date(appointment.startDate).setHours(0);
-                appointment.startDate = new Date(appointment.startDate).setMinutes(0);
-                appointment.endDate = new Date(appointment.endDate).setHours(23);
-                appointment.endDate = new Date(appointment.endDate).setMinutes(59);
+            const appointmentRequest = {
+                type: "simple",
+                appointment: { ...this.state.simpleAppointment }
+            };
+            appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate);
+            appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate);
+            if (appointmentRequest.appointment.allDay) {
+                appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate).setHours(0);
+                appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate).setMinutes(0);
+                appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setHours(24);
+                appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
             }
-            postAppointment(appointment);
+            postAppointment(appointmentRequest);
             this.props.fetchAppointments();
             this.props.setSimpleEventForm(false);
         }
     }
 
-    refresh = () => {
-        this.props.currentDate ? this.props.setCurrentDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
-    }
-
     setAllDay = () => {
         const simpleAppointment = { ...this.state.simpleAppointment };
-        simpleAppointment.allDay = !simpleAppointment.allDay;
+        simpleAppointment.allDay = !this.state.simpleAppointment.allDay;
         this.setState({ simpleAppointment });
     }
 
@@ -97,27 +95,13 @@ class SimpleEventForm extends Component {
         this.setState({ recurrence: false });
     }
 
-    setDivisible = () => {
-        const smartAppointment = { ...this.state.smartAppointment };
-        smartAppointment.divisible = !smartAppointment.divisible;
-        this.setState({ smartAppointment });
-    }
-
     handleTextFieldInput = (event) => {
         let nam = event.target.name;
         let val = event.target.value;
         if (this.state.simple) {
-            let simpleAppointment = { ...this.state.simpleAppointment };
+            const simpleAppointment = { ...this.state.simpleAppointment };
             simpleAppointment[nam] = val;
             this.setState({ simpleAppointment });
-        } else {
-            const smartAppointment = { ...this.state.smartAppointment };
-            if (nam === "maxSession" || nam === "minSession" || nam === "exDuration") {
-                val = parseInt(val);
-            }
-            smartAppointment[nam] = val;
-            smartAppointment.maxSession = smartAppointment.exDuration;
-            this.setState({ smartAppointment });
         }
     }
 
@@ -194,7 +178,7 @@ class SimpleEventForm extends Component {
                         <Typography variant="button" style={{ color: "#757575" }}>From</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker
+                        <FormDatePicker
                             allDay={this.state.simpleAppointment.allDay}
                             currentDate={this.state.simpleAppointment.startDate}
                             handleFormChange={this.handleStartDateInput}
@@ -206,7 +190,7 @@ class SimpleEventForm extends Component {
                         <Typography variant="button" style={{ color: "#757575" }}>Until</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker
+                        <FormDatePicker
                             allDay={this.state.simpleAppointment.allDay}
                             currentDate={this.state.simpleAppointment.endDate}
                             handleFormChange={this.handleEndDateInput}

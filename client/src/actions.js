@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const setCurrentDate = (date) => {
     return {
         type: 'SET_CURRENT_DATE',
@@ -48,10 +46,6 @@ export const fetchAppointments = () => {
             .then(res => res.json())
             .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
             .catch(error => dispatch(fetchAppointmentsFailure(error.message)));
-        // axios.get('/api/appointments')
-        //     .then(res => res.json())
-        //     .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
-        //     .catch(error => dispatch(fetchAppointmentsFailure(error.message)));
     };
 };
 

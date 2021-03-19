@@ -10,7 +10,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
+import { connect } from 'react-redux';
+import { fetchAppointments, postAppointment } from '../../actions';
 
 class SmartPlanningForm extends Component {
     constructor(props) {
@@ -51,25 +53,23 @@ class SmartPlanningForm extends Component {
             if (this.state.smartAppointment.maxSession === null) {
                 this.setState({ maxSessionEmpty: true });
             }
-            console.log("testing")
         } else {
-            let appointment = {
-                ...this.state.smartAppointment
+            const appointmentRequest = {
+                type: "smart",
+                appointment: { ...this.state.smartAppointment }
             };
-            fetch('/api/smartplanning', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointment)
-            });
+            postAppointment(appointmentRequest);
+            this.props.fetchAppointments();
+            // fetch('/api/smartplanning', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(appointmentRequest)
+            // });
             this.onClose();
-            this.refresh();
         }
-    }
-    refresh = (date) => {
-        this.setState({ currentDate: date ? date : new Date() });
     }
 
     onClose = () => {
@@ -128,7 +128,7 @@ class SmartPlanningForm extends Component {
                                     <Typography variant="caption" style={{ color: "#757575" }}>Deadline</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <FormPicker currentDate={this.state.smartAppointment.deadline} handleFormChange={this.handleSmartDeadlineInput} />
+                                    <FormDatePicker currentDate={this.state.smartAppointment.deadline} handleFormChange={this.handleSmartDeadlineInput} />
                                 </Grid>
                             </Grid>
                             <Grid item>
@@ -230,4 +230,8 @@ class SmartPlanningForm extends Component {
     }
 }
 
-export default SmartPlanningForm;
+const mapDispatchToProps = dispatch => ({
+    fetchAppointments: () => dispatch(fetchAppointments())
+});
+
+export default connect(null, mapDispatchToProps)(SmartPlanningForm);

@@ -35,22 +35,18 @@ const Calendar = props => {
                 'Content-Type': 'application/json',
             },
         });
-        refresh();
-    }
+        fetchAppointments();
+    };
 
     const handleTooltipOpen = editDataId => {
         setEditDataId(editDataId);
         setEditing(true);
-    }
+    };
 
     const handleTooltipClose = () => {
         setEditing(false);
         setEditDataId("");
-    }
-
-    const refresh = () => {
-
-    }
+    };
 
     const AppointmentTooltipLayout = props => {
         return (
@@ -60,7 +56,7 @@ const Calendar = props => {
                 onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
             />
         );
-    }
+    };
 
     const renderEditEventForm = () => {
         if (editDataId)
@@ -70,7 +66,6 @@ const Calendar = props => {
                     open={isEditing}
                     onClose={handleTooltipClose}
                     editDataId={editDataId}
-                    refresh={refresh}
                 />
             );
     };
@@ -99,7 +94,7 @@ const Calendar = props => {
             </Scheduler >
             {renderEditEventForm()}
         </div >
-    )
+    );
 };
 
 const mapStateToProps = state => ({

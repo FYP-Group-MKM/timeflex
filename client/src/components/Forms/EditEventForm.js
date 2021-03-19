@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { connect } from 'react-redux'
 import { setCurrentDate } from '../../actions'
@@ -38,10 +38,6 @@ class EditEventForm extends Component {
             }));
     }
 
-    refresh = () => {
-        this.props.currentDate ? this.props.setCurrentDate(this.props.currentDate) : this.props.setCurrentDate(new Date())
-    }
-
     checkPast = () => {
         if (new Date(this.state.editData.startDate) < new Date()) {
             return true;
@@ -65,7 +61,6 @@ class EditEventForm extends Component {
                 body: JSON.stringify(this.state.editData)
             });
             this.props.onClose();
-            this.props.refresh();
         }
     }
 
@@ -131,7 +126,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
+                                        <FormDatePicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
                                     </Grid>
                                 </Grid>
                                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
@@ -139,7 +134,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
+                                        <FormDatePicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
                                     </Grid>
                                 </Grid>
                             </div>
@@ -149,7 +144,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker
+                                        <FormDatePicker
                                             currentDate={this.state.editData.startDate}
                                             handleFormChange={this.handleStartDateInput}
                                         />
@@ -160,7 +155,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker
+                                        <FormDatePicker
                                             currentDate={this.state.editData.endDate}
                                             handleFormChange={this.handleEndDateInput}
                                         />
