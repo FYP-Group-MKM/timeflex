@@ -42,25 +42,14 @@ class SimpleEventForm extends Component {
         this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
     }
 
-    handleClose = () => {
-        this.setState({ simple: true });
+    handleClose = (event) => {
+        event.preventDefault();
         this.props.setSimpleEventForm(false);
     }
 
-    handleSubmit = () => {
-        if (!this.state.simpleAppointment.title
-            || (new Date(this.state.simpleAppointment.startDate) < new Date())
-            || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
-            if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
-                this.setState({ titleEmpty: true });
-            }
-            if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
-                alert("The start date cannot be in the past");
-            }
-            if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
-                alert("The start date cannot be later than the end date");
-            }
-        } else {
+    handleSubmit = (event) => {
+        event.preventDefault();
+        if (this.appointmentIsValid()) {
             const appointmentRequest = {
                 type: "simple",
                 appointment: { ...this.state.simpleAppointment }
@@ -73,26 +62,34 @@ class SimpleEventForm extends Component {
                 appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setHours(24);
                 appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
             }
-            postAppointment(appointmentRequest);
+            this.props.postAppointment(appointmentRequest);
             this.props.fetchAppointments();
             this.props.setSimpleEventForm(false);
         }
+    }
+
+    appointmentIsValid = () => {
+        if (!this.state.simpleAppointment.title
+            || (new Date(this.state.simpleAppointment.startDate) < new Date())
+            || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
+            if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
+                this.setState({ titleEmpty: true });
+            }
+            if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
+                alert("The start date cannot be in the past");
+            }
+            if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
+                alert("The start date cannot be later than the end date");
+            }
+            return false;
+        }
+        return true;
     }
 
     setAllDay = () => {
         const simpleAppointment = { ...this.state.simpleAppointment };
         simpleAppointment.allDay = !this.state.simpleAppointment.allDay;
         this.setState({ simpleAppointment });
-    }
-
-    setRecurrence = () => {
-        if (this.state.recurrence) {
-            const simpleAppointment = { ...this.state.simpleAppointment };
-            simpleAppointment.rRule = null;
-            simpleAppointment.exDate = null;
-            this.setState({ simpleAppointment });
-        }
-        this.setState({ recurrence: false });
     }
 
     handleTextFieldInput = (event) => {
@@ -146,6 +143,9 @@ class SimpleEventForm extends Component {
             if (event.currentTarget.title === "Monthly") {
                 let dayOfMonth = format(startDate, "d");
                 rRule = `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth};INTERVAL=1`;
+            }
+            if (event.currentTarget.title === "None") {
+                rRule = "";
             }
             const simpleAppointment = { ...this.state.simpleAppointment };
             simpleAppointment.rRule = rRule;
@@ -219,7 +219,7 @@ class SimpleEventForm extends Component {
                         endIcon={<ArrowDropDownIcon />}
                     >
                         <Typography variant="button">
-                            {this.state.recurrence ? this.state.recurrence : "Doesn't repeat"}
+                            {this.state.simpleAppointment.rRule ? this.state.recurrence : "Doesn't repeat"}
                         </Typography>
                     </Button >
                     <Menu
@@ -334,7 +334,8 @@ const mapDispatchToProps = dispatch => {
     return {
         setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
         setSimpleEventForm: (value) => dispatch(setSimpleEventForm(value)),
-        fetchAppointments: () => dispatch(fetchAppointments())
+        fetchAppointments: () => dispatch(fetchAppointments()),
+        postAppointment: (appointment) => dispatch(postAppointment(appointment))
     }
 }
 

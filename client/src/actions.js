@@ -41,7 +41,7 @@ export const fetchAppointmentsFailure = error => {
 
 export const fetchAppointments = () => {
     return (dispatch) => {
-        dispatch(fetchAppointmentsRequest);
+        dispatch(fetchAppointmentsRequest());
         fetch('/api/appointments')
             .then(res => res.json())
             .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
@@ -49,13 +49,79 @@ export const fetchAppointments = () => {
     };
 };
 
+export const postAppointmentRequest = () => {
+    return {
+        type: 'POST_APPOINTMENT_REQUEST',
+    };
+};
+
+export const postAppointmentSuccess = () => {
+    return {
+        type: 'POST_APPOINTMENT_SUCCESS'
+    };
+};
+
+export const postAppointmentFailure = error => {
+    return {
+        type: 'POST_APPOINTMENT_FAILURE',
+        payload: error
+    };
+};
+
 export const postAppointment = appointment => {
-    fetch('/api/appointments', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(appointment)
-    });
+    return (dispatch) => {
+        dispatch(postAppointmentRequest());
+        fetch('/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(appointment)
+        })
+            .then(dispatch(postAppointmentSuccess()))
+            .catch(error => dispatch(postAppointmentFailure(error.message)));
+    };
+};
+
+export const deleteAppointmentRequest = () => {
+    return {
+        type: 'DELETE_APPOINTMENT'
+    };
+};
+
+export const deleteAppointmentSuccess = () => {
+    return {
+        type: 'DELETE_APPOINTMENT_SUCCESS'
+    };
+};
+
+export const deleteAppointmentFailure = (error) => {
+    return {
+        type: 'DELETE_APPOINTMENT_FAILURE',
+        payload: error
+    };
+};
+
+export const deleteAppointmentLocally = appointmentId => {
+    return {
+        type: 'DELETE_APPOINTMENT_LOCALLY',
+        payload: appointmentId
+    }
+}
+
+export const deleteAppointment = appointmentId => {
+    return (dispatch) => {
+        dispatch(deleteAppointmentRequest());
+        dispatch(deleteAppointmentLocally());
+        fetch('/api/appointments/' + appointmentId, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(dispatch(deleteAppointmentSuccess()))
+            .catch(error => dispatch(deleteAppointmentFailure(error.message)));
+    };
 };

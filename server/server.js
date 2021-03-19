@@ -49,7 +49,7 @@ app.post('/api/appointments', async (req, res) => {
         const newPostMessage = new PostMessage(appointment);
         try {
             await newPostMessage.save();
-            console.log("Successfully created appointments")
+            console.log("Successfully created appointment")
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -119,7 +119,7 @@ app.delete('/api/appointments/:id', async (req, res) => {
     const paramId = req.params.id
     try {
         await PostMessage.findOneAndRemove({ id: paramId })
-        console.log(`Deleted appointment with ID ${paramId} successfully`);
+        console.log(`Deleted appointment successfully`);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
