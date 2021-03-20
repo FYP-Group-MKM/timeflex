@@ -28,10 +28,12 @@ const Calendar = props => {
     const fetchAppointments = () => props.fetchAppointments();
 
     useEffect(() => {
+        const handleResize = () => setHeight(window.innerHeight - toolbarHeight);
         setHeight(window.innerHeight - toolbarHeight);
+        window.addEventListener("resize", handleResize);
         props.fetchAppointments();
 
-        return () => window.removeEventListener("resize", setHeight);
+        return () => window.removeEventListener("resize", handleResize);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -46,10 +48,10 @@ const Calendar = props => {
     };
 
     const AppointmentTooltipLayout = props => {
-        const handleAppointmentDelete = async (event, appointmentId) => {
-            event.preventDefault();
-            await deleteAppointment(appointmentId);
-            await fetchAppointments();
+        const handleAppointmentDelete = (event, appointmentId) => {
+            // event.preventDefault();
+            deleteAppointment(appointmentId);
+            fetchAppointments();
             props.onHide();
         };
 
