@@ -103,17 +103,16 @@ export const deleteAppointmentFailure = (error) => {
     };
 };
 
-export const deleteAppointmentLocally = appointmentId => {
-    return {
-        type: 'DELETE_APPOINTMENT_LOCALLY',
-        payload: appointmentId
-    }
-}
+// export const deleteAppointmentLocally = appointmentId => {
+//     return {
+//         type: 'DELETE_APPOINTMENT_LOCALLY',
+//         payload: appointmentId
+//     }
+// }
 
 export const deleteAppointment = appointmentId => {
     return (dispatch) => {
         dispatch(deleteAppointmentRequest());
-        dispatch(deleteAppointmentLocally());
         fetch('/api/appointments/' + appointmentId, {
             method: 'DELETE',
             headers: {

@@ -13,18 +13,19 @@ import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
-import { fetchAppointments, deleteAppointment, deleteAppointmentLocally } from '../../actions';
+import { fetchAppointments, deleteAppointment } from '../../actions';
 
 const toolbarHeight = 65;
 
 const Calendar = props => {
     const [isEditing, setEditing] = useState(false);
     const [editDataId, setEditDataId] = useState("");
-    const [tooltipIsOpen, setTooltip] = useState(false);
     const [height, setHeight] = useState(window.innerHeight - toolbarHeight);
     const currentView = props.currentView;
     const currentDate = props.currentDate;
     const appointments = props.appointments;
+    const deleteAppointment = appointmentId => props.deleteAppointment(appointmentId);
+    const fetchAppointments = () => props.fetchAppointments();
 
     useEffect(() => {
         setHeight(window.innerHeight - toolbarHeight);
@@ -33,20 +34,6 @@ const Calendar = props => {
         return () => window.removeEventListener("resize", setHeight);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const handleAppointmentDelete = (event, appointmentId) => {
-        event.preventDefault();
-        // fetch('/api/appointments/' + appointmentId, {
-        //     method: 'DELETE',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        // });
-        // props.deleteAppointment(appointmentId);
-        props.deleteAppointmentLocally(appointmentId);
-        // props.fetchAppointments();
-    };
 
     const handleTooltipOpen = editDataId => {
         setEditDataId(editDataId);
@@ -59,10 +46,16 @@ const Calendar = props => {
     };
 
     const AppointmentTooltipLayout = props => {
+        const handleAppointmentDelete = async (event, appointmentId) => {
+            event.preventDefault();
+            await deleteAppointment(appointmentId);
+            await fetchAppointments();
+            props.onHide();
+        };
+
         return (
             <AppointmentTooltip.Layout
                 {...props}
-                visible={tooltipIsOpen}
                 onDeleteButtonClick={(event) => handleAppointmentDelete(event, props.appointmentMeta.data.id)}
                 onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
             />
@@ -117,7 +110,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     fetchAppointments: () => dispatch(fetchAppointments()),
     deleteAppointment: (appointmentId) => dispatch(deleteAppointment(appointmentId)),
-    deleteAppointmentLocally: (appointmentId) => dispatch(deleteAppointmentLocally(appointmentId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

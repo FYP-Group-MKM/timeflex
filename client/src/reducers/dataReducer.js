@@ -47,12 +47,6 @@ const dataReducer = (state = initialState, action) => {
                 ...state,
                 loading: true
             };
-        case 'DELETE_APPOINTMENT_LOCALLY':
-            const updatedAppointments = state.appointments.filter(appointment => appointment.id !== action.payload);
-            return {
-                ...state,
-                appointments: updatedAppointments
-            }
         case 'DELETE_APPOINTMENT_SUCCESS':
             return {
                 ...state,
@@ -65,6 +59,12 @@ const dataReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+        // case 'DELETE_APPOINTMENT_LOCALLY':
+        //     const updatedAppointments = state.appointments.filter(appointment => appointment.id !== action.payload);
+        //     return {
+        //         ...state,
+        //         appointments: updatedAppointments
+        //     }
         default:
             return state;
     };
