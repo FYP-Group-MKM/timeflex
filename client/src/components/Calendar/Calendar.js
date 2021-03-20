@@ -15,16 +15,22 @@ import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
 import { fetchAppointments, deleteAppointment, deleteAppointmentLocally } from '../../actions';
 
+const toolbarHeight = 65;
+
 const Calendar = props => {
     const [isEditing, setEditing] = useState(false);
     const [editDataId, setEditDataId] = useState("");
     const [tooltipIsOpen, setTooltip] = useState(false);
+    const [height, setHeight] = useState(window.innerHeight - toolbarHeight);
     const currentView = props.currentView;
     const currentDate = props.currentDate;
     const appointments = props.appointments;
 
     useEffect(() => {
+        setHeight(window.innerHeight - toolbarHeight);
         props.fetchAppointments();
+
+        return () => window.removeEventListener("resize", setHeight);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -77,7 +83,7 @@ const Calendar = props => {
 
     return (
         <div>
-            <Scheduler data={appointments} firstDayOfWeek={1}>
+            <Scheduler data={appointments} firstDayOfWeek={1} height={height}>
                 <ViewState currentDate={currentDate} currentViewName={currentView} />
                 <DayView startDayHour={0} endDayHour={24} cellDuration={60} />
                 <WeekView
