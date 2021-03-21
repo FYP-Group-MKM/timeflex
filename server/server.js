@@ -22,7 +22,7 @@ app.get('/api/appointments', async (req, res) => {
     try {
         const postMessages = await PostMessage.find()
         res.status(200).json(postMessages)
-        console.log("sent appointments to client-side successfully")
+        console.log("fetched appointments to client-side successfully")
     } catch (error) {
         console.log(error);
         res.status(404).json({ message: error.message })
@@ -51,8 +51,10 @@ app.post('/api/appointments', async (req, res) => {
         const newPostMessage = new PostMessage(appointment);
         try {
             await newPostMessage.save();
-            console.log("created appointment successfully")
+            res.status(200);
+            console.log(`created appointment "${appointment.title}" successfully`)
         } catch (error) {
+            console.log(error);
             res.status(400).json({ message: error.message });
         }
     } else if (req.body.type === "smart") {
@@ -68,6 +70,7 @@ app.post('/api/appointments', async (req, res) => {
                     const newPostMessage = new PostMessage(suggestion);
                     newPostMessage.save();
                 });
+                res.status(200);
                 console.log("Successfully created appointments with Smart Planning");
             } catch (error) {
                 res.status(400).json({ message: error.message });
@@ -98,7 +101,8 @@ app.put('/api/appointments/:id', async (req, res) => {
 app.delete('/api/appointments/:id', async (req, res) => {
     const paramId = req.params.id
     try {
-        await PostMessage.findOneAndRemove({ id: paramId })
+        await PostMessage.findOneAndRemove({ id: paramId });
+        res.status(200);
         console.log(`deleted appointment successfully`);
     } catch (error) {
         res.status(409).json({ message: error.message });

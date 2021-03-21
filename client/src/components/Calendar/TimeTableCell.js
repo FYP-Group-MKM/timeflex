@@ -21,7 +21,7 @@ const TimeTableCell = (props) => {
 
     if (date.getDate() === new Date().getDate()) {
         return <WeekView.TimeTableCell {...props} className={classes.todayCell} />;
-    } if (date.getDate() < new Date().getDate()) {
+    } if (date < new Date()) {
         return <WeekView.TimeTableCell {...props} className={classes.pastCell} />;
     } return <WeekView.TimeTableCell {...props} />;
 };

@@ -40,9 +40,9 @@ export const fetchAppointmentsFailure = error => {
 };
 
 export const fetchAppointments = () => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(fetchAppointmentsRequest());
-        fetch('/api/appointments')
+        await fetch('/api/appointments')
             .then(res => res.json())
             .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
             .catch(error => dispatch(fetchAppointmentsFailure(error.message)));
@@ -69,9 +69,9 @@ export const postAppointmentFailure = error => {
 };
 
 export const postAppointment = appointment => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(postAppointmentRequest());
-        fetch('/api/appointments', {
+        await fetch('/api/appointments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -111,9 +111,9 @@ export const deleteAppointmentFailure = (error) => {
 // }
 
 export const deleteAppointment = appointmentId => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(deleteAppointmentRequest());
-        fetch('/api/appointments/' + appointmentId, {
+        await fetch('/api/appointments/' + appointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

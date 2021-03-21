@@ -15,7 +15,7 @@ import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
 import { fetchAppointments, deleteAppointment } from '../../actions';
 
-const toolbarHeight = 65;
+const toolbarHeight = 66;
 
 const Calendar = props => {
     const [isEditing, setEditing] = useState(false);
@@ -48,9 +48,9 @@ const Calendar = props => {
     };
 
     const AppointmentTooltipLayout = props => {
-        const handleAppointmentDelete = (event, appointmentId) => {
-            // event.preventDefault();
-            deleteAppointment(appointmentId);
+        const handleAppointmentDelete = async (event, appointmentId) => {
+            event.preventDefault();
+            await deleteAppointment(appointmentId);
             fetchAppointments();
             props.onHide();
         };
