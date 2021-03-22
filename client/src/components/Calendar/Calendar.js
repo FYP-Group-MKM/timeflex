@@ -13,7 +13,7 @@ import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
-import { fetchAppointments, deleteAppointment } from '../../actions';
+import { fetchAppointments, deleteAppointment, deleteAndFetchAppointments } from '../../actions';
 
 const toolbarHeight = 66;
 
@@ -26,6 +26,7 @@ const Calendar = props => {
     const appointments = props.appointments;
     const deleteAppointment = appointmentId => props.deleteAppointment(appointmentId);
     const fetchAppointments = () => props.fetchAppointments();
+    const deleteAndFetchAppointments = (appointmentId) => props.deleteAndFetchAppointments(appointmentId);
 
     useEffect(() => {
         const handleResize = () => setHeight(window.innerHeight - toolbarHeight);
@@ -50,8 +51,11 @@ const Calendar = props => {
     const AppointmentTooltipLayout = props => {
         const handleAppointmentDelete = (event, appointmentId) => {
             event.preventDefault();
-            deleteAppointment(appointmentId)
-            fetchAppointments();
+            deleteAppointment(appointmentId);
+            setTimeout(fetchAppointments, 50);
+
+            // deleteAndFetchAppointments(appointmentId);
+
             props.onHide();
         };
 
@@ -112,6 +116,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     fetchAppointments: () => dispatch(fetchAppointments()),
     deleteAppointment: (appointmentId) => dispatch(deleteAppointment(appointmentId)),
+    deleteAndFetchAppointments: (appointmentId) => dispatch(deleteAndFetchAppointments(appointmentId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

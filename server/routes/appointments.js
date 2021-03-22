@@ -91,6 +91,7 @@ router.delete('/:id', async (req, res) => {
     const paramId = req.params.id
     try {
         await PostMessage.findOneAndRemove({ id: paramId });
+        res.status(200).json({ message: "deleted appointment successully" });
         console.log(`deleted appointment successfully`);
     } catch (error) {
         res.status(409).json({ message: error.message });

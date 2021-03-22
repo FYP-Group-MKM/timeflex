@@ -104,13 +104,6 @@ export const deleteAppointmentFailure = (error) => {
     };
 };
 
-// export const deleteAppointmentLocally = appointmentId => {
-//     return {
-//         type: 'DELETE_APPOINTMENT_LOCALLY',
-//         payload: appointmentId
-//     }
-// }
-
 export const deleteAppointment = appointmentId => {
     return async (dispatch) => {
         dispatch(deleteAppointmentRequest());
@@ -125,3 +118,8 @@ export const deleteAppointment = appointmentId => {
             .catch(error => dispatch(deleteAppointmentFailure(error.message)));
     };
 };
+
+export const deleteAndFetchAppointments = async appointmentId => {
+    await deleteAndFetchAppointments(appointmentId);
+    fetchAppointments();
+}

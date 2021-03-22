@@ -63,7 +63,8 @@ class SimpleEventForm extends Component {
                 appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
             }
             this.props.postAppointment(appointmentRequest);
-            this.props.fetchAppointments();
+            setTimeout(this.props.fetchAppointments, 50);
+            // this.props.fetchAppointments();
             this.props.setSimpleEventForm(false);
         }
     }
