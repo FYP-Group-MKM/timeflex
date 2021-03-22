@@ -1,6 +1,6 @@
 const express = require('express');
 const uuid = require('uuid');
-const PostMessage = require('../models/postMessages');
+const Appointment = require('../models/Appointment');
 const smartPlanning = require('../smartPlanning');
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 // Get all appointments
 router.get('/', async (req, res) => {
     try {
-        const postMessages = await PostMessage.find()
+        const postMessages = await Appointment.find()
         res.status(200).json(postMessages)
         console.log("fetched appointments to client-side successfully")
     } catch (error) {
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = req.params.id
     try {
-        const appointment = await PostMessage.findOne({ id: id })
+        const appointment = await Appointment.findOne({ id: id })
         res.status(200).json(appointment)
     } catch (error) {
         console.log("error")
@@ -36,10 +36,10 @@ router.post('/', async (req, res) => {
             id: uuid.v4(),
             ...req.body.appointment
         };
-        const newPostMessage = new PostMessage(appointment);
+        const newAppointment = new Appointment(appointment);
         try {
-            await newPostMessage.save();
-            const postMessages = await PostMessage.find();
+            await newAppointment.save();
+            const postMessages = await Appointment.find();
             res.status(200).json(postMessages);
             console.log(`created appointment "${appointment.title}" successfully`)
         } catch (error) {
@@ -51,13 +51,13 @@ router.post('/', async (req, res) => {
             ...req.body.appointment,
         };
         appointment.deadline = new Date(appointment.deadline);
-        const appointments = await PostMessage.find().lean();
+        const appointments = await Appointment.find().lean();
         suggestions = smartPlanning(appointment, appointments);
         if (suggestions) {
             try {
                 await suggestions.forEach(suggestion => {
-                    const newPostMessage = new PostMessage(suggestion);
-                    newPostMessage.save();
+                    const newAppointment = new Appointment(suggestion);
+                    newAppointment.save();
                 });
                 res.status(200);
                 console.log("Successfully created appointments with Smart Planning");
@@ -76,9 +76,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     const paramId = req.params.id
     const { id, title, startDate, endDate, description } = req.body;
-    const updatedPost = { id, title, startDate, endDate, description };
+    const updatedAppointment = { id, title, startDate, endDate, description };
     try {
-        await PostMessage.findOneAndUpdate({ id: paramId }, updatedPost);
+        await Appointment.findOneAndUpdate({ id: paramId }, updatedAppointment);
         console.log("Updated successfully")
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -90,7 +90,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     const paramId = req.params.id
     try {
-        await PostMessage.findOneAndRemove({ id: paramId });
+        await Appointment.findOneAndRemove({ id: paramId });
         res.status(200).json({ message: "deleted appointment successully" });
         console.log(`deleted appointment successfully`);
     } catch (error) {
