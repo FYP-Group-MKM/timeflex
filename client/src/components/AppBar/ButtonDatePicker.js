@@ -7,7 +7,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, DatePicker, } from '@material-ui/pickers';
 import { connect } from 'react-redux';
-import { setCurrentView, setCurrentDate } from '../actions';
+import { setCurrentView, setCurrentDate } from '../../actions';
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -66,7 +66,8 @@ const ButtonDatePicker = props => {
 };
 
 const mapStateToProps = state => ({
-    currentDate: state.calendar.currentDate
+    currentDate: state.calendar.currentDate,
+    currentView: state.calendar.currentView
 });
 
 const mapDispatchToProps = dispatch => {

@@ -4,7 +4,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Hidden from '@material-ui/core/Hidden';
 import { makeStyles } from '@material-ui/core/styles';
-import ButtonDatePicker from '../ButtonDatePicker';
+import ButtonDatePicker from './ButtonDatePicker';
 import { connect } from 'react-redux';
 import { setCurrentDate } from '../../actions';
 
@@ -29,7 +29,7 @@ const DateNavigator = props => {
             date.setDate(date.getDate() + 7);
         }
         if (currentView === "Month") {
-            date.setDate(date.getMonth() + 1);
+            date.setMonth(date.getMonth() + 1);
         }
         props.setCurrentDate(date);
     };

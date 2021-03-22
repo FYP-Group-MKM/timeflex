@@ -52,7 +52,7 @@ const Calendar = props => {
         const handleAppointmentDelete = (event, appointmentId) => {
             event.preventDefault();
             deleteAppointment(appointmentId);
-            setTimeout(fetchAppointments, 50);
+            setTimeout(fetchAppointments, 10);
 
             // deleteAndFetchAppointments(appointmentId);
 
