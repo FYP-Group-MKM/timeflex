@@ -114,15 +114,14 @@ export const deleteAppointmentFailure = (error) => {
 export const deleteAppointment = appointmentId => {
     return async (dispatch) => {
         dispatch(deleteAppointmentRequest());
-        await fetch('/appointments' + appointmentId, {
+        await fetch('/appointments/' + appointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
         })
-            // .then(res => res.json())
-            // .then(appointments => dispatch(deleteAppointmentSuccess(appointments)))
+            .then(dispatch(deleteAppointmentSuccess()))
             .catch(error => dispatch(deleteAppointmentFailure(error.message)));
     };
 };
