@@ -27,7 +27,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/api/appointments/' + this.state.id)
+        fetch('/appointments' + this.state.id)
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -52,7 +52,7 @@ class EditEventForm extends Component {
             alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
-            fetch('/api/appointments/' + this.state.id, {
+            fetch('/appointments' + this.state.id, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
