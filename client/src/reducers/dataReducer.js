@@ -51,7 +51,8 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                error: ""
+                error: "",
+                // appointments: action.payload
             };
         case 'DELETE_APPOINTMENT_FAILURE':
             return {

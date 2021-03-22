@@ -48,9 +48,9 @@ const Calendar = props => {
     };
 
     const AppointmentTooltipLayout = props => {
-        const handleAppointmentDelete = async (event, appointmentId) => {
+        const handleAppointmentDelete = (event, appointmentId) => {
             event.preventDefault();
-            await deleteAppointment(appointmentId);
+            deleteAppointment(appointmentId)
             fetchAppointments();
             props.onHide();
         };

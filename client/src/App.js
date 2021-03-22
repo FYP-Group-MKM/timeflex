@@ -50,7 +50,7 @@ const App = props => {
     return (
         <div className={`${classes.root} ${styles}`}>
             <AppBar color="inherit" className={classes.appbar}>
-                <Toolbar variant="dense">
+                <Toolbar variant="dense" >
                     <Hidden smUp>
                         <SideBar />
                     </Hidden>

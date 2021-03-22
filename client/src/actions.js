@@ -90,9 +90,10 @@ export const deleteAppointmentRequest = () => {
     };
 };
 
-export const deleteAppointmentSuccess = () => {
+export const deleteAppointmentSuccess = (appointments) => {
     return {
-        type: 'DELETE_APPOINTMENT_SUCCESS'
+        type: 'DELETE_APPOINTMENT_SUCCESS',
+        payload: appointments
     };
 };
 
@@ -120,7 +121,8 @@ export const deleteAppointment = appointmentId => {
                 'Content-Type': 'application/json',
             },
         })
-            .then(dispatch(deleteAppointmentSuccess()))
+            // .then(res => res.json())
+            // .then(appointments => dispatch(deleteAppointmentSuccess(appointments)))
             .catch(error => dispatch(deleteAppointmentFailure(error.message)));
     };
 };
