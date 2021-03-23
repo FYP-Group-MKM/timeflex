@@ -39,20 +39,20 @@ router.post('/', async (req, res) => {
         const newAppointment = new Appointment(appointment);
         try {
             await newAppointment.save();
-            const postMessages = await Appointment.find();
-            res.status(200).json(postMessages);
+            const appointments = await Appointment.find().lean();
+            res.status(200).json(appointments);
             console.log(`created appointment "${appointment.title}" successfully`)
         } catch (error) {
-            console.log(error);
             res.status(400).json({ message: error.message });
+            console.log(error);
         }
     } else if (req.body.type === "smart") {
         const appointment = {
             ...req.body.appointment,
+            deadline: new Date(req.body.appointment.deadline)
         };
-        appointment.deadline = new Date(appointment.deadline);
         const appointments = await Appointment.find().lean();
-        suggestions = smartPlanning(appointment, appointments);
+        const suggestions = smartPlanning(appointment, appointments);
         if (suggestions) {
             try {
                 await suggestions.forEach(suggestion => {
@@ -74,12 +74,12 @@ router.post('/', async (req, res) => {
 
 // Edit appointment by id
 router.put('/:id', async (req, res) => {
-    const paramId = req.params.id
+    const paramId = req.params.id;
     const { id, title, startDate, endDate, description } = req.body;
     const updatedAppointment = { id, title, startDate, endDate, description };
     try {
         await Appointment.findOneAndUpdate({ id: paramId }, updatedAppointment);
-        console.log("Updated successfully")
+        console.log("Updated successfully");
     } catch (error) {
         res.status(409).json({ message: error.message });
     }

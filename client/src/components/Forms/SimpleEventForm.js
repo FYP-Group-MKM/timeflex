@@ -1,4 +1,6 @@
 import format from 'date-fns/format';
+import setMinutes from 'date-fns/setMinutes';
+import addHours from 'date-fns/addHours';
 import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -31,8 +33,8 @@ class SimpleEventForm extends Component {
             simpleAppointment: {
                 title: "",
                 allDay: false,
-                startDate: new Date(new Date().setHours(new Date().getHours() + 1)).setMinutes(0),
-                endDate: new Date(new Date().setHours(new Date().getHours() + 2)).setMinutes(0),
+                startDate: addHours(setMinutes(new Date(), 0), 1),
+                endDate: addHours(setMinutes(new Date(), 0), 2),
                 rRule: null,
                 exDate: null,
                 description: null,
