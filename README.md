@@ -3,9 +3,9 @@
 ### Instructions
 #### Go to the project's directory and install dependencies
 ```
-npm install
+npm run app-install
 ```
-#### Start the server in dev mode
+### Run the server as well as the React frontend concurrently
 ```
 npm run dev
 ```

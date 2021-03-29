@@ -1,0 +1,26 @@
+{
+    "name": "timeflex",
+    "version": "1.0.0",
+    "description": "``` npm install ``` #### Start the server in dev mode ``` npm run dev ```",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "client-install": "cd client && npm install",
+        "server-install": "cd server && npm install",
+        "app-install": "npm run client-install && npm run server-install",
+        "dev": "concurrently \"cd server && npm run server\" \"cd client && npm start\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FYP-Group-MKM/timeflex.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/FYP-Group-MKM/timeflex/issues"
+    },
+    "homepage": "https://github.com/FYP-Group-MKM/timeflex#readme",
+    "dependencies": {
+        "concurrently": "^6.0.0"
+    }
+}
