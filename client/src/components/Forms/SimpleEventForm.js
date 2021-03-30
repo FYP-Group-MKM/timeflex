@@ -44,13 +44,12 @@ class SimpleEventForm extends Component {
         this.handleRecurMenuClose = this.handleRecurMenuClose.bind(this);
     }
 
-    handleClose = (event) => {
-        event.preventDefault();
+    handleClose = () => {
+        this.setState({ simple: true });
         this.props.setSimpleEventForm(false);
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
+    handleSubmit = () => {
         if (this.appointmentIsValid()) {
             const appointmentRequest = {
                 type: "simple",
@@ -65,8 +64,7 @@ class SimpleEventForm extends Component {
                 appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
             }
             this.props.postAppointment(appointmentRequest);
-            setTimeout(this.props.fetchAppointments, 10);
-            // this.props.fetchAppointments();
+            setTimeout(this.props.fetchAppointments, 25);
             this.props.setSimpleEventForm(false);
         }
     }
@@ -206,7 +204,7 @@ class SimpleEventForm extends Component {
 
     renderOptions = () => {
         return (
-            <Grid container="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
+            <Grid container direction="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
                 <Grid item style={{ marginLeft: "15px" }}>
                     <FormControlLabel
                         control={<Switch color="primary" size="small" onChange={this.setAllDay} />}

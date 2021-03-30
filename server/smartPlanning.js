@@ -1,64 +1,51 @@
 const uuid = require('uuid');
+const {
+    addDays,
+    setHours,
+    setMinutes,
+    isBefore,
+    differenceInCalendarDays,
+    addWeeks,
+    addMonths
+} = require('date-fns');
 
 function getFirstDay() {
     let firstDay = new Date();
     if (firstDay.getHours() >= 9) {
-        firstDay = new Date(firstDay.setDate(firstDay.getDate() + 1));
+        firstDay = addDays(firstDay, 1);
     }
-    firstDay = new Date(firstDay).setHours(0);
-    firstDay = new Date(firstDay).setMinutes(0);
-    firstDay = new Date(firstDay);
+    firstDay = setHours(firstDay, 0);
+    firstDay = setMinutes(firstDay, 0);
     return firstDay;
 }
 
 function duplicateRecurringAppointments(input, appointments) {
     const recurAppointments = [...appointments];
     appointments.forEach(appointment => {
-        if (appointment.rRule) {
-            let recurStartDate = new Date(appointment.startDate);
-            let recurEndDate = new Date(appointment.endDate);
-            if (appointment.rRule.includes("FREQ=MONTHLY")) {
-                while (new Date(recurStartDate) <= new Date(input.deadline)) {
-                    recurStartDate = new Date(
-                        recurStartDate.setMonth(
-                            new Date(recurStartDate).getMonth() + daysToAdd
-                        )
-                    );
-                    recurEndDate = new Date(
-                        recurEndDate.setMonth(
-                            new Date(recurEndDate).getMonth() + daysToAdd
-                        )
-                    );
-                    const recurAppointment = { ...appointment };
-                    recurAppointment.startDate = new Date(recurStartDate);
-                    recurAppointment.endDate = new Date(recurEndDate);
-                    recurAppointments.push(recurAppointment);
-                }
-            } else {
-                let daysToAdd = 0;
-                if (appointment.rRule === "FREQ=DAILY;INTERVAL=1") {
-                    daysToAdd = 1;
-                }
-                if (appointment.rRule.includes("FREQ=WEEKLY")) {
-                    daysToAdd = 7;
-                }
-                while (new Date(recurStartDate) <= new Date(input.deadline)) {
-                    recurStartDate = new Date(
-                        recurStartDate.setDate(
-                            new Date(recurStartDate).getDate() + daysToAdd
-                        )
-                    );
-                    recurEndDate = new Date(
-                        recurEndDate.setDate(
-                            new Date(recurEndDate).getDate() + daysToAdd
-                        )
-                    );
-                    const recurAppointment = { ...appointment };
-                    recurAppointment.startDate = new Date(recurStartDate);
-                    recurAppointment.endDate = new Date(recurEndDate);
-                    recurAppointments.push(recurAppointment);
-                }
+        const { startDate, endDate, rRule } = appointment;
+        const { deadline } = input;
+
+        if (!rRule)
+            return;
+
+        while (isBefore(startDate, deadline)) {
+            if (rRule === "FREQ=DAILY;INTERVAL=1") {
+                startDate = addDays(startDate, 1)
+                endDate = addDays(endDate, 1)
             }
+            if (rRule.includes("FREQ=WEEKLY")) {
+                startDate = addWeeks(startDate, 1)
+                endDate = addWeeks(endDate, 1);
+            }
+            if (rRule.includes("FREQ=MONTHLY")) {
+                startDate = addMonths(startDate, 1);
+                endDate = addMonths(endDate, 1);
+            }
+            recurAppointments.push({
+                ...appointment,
+                startDate: startDate,
+                endDate: endDate
+            });
         }
     });
     return recurAppointments;
@@ -66,9 +53,9 @@ function duplicateRecurringAppointments(input, appointments) {
 
 function getArrayCalendar(input, appointments) {
     let firstDay = getFirstDay();
-    let deadlineDate = new Date(input.deadline).getDate();
     const arrayCalendar = [];
-    let availDays = deadlineDate - firstDay.getDate();
+    let availDays = differenceInCalendarDays(input.deadline, firstDay);
+    console.log("deadline", input.deadline, "firstDay", firstDay);
 
     for (let i = 0; i < availDays; i++) {
         const day = [];
@@ -80,7 +67,8 @@ function getArrayCalendar(input, appointments) {
 
     // This alogrithm does not consider cross-day case e.g. 23:30 15/1 ~ 01:30 16/1
     appointments.forEach(appointment => {
-        let dayNum = new Date(appointment.startDate).getDate() - firstDay.getDate();
+        let dayNum = differenceInCalendarDays(appointment.startDate, firstDay)
+        console.log("dayNum", dayNum);
         if (dayNum >= 0 && dayNum < arrayCalendar.length) {
             let startDate = new Date(appointment.startDate);
             let endDate = new Date(appointment.endDate);

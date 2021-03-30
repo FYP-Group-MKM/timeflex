@@ -119,7 +119,37 @@ export const deleteAppointment = appointmentId => {
     };
 };
 
-export const deleteAndFetchAppointments = async appointmentId => {
-    await deleteAndFetchAppointments(appointmentId);
-    fetchAppointments();
-}
+export const editAppointmentRequest = () => {
+    return {
+        type: 'EDIT_APPOINTMENT_REQUEST',
+    };
+};
+
+export const editAppointmentSuccess = () => {
+    return {
+        type: 'EDIT_APPOINTMENT_SUCCESS'
+    };
+};
+
+export const editAppointmentFailure = error => {
+    return {
+        type: 'EDIT_APPOINTMENT_FAILURE',
+        payload: error
+    };
+};
+
+export const editAppointment = editedAppointment => {
+    return async (dispatch) => {
+        dispatch(editAppointmentRequest());
+        await fetch('/appointments/' + editedAppointment.id, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editedAppointment)
+        })
+            .then(dispatch(editAppointmentSuccess()))
+            .catch(error => dispatch(editAppointmentFailure(error.message)));
+    };
+};

@@ -7,30 +7,35 @@ const router = express.Router();
 
 // Get all appointments
 router.get('/', async (req, res) => {
+    console.log("fetching appointments...");
     try {
-        const postMessages = await Appointment.find()
-        res.status(200).json(postMessages)
-        console.log("fetched appointments to client-side successfully")
+        const appointments = await Appointment.find();
+        res.status(200).json(appointments);
+        console.log("fetched appointments successfully");
     } catch (error) {
         console.log(error);
-        res.status(404).json({ message: error.message })
+        res.status(404).json({ message: error.message });
     }
 });
 
 // Get a single appointment by id
 router.get('/:id', async (req, res) => {
     const id = req.params.id
+    let startingTimestamp = Date.now();
+    console.log(`fetching appointment with id: ${id}...`);
     try {
-        const appointment = await Appointment.findOne({ id: id })
-        res.status(200).json(appointment)
+        const appointment = await Appointment.findOne({ id: id });
+        res.status(200).json(appointment);
+        console.log(`fetched appointment with id:${id} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
-        console.log("error")
-        res.status(404).json({ message: error.message })
+        console.log("error");
+        res.status(404).json({ message: error.message });
     }
 });
 
 // Appointment creation
 router.post('/', async (req, res) => {
+    console.log("inserting appointment...")
     if (req.body.type === "simple") {
         const appointment = {
             id: uuid.v4(),
@@ -39,8 +44,7 @@ router.post('/', async (req, res) => {
         const newAppointment = new Appointment(appointment);
         try {
             await newAppointment.save();
-            const appointments = await Appointment.find().lean();
-            res.status(200).json(appointments);
+            res.status(200).send("inserted appointment successfully");
             console.log(`created appointment "${appointment.title}" successfully`)
         } catch (error) {
             res.status(400).json({ message: error.message });
@@ -59,12 +63,13 @@ router.post('/', async (req, res) => {
                     const newAppointment = new Appointment(suggestion);
                     newAppointment.save();
                 });
-                res.status(200);
-                console.log("Successfully created appointments with Smart Planning");
+                res.status(200).send("inserted appointment successfully");
+                console.log(`created appointment "${appointment.title}" with Smart Planning successfully`);
             } catch (error) {
                 res.status(400).json({ message: error.message });
             }
         } else {
+            console.log("no solution available")
             res.json({ message: "no solution available" })
         }
     } else {
@@ -75,13 +80,17 @@ router.post('/', async (req, res) => {
 // Edit appointment by id
 router.put('/:id', async (req, res) => {
     const paramId = req.params.id;
+    let startingTimestamp = Date.now();
+    console.log(`editing appointment with id: ${paramId}...`);
     const { id, title, startDate, endDate, description } = req.body;
     const updatedAppointment = { id, title, startDate, endDate, description };
     try {
         await Appointment.findOneAndUpdate({ id: paramId }, updatedAppointment);
-        console.log("Updated successfully");
+        res.status(200).send("updated appointment successfully");
+        console.log(`updated appointment with id: ${paramId} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
-        res.status(409).json({ message: error.message });
+        console.log("error", error.message);
+        res.json({ message: error.message });
     }
 });
 
@@ -91,7 +100,7 @@ router.delete('/:id', async (req, res) => {
     const paramId = req.params.id
     try {
         await Appointment.findOneAndRemove({ id: paramId });
-        res.status(200).json({ message: "deleted appointment successully" });
+        res.status(200).send("deleted appointment succesfully");
         console.log(`deleted appointment successfully`);
     } catch (error) {
         res.status(409).json({ message: error.message });

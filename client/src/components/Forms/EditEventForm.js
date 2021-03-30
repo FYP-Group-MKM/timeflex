@@ -12,13 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import FormDatePicker from './FormDatePicker';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { connect } from 'react-redux'
-import { setCurrentDate } from '../../actions'
+import { fetchAppointments, editAppointment, setCurrentDate } from '../../actions'
 
 class EditEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: this.props.open,
             allDay: false,
             error: false,
             id: this.props.editDataId,
@@ -27,7 +26,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/appointments' + this.state.id)
+        fetch('/appointments/' + this.state.id)
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -35,7 +34,8 @@ class EditEventForm extends Component {
                     startDate: new Date(data.startDate),
                     endDate: new Date(data.endDate)
                 }
-            }));
+            }))
+            .catch(error => console.log(error.message));
     }
 
     checkPast = () => {
@@ -52,14 +52,8 @@ class EditEventForm extends Component {
             alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
-            fetch('/appointments' + this.state.id, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(this.state.editData)
-            });
+            this.props.editAppointment(this.state.editData);
+            setTimeout(this.props.fetchAppointments, 25);
             this.props.onClose();
         }
     }
@@ -165,7 +159,7 @@ class EditEventForm extends Component {
                         }
                     </Grid>
                     {!this.checkPast()
-                        ? <Grid container="row" justify="flex-start" style={{ margin: "10px 0" }}>
+                        ? <Grid container direction="row" justify="flex-start" style={{ margin: "10px 0" }}>
                             <Grid item style={{ marginLeft: "10px" }}>
                                 <FormControlLabel
                                     value="start"
@@ -206,7 +200,7 @@ class EditEventForm extends Component {
         return (
             <Dialog
                 aria-labelledby="form-dialog-title"
-                open={this.state.isOpen}
+                open={true}
                 onClose={this.props.onClose}
                 fullWidth maxWidth="xs"
             >
@@ -235,15 +229,14 @@ class EditEventForm extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-    return {
-        currentDate: state.calendar.currentDate,
+const mapStateToProps = state => ({
+    currentDate: state.calendar.currentDate,
+});
 
-    }
-}
-const mapDispatchToProps = dispatch => {
-    return {
-        setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
-    }
-}
+const mapDispatchToProps = dispatch => ({
+    setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+    fetchAppointments: () => dispatch(fetchAppointments()),
+    editAppointment: (appointment) => dispatch(editAppointment(appointment)),
+});
+
 export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm);

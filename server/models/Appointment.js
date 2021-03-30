@@ -6,10 +6,10 @@ const appointmentSchema = new Schema({
     id: String,
     title: String,
     allDay: Boolean,
-    startDate: String,
-    endDate: String,
+    startDate: Date,
+    endDate: Date,
     rRule: String,
-    exDate: String,
+    exDate: Date,
     description: String,
 });
 

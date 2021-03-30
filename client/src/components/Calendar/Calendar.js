@@ -13,7 +13,7 @@ import DayScaleCell from './DayScaleCell';
 import TimeTableCell from './TimeTableCell';
 import EditEventForm from '../Forms/EditEventForm';
 import { connect } from 'react-redux';
-import { fetchAppointments, deleteAppointment, deleteAndFetchAppointments } from '../../actions';
+import { fetchAppointments, deleteAppointment } from '../../actions';
 
 const toolbarHeight = 66;
 
@@ -26,7 +26,6 @@ const Calendar = props => {
     const appointments = props.appointments;
     const deleteAppointment = appointmentId => props.deleteAppointment(appointmentId);
     const fetchAppointments = () => props.fetchAppointments();
-    const deleteAndFetchAppointments = (appointmentId) => props.deleteAndFetchAppointments(appointmentId);
 
     useEffect(() => {
         const handleResize = () => setHeight(window.innerHeight - toolbarHeight);
@@ -41,6 +40,7 @@ const Calendar = props => {
     const handleTooltipOpen = editDataId => {
         setEditDataId(editDataId);
         setEditing(true);
+        console.log("Fired EditEventForm");
     };
 
     const handleTooltipClose = () => {
@@ -52,10 +52,7 @@ const Calendar = props => {
         const handleAppointmentDelete = (event, appointmentId) => {
             event.preventDefault();
             deleteAppointment(appointmentId);
-            setTimeout(fetchAppointments, 10);
-
-            // deleteAndFetchAppointments(appointmentId);
-
+            setTimeout(fetchAppointments, 25);
             props.onHide();
         };
 
@@ -66,18 +63,6 @@ const Calendar = props => {
                 onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
             />
         );
-    };
-
-    const renderEditEventForm = () => {
-        if (editDataId)
-            return (
-                <EditEventForm
-                    key={isEditing}
-                    open={isEditing}
-                    onClose={handleTooltipClose}
-                    editDataId={editDataId}
-                />
-            );
     };
 
     return (
@@ -102,7 +87,10 @@ const Calendar = props => {
                     layoutComponent={AppointmentTooltipLayout}
                 />
             </Scheduler >
-            {renderEditEventForm()}
+            {
+                isEditing ? <EditEventForm open={isEditing} onClose={handleTooltipClose} editDataId={editDataId} /> : null
+            }
+
         </div >
     );
 };
@@ -116,7 +104,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     fetchAppointments: () => dispatch(fetchAppointments()),
     deleteAppointment: (appointmentId) => dispatch(deleteAppointment(appointmentId)),
-    deleteAndFetchAppointments: (appointmentId) => dispatch(deleteAndFetchAppointments(appointmentId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
