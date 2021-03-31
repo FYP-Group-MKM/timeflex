@@ -40,7 +40,6 @@ const Calendar = props => {
     const handleTooltipOpen = editDataId => {
         setEditDataId(editDataId);
         setEditing(true);
-        console.log("Fired EditEventForm");
     };
 
     const handleTooltipClose = () => {

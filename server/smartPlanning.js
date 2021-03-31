@@ -22,7 +22,7 @@ function getFirstDay() {
 function duplicateRecurringAppointments(input, appointments) {
     const recurAppointments = [...appointments];
     appointments.forEach(appointment => {
-        const { startDate, endDate, rRule } = appointment;
+        let { startDate, endDate, rRule } = appointment;
         const { deadline } = input;
 
         if (!rRule)
@@ -55,7 +55,6 @@ function getArrayCalendar(input, appointments) {
     let firstDay = getFirstDay();
     const arrayCalendar = [];
     let availDays = differenceInCalendarDays(input.deadline, firstDay);
-    console.log("deadline", input.deadline, "firstDay", firstDay);
 
     for (let i = 0; i < availDays; i++) {
         const day = [];
@@ -68,7 +67,6 @@ function getArrayCalendar(input, appointments) {
     // This alogrithm does not consider cross-day case e.g. 23:30 15/1 ~ 01:30 16/1
     appointments.forEach(appointment => {
         let dayNum = differenceInCalendarDays(appointment.startDate, firstDay)
-        console.log("dayNum", dayNum);
         if (dayNum >= 0 && dayNum < arrayCalendar.length) {
             let startDate = new Date(appointment.startDate);
             let endDate = new Date(appointment.endDate);
