@@ -45,7 +45,7 @@ class SmartPlanningForm extends Component {
                 appointment: { ...this.state.smartAppointment }
             };
             this.props.postAppointment(appointmentRequest);
-            setTimeout(this.props.fetchAppointments, 25);
+            setTimeout(this.props.fetchAppointments, 50);
             this.onClose();
         }
     }

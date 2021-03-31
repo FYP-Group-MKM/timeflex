@@ -3,10 +3,12 @@ const {
     addDays,
     setHours,
     setMinutes,
-    isBefore,
     differenceInCalendarDays,
+    addMinutes,
     addWeeks,
-    addMonths
+    addMonths,
+    isBefore,
+    isAfter,
 } = require('date-fns');
 
 function getFirstDay() {
@@ -66,38 +68,33 @@ function getArrayCalendar(input, appointments) {
 
     // This alogrithm does not consider cross-day case e.g. 23:30 15/1 ~ 01:30 16/1
     appointments.forEach(appointment => {
-        let dayNum = differenceInCalendarDays(appointment.startDate, firstDay)
-        if (dayNum >= 0 && dayNum < arrayCalendar.length) {
-            let startDate = new Date(appointment.startDate);
-            let endDate = new Date(appointment.endDate);
-            let startMark = 0;
-            let endMark = 0;
+        let dayNum = differenceInCalendarDays(appointment.startDate, firstDay);
 
-            let lowerTimePointer = new Date(appointment.startDate);
-            lowerTimePointer = new Date(lowerTimePointer).setHours(0);
-            lowerTimePointer = new Date(lowerTimePointer).setMinutes(0);
-            lowerTimePointer = new Date(lowerTimePointer);
+        if (dayNum < 0)
+            return;
+        if (dayNum > arrayCalendar.length)
+            return;
 
-            let upperTimePointer = new Date(appointment.startDate);
-            upperTimePointer = new Date(upperTimePointer).setHours(0);
-            upperTimePointer = new Date(upperTimePointer).setMinutes(30);
-            upperTimePointer = new Date(upperTimePointer);
+        const { startDate, endDate } = appointment;
+        let arrayOccupationStart;
+        let arrayOccupationEnd;
 
-            for (let i = 0; i < 48; i++) {
-                if (startDate >= lowerTimePointer && startDate < upperTimePointer) {
-                    startMark = i;
-                }
-                if (endDate > lowerTimePointer && endDate <= upperTimePointer) {
-                    endMark = i;
-                    break;
-                }
-                lowerTimePointer = new Date(new Date(lowerTimePointer).setMinutes(new Date(lowerTimePointer).getMinutes() + 30));
-                upperTimePointer = new Date(new Date(upperTimePointer).setMinutes(new Date(upperTimePointer).getMinutes() + 30));
+        let timeslot = {
+            start: setHours(setMinutes(startDate, 0), 0),
+            end: setHours(setMinutes(startDate, 30), 0)
+        };
+        for (let i = 0; i < 48; i++) {
+            if (!isBefore(startDate, timeslot.start) && isBefore(startDate, timeslot.end))
+                arrayOccupationStart = i;
+            if (isAfter(endDate, timeslot.start) && !isAfter(endDate, timeslot.end)) {
+                arrayOccupationEnd = i;
+                break;
             }
+            timeslot = { start: addMinutes(timeslot.start, 30), end: addMinutes(timeslot.end, 30) }
+        }
 
-            for (let i = startMark; i <= endMark; i++) {
-                arrayCalendar[dayNum][i] = "occupied";
-            }
+        for (let i = arrayOccupationStart; i <= arrayOccupationEnd; i++) {
+            arrayCalendar[dayNum][i] = "occupied";
         }
     });
     return arrayCalendar;
@@ -112,8 +109,8 @@ function allocate(input, arrayCalendar) {
     for (let i = 0; i < solution.length; i++) {
         day:
         for (let k = maxSlots; k >= minSlots; k--) {
-            for (let j = 18; j < 48 - k; j++) {
-                if (solution[i].slice(j, j + k).every((slot) => { return slot === "occupied" ? false : true })) {
+            for (let j = 18; j <= 48 - k; j++) {
+                if (solution[i].slice(j, j + k).every((slot) => slot !== "occupied")) {
                     for (let m = j; m < j + k; m++) {
                         solution[i][m] = "picked";
                         remaining -= 1;

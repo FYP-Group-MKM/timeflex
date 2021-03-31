@@ -45,7 +45,16 @@ class SimpleEventForm extends Component {
     }
 
     handleClose = () => {
-        this.setState({ simple: true });
+        const updatedState = {
+            ...this.state,
+            simple: true,
+            simpleAppointment: {
+                ...this.state.simpleAppointment,
+                startDate: addHours(setMinutes(new Date(), 0), 1),
+                endDate: addHours(setMinutes(new Date(), 0), 2),
+            }
+        }
+        this.setState(updatedState);
         this.props.setSimpleEventForm(false);
     }
 
@@ -64,8 +73,8 @@ class SimpleEventForm extends Component {
                 appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
             }
             this.props.postAppointment(appointmentRequest);
-            setTimeout(this.props.fetchAppointments, 25);
-            this.props.setSimpleEventForm(false);
+            setTimeout(this.props.fetchAppointments, 50);
+            this.handleClose();
         }
     }
 

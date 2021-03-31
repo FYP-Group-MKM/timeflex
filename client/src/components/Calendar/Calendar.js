@@ -51,7 +51,7 @@ const Calendar = props => {
         const handleAppointmentDelete = (event, appointmentId) => {
             event.preventDefault();
             deleteAppointment(appointmentId);
-            setTimeout(fetchAppointments, 25);
+            setTimeout(fetchAppointments, 50);
             props.onHide();
         };
 

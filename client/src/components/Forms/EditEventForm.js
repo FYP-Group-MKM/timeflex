@@ -53,7 +53,7 @@ class EditEventForm extends Component {
         } else {
             this.setState({ error: false });
             this.props.editAppointment(this.state.editData);
-            setTimeout(this.props.fetchAppointments, 25);
+            setTimeout(this.props.fetchAppointments, 50);
             this.props.onClose();
         }
     }
