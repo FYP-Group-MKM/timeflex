@@ -1,6 +1,6 @@
-const User = require('../models/User');
 const passport = require('passport');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const User = require('../models/User');
 const keys = require('./keys');
 
 passport.serializeUser((user, done) => {
@@ -18,7 +18,7 @@ passport.use(
         // options for google strategy
         clientID: keys.google.clientID,
         clientSecret: keys.google.clientSecret,
-        callbackURL: '/auth/google/redirect'
+        callbackURL: '/auth/google/redirect',
     }, (accessToken, refreshToken, profile, done) => {
         // check if user already exists in our own db
         User.findOne({ googleId: profile.id }).then((currentUser) => {
