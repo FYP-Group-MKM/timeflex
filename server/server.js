@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
 const cookieSession = require("cookie-session");
-const passportSetup = require('./config/passportSetup');
 const appointments = require('./routes/appointments');
 const auth = require('./routes/auth');
 const keys = require('./config/keys');
 const PORT = 5000;
+require('./config/passportSetup');
 
 const app = express();
 
@@ -15,6 +16,14 @@ mongoose.connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology
     .catch((error) => console.log(error.message));
 
 mongoose.set('useFindAndModify', false);
+
+app.use(
+    cors({
+        origin: "http://localhost:3000", // allow to server to accept request from different origin
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true, // allow session cookie from browser to pass through
+    })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -1,5 +1,5 @@
 import 'fontsource-roboto';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -54,8 +54,16 @@ const useStyles = makeStyles(theme => ({
 
 const App = props => {
     const classes = useStyles();
+    const [user, setUser] = useState({});
+
+    useEffect(async () => {
+        await fetch("/auth/login/success")
+            .then(res => res.json())
+            .then(user => setUser(user));
+    }, [])
 
     const TimeFlex = () => {
+        console.log(user);
         return (
             <div className={`${classes.root} ${styles}`}>
                 <AppBar color="inherit" className={classes.appbar}>
@@ -75,6 +83,7 @@ const App = props => {
                             <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                             <Dropdown />
                         </Hidden>
+                        <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{ height: "50px" }} />
@@ -93,11 +102,9 @@ const App = props => {
         return <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
     }
 
-    // if (props.authenticated)
-    //     return <TimeFlex />;
-    // return <LoginPage />;
-
-    return <TimeFlex />
+    if (user)
+        return <TimeFlex />;
+    return <LoginPage />;
 };
 
 const mapStateToProps = state => ({
