@@ -1,74 +1,77 @@
-import React, { Component } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import Picker from '../Picker';
+import Hidden from '@material-ui/core/Hidden';
+import { makeStyles } from '@material-ui/core/styles';
+import ButtonDatePicker from './ButtonDatePicker';
+import { connect } from 'react-redux';
+import { setCurrentDate } from '../../actions';
 
-export default class DateNavigator extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentDate: this.props.currentDate,
-            currentViewName: this.props.currentViewName,
-            pickerIsOpen: false,
-        };
+const useStyles = makeStyles(theme => ({
+    root: {
+        display: "flex",
+        alignItems: "center",
     }
+}));
 
-    setPicker = (pickerIsOpen) => {
-        this.setState({ pickerIsOpen });
-    }
+const DateNavigator = props => {
+    const classes = useStyles();
+    const currentDate = props.currentDate;
+    const currentView = props.currentView;
 
-    handleNavNext = () => {
-        let date = new Date(this.state.currentDate);
-        if (this.state.currentViewName === "Day") {
+    const handleNavNext = () => {
+        let date = new Date(currentDate);
+        if (currentView === "Day") {
             date.setDate(date.getDate() + 1);
         }
-        if (this.state.currentViewName === "Week") {
+        if (currentView === "Week") {
             date.setDate(date.getDate() + 7);
         }
-        if (this.state.currentViewName === "Month") {
+        if (currentView === "Month") {
             date.setMonth(date.getMonth() + 1);
         }
-        this.props.currentDateChange(date);
-    }
+        props.setCurrentDate(date);
+    };
 
-    handleNavPrev = () => {
-        let date = new Date(this.state.currentDate);
-        if (this.state.currentViewName === "Day") {
+    const handleNavPrev = () => {
+        let date = new Date(currentDate);
+        if (currentView === 'Day') {
             date.setDate(date.getDate() - 1);
         }
-        if (this.state.currentViewName === "Week") {
+        if (currentView === 'Week') {
             date.setDate(date.getDate() - 7);
         }
-        if (this.state.currentViewName === "Month") {
+        if (currentView === 'Month') {
             date.setMonth(date.getMonth() - 1);
         }
-        this.props.currentDateChange(date);
-    }
+        props.setCurrentDate(date);
+    };
 
-    render() {
-        return (
-            <Grid container direction="row" alignItems="center">
-                <Hidden xsDown>
-                    <IconButton onClick={this.handleNavPrev}>
-                        <KeyboardArrowLeftIcon />
-                    </IconButton>
-                </Hidden>
-                <Picker
-                    key={this.state.currentDate + this.currentViewName}
-                    currentDate={this.state.currentDate}
-                    currentViewName={this.state.currentViewName}
-                    handleSelectedDate={this.props.currentDateChange}
-                />
-                <Hidden xsDown>
-                    <IconButton onClick={this.handleNavNext}>
-                        <KeyboardArrowRightIcon />
-                    </IconButton>
-                </Hidden>
-            </Grid>
-        )
-    }
-}
+    return (
+        <div className={classes.root}>
+            <Hidden xsDown>
+                <IconButton onClick={handleNavPrev}>
+                    <KeyboardArrowLeftIcon />
+                </IconButton>
+            </Hidden>
+            <ButtonDatePicker />
+            <Hidden xsDown>
+                <IconButton onClick={handleNavNext}>
+                    <KeyboardArrowRightIcon />
+                </IconButton>
+            </Hidden>
+        </div >
+    );
+};
+
+const mapStateToProps = state => ({
+    currentView: state.calendar.currentView,
+    currentDate: state.calendar.currentDate,
+});
+
+const mapDispatchToProps = dispatch => ({
+    setCurrentDate: (date) => dispatch(setCurrentDate(date))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DateNavigator);

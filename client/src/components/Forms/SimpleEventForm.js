@@ -1,4 +1,6 @@
 import format from 'date-fns/format';
+import setMinutes from 'date-fns/setMinutes';
+import addHours from 'date-fns/addHours';
 import React, { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -13,15 +15,17 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
+import { connect } from 'react-redux'
+import { setCurrentDate, setSimpleEventForm, postAppointment, fetchAppointments } from '../../actions';
 
 class SimpleEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: this.props.open,
+            open: this.props.isOpen,
             titleEmpty: false,
             simple: true,
             recurrence: false,
@@ -29,8 +33,8 @@ class SimpleEventForm extends Component {
             simpleAppointment: {
                 title: "",
                 allDay: false,
-                startDate: new Date(new Date().setHours(new Date().getHours() + 1)).setMinutes(0),
-                endDate: new Date(new Date().setHours(new Date().getHours() + 2)).setMinutes(0),
+                startDate: addHours(setMinutes(new Date(), 0), 1),
+                endDate: addHours(setMinutes(new Date(), 0), 2),
                 rRule: null,
                 exDate: null,
                 description: null,
@@ -41,11 +45,40 @@ class SimpleEventForm extends Component {
     }
 
     handleClose = () => {
-        this.setState({ simple: true });
-        this.props.onHide();
+        const updatedState = {
+            ...this.state,
+            simple: true,
+            simpleAppointment: {
+                ...this.state.simpleAppointment,
+                startDate: addHours(setMinutes(new Date(), 0), 1),
+                endDate: addHours(setMinutes(new Date(), 0), 2),
+            }
+        }
+        this.setState(updatedState);
+        this.props.setSimpleEventForm(false);
     }
 
     handleSubmit = () => {
+        if (this.appointmentIsValid()) {
+            const appointmentRequest = {
+                type: "simple",
+                appointment: { ...this.state.simpleAppointment }
+            };
+            appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate);
+            appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate);
+            if (appointmentRequest.appointment.allDay) {
+                appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate).setHours(0);
+                appointmentRequest.appointment.startDate = new Date(appointmentRequest.appointment.startDate).setMinutes(0);
+                appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setHours(24);
+                appointmentRequest.appointment.endDate = new Date(appointmentRequest.appointment.endDate).setMinutes(0);
+            }
+            this.props.postAppointment(appointmentRequest);
+            setTimeout(this.props.fetchAppointments, 50);
+            this.handleClose();
+        }
+    }
+
+    appointmentIsValid = () => {
         if (!this.state.simpleAppointment.title
             || (new Date(this.state.simpleAppointment.startDate) < new Date())
             || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
@@ -58,66 +91,24 @@ class SimpleEventForm extends Component {
             if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
                 alert("The start date cannot be later than the end date");
             }
-        } else {
-            const appointment = { ...this.state.simpleAppointment };
-            if (appointment.allDay) {
-                appointment.startDate = new Date(appointment.startDate);
-                appointment.endDate = new Date(appointment.endDate);
-                appointment.startDate = new Date(appointment.startDate).setHours(0);
-                appointment.startDate = new Date(appointment.startDate).setMinutes(0);
-                appointment.endDate = new Date(appointment.endDate).setHours(23);
-                appointment.endDate = new Date(appointment.endDate).setMinutes(59);
-            }
-            fetch('/api/appointments', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointment)
-            });
-            this.props.refresh();
-            this.handleClose();
+            return false;
         }
+        return true;
     }
 
     setAllDay = () => {
         const simpleAppointment = { ...this.state.simpleAppointment };
-        simpleAppointment.allDay = !simpleAppointment.allDay;
+        simpleAppointment.allDay = !this.state.simpleAppointment.allDay;
         this.setState({ simpleAppointment });
-    }
-
-    setRecurrence = () => {
-        if (this.state.recurrence) {
-            const simpleAppointment = { ...this.state.simpleAppointment };
-            simpleAppointment.rRule = null;
-            simpleAppointment.exDate = null;
-            this.setState({ simpleAppointment });
-        }
-        this.setState({ recurrence: false });
-    }
-
-    setDivisible = () => {
-        const smartAppointment = { ...this.state.smartAppointment };
-        smartAppointment.divisible = !smartAppointment.divisible;
-        this.setState({ smartAppointment });
     }
 
     handleTextFieldInput = (event) => {
         let nam = event.target.name;
         let val = event.target.value;
         if (this.state.simple) {
-            let simpleAppointment = { ...this.state.simpleAppointment };
+            const simpleAppointment = { ...this.state.simpleAppointment };
             simpleAppointment[nam] = val;
             this.setState({ simpleAppointment });
-        } else {
-            const smartAppointment = { ...this.state.smartAppointment };
-            if (nam === "maxSession" || nam === "minSession" || nam === "exDuration") {
-                val = parseInt(val);
-            }
-            smartAppointment[nam] = val;
-            smartAppointment.maxSession = smartAppointment.exDuration;
-            this.setState({ smartAppointment });
         }
     }
 
@@ -163,6 +154,9 @@ class SimpleEventForm extends Component {
                 let dayOfMonth = format(startDate, "d");
                 rRule = `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth};INTERVAL=1`;
             }
+            if (event.currentTarget.title === "None") {
+                rRule = "";
+            }
             const simpleAppointment = { ...this.state.simpleAppointment };
             simpleAppointment.rRule = rRule;
             this.setState({ simpleAppointment });
@@ -194,7 +188,7 @@ class SimpleEventForm extends Component {
                         <Typography variant="button" style={{ color: "#757575" }}>From</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker
+                        <FormDatePicker
                             allDay={this.state.simpleAppointment.allDay}
                             currentDate={this.state.simpleAppointment.startDate}
                             handleFormChange={this.handleStartDateInput}
@@ -206,7 +200,7 @@ class SimpleEventForm extends Component {
                         <Typography variant="button" style={{ color: "#757575" }}>Until</Typography>
                     </Grid>
                     <Grid item>
-                        <FormPicker
+                        <FormDatePicker
                             allDay={this.state.simpleAppointment.allDay}
                             currentDate={this.state.simpleAppointment.endDate}
                             handleFormChange={this.handleEndDateInput}
@@ -219,7 +213,7 @@ class SimpleEventForm extends Component {
 
     renderOptions = () => {
         return (
-            <Grid container="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
+            <Grid container direction="row" justify="flex-start" alignItems="center" style={{ margin: "10px 0" }}>
                 <Grid item style={{ marginLeft: "15px" }}>
                     <FormControlLabel
                         control={<Switch color="primary" size="small" onChange={this.setAllDay} />}
@@ -235,7 +229,7 @@ class SimpleEventForm extends Component {
                         endIcon={<ArrowDropDownIcon />}
                     >
                         <Typography variant="button">
-                            {this.state.recurrence ? this.state.recurrence : "Doesn't repeat"}
+                            {this.state.simpleAppointment.rRule ? this.state.recurrence : "Doesn't repeat"}
                         </Typography>
                     </Button >
                     <Menu
@@ -329,8 +323,7 @@ class SimpleEventForm extends Component {
             formLayout = <SmartPlanningForm onClose={this.handleClose} refresh={this.props.refresh} />;
         return (
             <Dialog
-                aria-labelledby="form-dialog-title"
-                open={this.state.open}
+                open={this.props.isOpen}
                 onClose={this.handleClose}
                 fullWidth maxWidth="xs"
             >
@@ -338,6 +331,22 @@ class SimpleEventForm extends Component {
             </Dialog>
         );
     }
+};
+
+const mapStateToProps = state => {
+    return {
+        currentDate: state.calendar.currentDate,
+        isOpen: state.simpleEventForm.isOpen
+    }
 }
 
-export default SimpleEventForm;
+const mapDispatchToProps = dispatch => {
+    return {
+        setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+        setSimpleEventForm: (value) => dispatch(setSimpleEventForm(value)),
+        fetchAppointments: () => dispatch(fetchAppointments()),
+        postAppointment: (appointment) => dispatch(postAppointment(appointment))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SimpleEventForm);

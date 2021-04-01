@@ -9,14 +9,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { connect } from 'react-redux'
+import { fetchAppointments, editAppointment, setCurrentDate } from '../../actions'
 
 class EditEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: this.props.open,
             allDay: false,
             error: false,
             id: this.props.editDataId,
@@ -25,7 +26,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/api/appointments/' + this.state.id)
+        fetch('/appointments/' + this.state.id)
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -33,7 +34,8 @@ class EditEventForm extends Component {
                     startDate: new Date(data.startDate),
                     endDate: new Date(data.endDate)
                 }
-            }));
+            }))
+            .catch(error => console.log(error.message));
     }
 
     checkPast = () => {
@@ -50,16 +52,9 @@ class EditEventForm extends Component {
             alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
-            fetch('/api/appointments/' + this.state.id, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(this.state.editData)
-            });
+            this.props.editAppointment(this.state.editData);
+            setTimeout(this.props.fetchAppointments, 50);
             this.props.onClose();
-            this.props.refresh();
         }
     }
 
@@ -125,7 +120,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
+                                        <FormDatePicker currentDate={this.state.editData.startDate} handleFormChange={this.handleStartDateInput} allDay />
                                     </Grid>
                                 </Grid>
                                 <Grid container direction="row" alignItems="center" justify="flex-start" spacing={2}>
@@ -133,7 +128,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
+                                        <FormDatePicker currentDate={this.state.editData.endDate} handleFormChange={this.handleEndDateInput} allDay />
                                     </Grid>
                                 </Grid>
                             </div>
@@ -143,7 +138,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>From</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker
+                                        <FormDatePicker
                                             currentDate={this.state.editData.startDate}
                                             handleFormChange={this.handleStartDateInput}
                                         />
@@ -154,7 +149,7 @@ class EditEventForm extends Component {
                                         <Typography variant="body2" style={{ color: "#616161" }}>Until</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <FormPicker
+                                        <FormDatePicker
                                             currentDate={this.state.editData.endDate}
                                             handleFormChange={this.handleEndDateInput}
                                         />
@@ -164,7 +159,7 @@ class EditEventForm extends Component {
                         }
                     </Grid>
                     {!this.checkPast()
-                        ? <Grid container="row" justify="flex-start" style={{ margin: "10px 0" }}>
+                        ? <Grid container direction="row" justify="flex-start" style={{ margin: "10px 0" }}>
                             <Grid item style={{ marginLeft: "10px" }}>
                                 <FormControlLabel
                                     value="start"
@@ -205,7 +200,7 @@ class EditEventForm extends Component {
         return (
             <Dialog
                 aria-labelledby="form-dialog-title"
-                open={this.state.isOpen}
+                open={true}
                 onClose={this.props.onClose}
                 fullWidth maxWidth="xs"
             >
@@ -234,5 +229,14 @@ class EditEventForm extends Component {
         );
     }
 }
+const mapStateToProps = state => ({
+    currentDate: state.calendar.currentDate,
+});
 
-export default EditEventForm;
+const mapDispatchToProps = dispatch => ({
+    setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
+    fetchAppointments: () => dispatch(fetchAppointments()),
+    editAppointment: (appointment) => dispatch(editAppointment(appointment)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm);

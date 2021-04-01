@@ -3,7 +3,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { WeekView } from '@devexpress/dx-react-scheduler-material-ui';
 
 const useStyles = makeStyles(theme => ({
-    weekendCell: {
+    pastCell: {
         backgroundColor: fade(theme.palette.action.disabledBackground, 0.04),
         '&:hover': {
             backgroundColor: fade(theme.palette.action.disabledBackground, 0.04),
@@ -11,9 +11,6 @@ const useStyles = makeStyles(theme => ({
         '&:focus': {
             backgroundColor: fade(theme.palette.action.disabledBackground, 0.04),
         },
-    },
-    weekend: {
-        backgroundColor: fade(theme.palette.action.disabledBackground, 0.06),
     },
 }));
 
@@ -24,8 +21,8 @@ const TimeTableCell = (props) => {
 
     if (date.getDate() === new Date().getDate()) {
         return <WeekView.TimeTableCell {...props} className={classes.todayCell} />;
-    } if (date.getDay() === 0 || date.getDay() === 6) {
-        return <WeekView.TimeTableCell {...props} className={classes.weekendCell} />;
+    } if (date < new Date()) {
+        return <WeekView.TimeTableCell {...props} className={classes.pastCell} />;
     } return <WeekView.TimeTableCell {...props} />;
 };
 

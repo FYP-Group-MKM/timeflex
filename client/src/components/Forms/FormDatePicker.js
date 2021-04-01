@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from '@material-ui/pickers';
 
-export default class FormPicker extends Component {
+export default class FormDatePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {

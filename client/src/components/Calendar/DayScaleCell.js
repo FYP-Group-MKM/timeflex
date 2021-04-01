@@ -24,8 +24,8 @@ const DayScaleCell = (props) => {
 
     if (today) {
         return <WeekView.DayScaleCell {...props} className={classes.today} />;
-    } if (startDate.getDay() === 0 || startDate.getDay() === 6) {
-        return <WeekView.DayScaleCell {...props} className={classes.weekend} />;
+    } if (startDate.getDate() < new Date().getDate()) {
+        return <WeekView.DayScaleCell {...props} className={classes.past} />;
     } return <WeekView.DayScaleCell {...props} />;
 };
 

@@ -1,0 +1,25 @@
+{
+    "name": "timeflex",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "client-install": "cd client && npm install",
+        "start": "node server.js",
+        "server": "nodemon server.js",
+        "client": "npm start --prefix client",
+        "dev": "killall -9 node && concurrently \"npm run server\" \"npm run client\""
+    },
+    "author": "Darren Leung",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    },
+    "dependencies": {
+        "concurrently": "^5.3.0",
+        "date-fns": "^2.19.0",
+        "express": "^4.17.1",
+        "mongoose": "^5.11.15",
+        "uuid": "^8.3.2"
+    }
+}

@@ -10,17 +10,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import FormPicker from './FormPicker';
+import FormDatePicker from './FormDatePicker';
+import { connect } from 'react-redux';
+import { fetchAppointments, postAppointment } from '../../actions';
 
 class SmartPlanningForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: true,
-            titleEmpty: false,
-            exDurationEmpty: false,
-            minSessionEmpty: false,
-            maxSessionEmpty: false,
             smartAppointment: {
                 title: "",
                 deadline: new Date(new Date(new Date().setDate(new Date().getDate() + 7)).setHours(23)).setMinutes(59),
@@ -29,44 +27,53 @@ class SmartPlanningForm extends Component {
                 minSession: 1,
                 maxSession: null,
                 description: ""
+            },
+            validity: {
+                titleEmpty: false,
+                exDurationEmpty: false,
+                deadlineLegit: true,
+                minSessionEmpty: false,
+                maxSessionEmpty: false,
             }
         };
     }
 
     handleSubmit = () => {
-        if (!(this.state.smartAppointment.title && this.state.smartAppointment.deadline && this.state.smartAppointment.exDuration)) {
-            if (this.state.smartAppointment.title === null || this.state.smartAppointment.title === "") {
-                this.setState({ titleEmpty: true });
-            }
-            if (this.state.smartAppointment.deadline < new Date()) {
-                alert("The deadline cannot be earlier than this moment");
-            }
-            if (this.state.smartAppointment.exDuration === null) {
-                this.setState({ exDurationEmpty: true });
-            }
-        } else if (this.state.smartAppointment.divisible && !(this.state.smartAppointment.minSession && this.state.smartAppointment.maxSession)) {
-            if (this.state.smartAppointment.minSession === null) {
-                this.setState({ minSessionEmpty: true });
-            }
-            if (this.state.smartAppointment.maxSession === null) {
-                this.setState({ maxSessionEmpty: true });
-            }
-            console.log("testing")
-        } else {
-            let appointment = {
-                ...this.state.smartAppointment
+        if (this.checkValid()) {
+            const appointmentRequest = {
+                type: "smart",
+                appointment: { ...this.state.smartAppointment }
             };
-            fetch('/api/smartplanning', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointment)
-            });
+            this.props.postAppointment(appointmentRequest);
+            setTimeout(this.props.fetchAppointments, 50);
             this.onClose();
-            this.props.refresh();
         }
+    }
+
+    checkValid = () => {
+        const { title, deadline, exDuration, divisible, minSession, maxSession } = this.state.smartAppointment;
+        const validity = { ...this.state.validity };
+
+        if (!title)
+            validity.titleEmpty = true;
+        if (deadline < new Date()) {
+            validity.deadlineLegit = false;
+            alert("The deadline must be in the future");
+        }
+        if (!exDuration)
+            validity.exDurationEmpty = true;
+        if (divisible && !maxSession)
+            validity.maxSessionEmpty = true;
+        if (divisible && !minSession)
+            validity.minSessionEmpty = true;
+
+        this.setState({ validity });
+
+        for (const requirement in validity) {
+            if (!requirement)
+                return false;
+        }
+        return true;
     }
 
     onClose = () => {
@@ -125,7 +132,7 @@ class SmartPlanningForm extends Component {
                                     <Typography variant="caption" style={{ color: "#757575" }}>Deadline</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <FormPicker currentDate={this.state.smartAppointment.deadline} handleFormChange={this.handleSmartDeadlineInput} />
+                                    <FormDatePicker currentDate={this.state.smartAppointment.deadline} handleFormChange={this.handleSmartDeadlineInput} />
                                 </Grid>
                             </Grid>
                             <Grid item>
@@ -227,4 +234,9 @@ class SmartPlanningForm extends Component {
     }
 }
 
-export default SmartPlanningForm;
+const mapDispatchToProps = dispatch => ({
+    fetchAppointments: () => dispatch(fetchAppointments()),
+    postAppointment: (appointment) => dispatch(postAppointment(appointment))
+});
+
+export default connect(null, mapDispatchToProps)(SmartPlanningForm);
