@@ -66,6 +66,7 @@ const App = props => {
                         <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                         <Dropdown />
                     </Hidden>
+                    <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")}>Login</Button>
                 </Toolbar>
             </AppBar>
             <div style={{ height: "50px" }} />
