@@ -103,8 +103,8 @@ router.put('/:googleId/:appointmentId', async (req, res) => {
 
 // Delete appointment id
 router.delete('/:googleId/:appointmentId', async (req, res) => {
-    const googleId = req.params.id;
-    const appointmentId = req.params.id;
+    const googleId = req.params.googleId;
+    const appointmentId = req.params.appointmentId;
     try {
         await Appointment.findOneAndRemove({
             googleId: googleId,
