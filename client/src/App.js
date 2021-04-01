@@ -1,5 +1,10 @@
 import 'fontsource-roboto';
-import React from 'react';
+import React, { useState } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -22,6 +27,9 @@ import styles from './style.css';
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1
+    },
+    login: {
+        margin: "auto"
     },
     appbar: {
         overflow: "hidden"
@@ -47,40 +55,54 @@ const useStyles = makeStyles(theme => ({
 const App = props => {
     const classes = useStyles();
 
-    return (
-        <div className={`${classes.root} ${styles}`}>
-            <AppBar color="inherit" className={classes.appbar}>
-                <Toolbar variant="dense" >
-                    <Hidden smUp>
-                        <SideBar />
-                    </Hidden>
-                    <Hidden xsDown>
-                        <Link className={classes.title} underline="none" onClick={props.fetchAppointments}>
-                            <Typography variant="h6">
-                                TimeFlex
+    const TimeFlex = () => {
+        return (
+            <div className={`${classes.root} ${styles}`}>
+                <AppBar color="inherit" className={classes.appbar}>
+                    <Toolbar variant="dense" >
+                        <Hidden smUp>
+                            <SideBar />
+                        </Hidden>
+                        <Hidden xsDown>
+                            <Link className={classes.title} underline="none" onClick={props.fetchAppointments}>
+                                <Typography variant="h6">
+                                    TimeFlex
                             </Typography>
-                        </Link>
-                    </Hidden>
-                    <DateNavigator className={classes.dateNavigator} />
-                    <Hidden xsDown>
-                        <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
-                        <Dropdown />
-                    </Hidden>
-                    <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")}>Login</Button>
-                </Toolbar>
-            </AppBar>
-            <div style={{ height: "50px" }} />
-            <Calendar />
-            <SimpleEventForm />
-            <Tooltip title="Create Event" placement="left" aria-label="add">
-                <Fab className={classes.fab} color="primary" onClick={props.setSimpleEventForm}>
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-        </div >
-    );
+                            </Link>
+                        </Hidden>
+                        <DateNavigator className={classes.dateNavigator} />
+                        <Hidden xsDown>
+                            <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
+                            <Dropdown />
+                        </Hidden>
+                    </Toolbar>
+                </AppBar>
+                <div style={{ height: "50px" }} />
+                <Calendar />
+                <SimpleEventForm />
+                <Tooltip title="Create Event" placement="left" aria-label="add">
+                    <Fab className={classes.fab} color="primary" onClick={props.setSimpleEventForm}>
+                        <AddIcon />
+                    </Fab>
+                </Tooltip>
+            </div >
+        );
+    }
+
+    const LoginPage = () => {
+        return <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
+    }
+
+    // if (props.authenticated)
+    //     return <TimeFlex />;
+    // return <LoginPage />;
+
+    return <TimeFlex />
 };
 
+const mapStateToProps = state => ({
+    authenticated: state.data.authenticated,
+})
 
 const mapDispatchToProps = dispatch => ({
     navigateToday: () => dispatch(setCurrentDate(new Date())),
@@ -88,4 +110,4 @@ const mapDispatchToProps = dispatch => ({
     fetchAppointments: () => dispatch(fetchAppointments())
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

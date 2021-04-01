@@ -1,5 +1,8 @@
 const initialState = {
-    user: {},
+    user: {
+        googleId: "dev"
+    },
+    authenticated: false,
     appointments: [],
     loading: false,
     error: ""
@@ -75,6 +78,16 @@ const dataReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload
+            };
+        case 'SET_AUTHENTICATED':
+            return {
+                ...state,
+                authenticated: action.payload
+            };
+        case 'SET_USER':
+            return {
+                ...state,
+                user: action.payload
             };
         default:
             return state;

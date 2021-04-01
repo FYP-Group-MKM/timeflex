@@ -40,9 +40,10 @@ export const fetchAppointmentsFailure = error => {
 };
 
 export const fetchAppointments = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         dispatch(fetchAppointmentsRequest());
-        await fetch('/appointments')
+        const googleId = getState().data.user.googleId;
+        await fetch('/appointments/' + googleId)
             .then(res => res.json())
             .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
             .catch(error => dispatch(fetchAppointmentsFailure(error.message)));
@@ -105,9 +106,10 @@ export const deleteAppointmentFailure = (error) => {
 };
 
 export const deleteAppointment = appointmentId => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         dispatch(deleteAppointmentRequest());
-        await fetch('/appointments/' + appointmentId, {
+        const googleId = getState().data.user.googleId;
+        await fetch('/appointments/' + googleId + '/' + appointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -139,9 +141,10 @@ export const editAppointmentFailure = error => {
 };
 
 export const editAppointment = editedAppointment => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         dispatch(editAppointmentRequest());
-        await fetch('/appointments/' + editedAppointment.id, {
+        const googleId = getState().data.user.googleId;
+        await fetch('/appointments/' + googleId + '/' + editedAppointment.id, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -153,3 +156,17 @@ export const editAppointment = editedAppointment => {
             .catch(error => dispatch(editAppointmentFailure(error.message)));
     };
 };
+
+export const setAuthenticated = (authenticated) => {
+    return {
+        type: 'SET_AUTHENTICATED',
+        payload: authenticated
+    };
+};
+
+export const setUser = (user) => {
+    return {
+        type: 'SET_USER',
+        payload: user
+    }
+}

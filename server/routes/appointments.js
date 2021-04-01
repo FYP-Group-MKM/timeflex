@@ -6,10 +6,11 @@ const smartPlanning = require('../smartPlanning');
 const router = express.Router();
 
 // Get all appointments
-router.get('/', async (req, res) => {
+router.get('/:googleId', async (req, res) => {
     console.log("fetching appointments...");
+    const googleId = req.params.googleId;
     try {
-        const appointments = await Appointment.find();
+        const appointments = await Appointment.find({ googleId: googleId });
         res.status(200).json(appointments);
         console.log("fetched appointments successfully");
     } catch (error) {
@@ -19,14 +20,14 @@ router.get('/', async (req, res) => {
 });
 
 // Get a single appointment by id
-router.get('/:id', async (req, res) => {
-    const id = req.params.id
+router.get('/:googleId/:appointmentId', async (req, res) => {
+    const appointmentId = req.params.appointmentId
     let startingTimestamp = Date.now();
-    console.log(`fetching appointment with id: ${id}...`);
+    console.log(`fetching appointment with appointmentId: ${id}...`);
     try {
-        const appointment = await Appointment.findOne({ id: id });
+        const appointment = await Appointment.findOne({ appointmentId: appointmentId });
         res.status(200).json(appointment);
-        console.log(`fetched appointment with id:${id} successfully in ${Date.now() - startingTimestamp}ms`);
+        console.log(`fetched appointment with appointmentId:${appointmentId} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
         console.log("error");
         res.status(404).json({ message: error.message });
@@ -38,7 +39,8 @@ router.post('/', async (req, res) => {
     console.log("inserting appointment...")
     if (req.body.type === "simple") {
         const appointment = {
-            id: uuid.v4(),
+            googleId: req.body.appointment.googleId ? req.body.appointment.googleId : "dev",
+            appointmentId: uuid.v4(),
             ...req.body.appointment
         };
         const newAppointment = new Appointment(appointment);
@@ -52,8 +54,9 @@ router.post('/', async (req, res) => {
         }
     } else if (req.body.type === "smart") {
         const appointment = {
+            googleId: req.body.appointment.googleId ? req.body.appointment.googleId : "dev",
+            deadline: new Date(req.body.appointment.deadline),
             ...req.body.appointment,
-            deadline: new Date(req.body.appointment.deadline)
         };
         const appointments = await Appointment.find().lean();
         const suggestions = smartPlanning(appointment, appointments);
@@ -78,16 +81,19 @@ router.post('/', async (req, res) => {
 });
 
 // Edit appointment by id
-router.put('/:id', async (req, res) => {
-    const paramId = req.params.id;
+router.put('/:googleId/:appointmentId', async (req, res) => {
+    const googleId = req.params.googleId;
+    const appointmentId = req.params.appointmentId;
     let startingTimestamp = Date.now();
-    console.log(`editing appointment with id: ${paramId}...`);
-    const { id, title, startDate, endDate, description } = req.body;
-    const updatedAppointment = { id, title, startDate, endDate, description };
+    console.log(`editing appointment with appointmentId: ${paramId}...`);
+    const updatedAppointment = { ...req.body };
     try {
-        await Appointment.findOneAndUpdate({ id: paramId }, updatedAppointment);
+        await Appointment.findOneAndUpdate({
+            googleId: googleId,
+            appointmentId: appointmentId
+        }, updatedAppointment);
         res.status(200).send("updated appointment successfully");
-        console.log(`updated appointment with id: ${paramId} successfully in ${Date.now() - startingTimestamp}ms`);
+        console.log(`updated appointment with appointmentId: ${paramId} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
         console.log("error", error.message);
         res.json({ message: error.message });
@@ -96,10 +102,14 @@ router.put('/:id', async (req, res) => {
 
 
 // Delete appointment id
-router.delete('/:id', async (req, res) => {
-    const paramId = req.params.id
+router.delete('/:googleId/:appointmentId', async (req, res) => {
+    const googleId = req.params.id;
+    const appointmentId = req.params.id;
     try {
-        await Appointment.findOneAndRemove({ id: paramId });
+        await Appointment.findOneAndRemove({
+            googleId: googleId,
+            appointmentId: appointmentId
+        });
         res.status(200).send("deleted appointment succesfully");
         console.log(`deleted appointment successfully`);
     } catch (error) {
