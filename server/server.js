@@ -24,7 +24,7 @@ app.use(passport.session());
 app.use('/appointments', appointments);
 app.use('./auth', auth);
 
-mongoose.connect(keys.mongodb.url, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => app.listen(PORT, () => console.log(`server running on port ${PORT}`)))
     .catch((error) => console.log(error.message));
 
