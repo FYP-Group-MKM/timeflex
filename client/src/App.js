@@ -1,5 +1,6 @@
 import 'fontsource-roboto';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -21,10 +22,13 @@ import styles from './style.css';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        flexGrow: 1
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: 1,
+        height: "100vh"
     },
     login: {
-        margin: "auto"
+        margin: "auto",
     },
     appbar: {
         overflow: "hidden"
@@ -49,21 +53,26 @@ const useStyles = makeStyles(theme => ({
 
 const App = props => {
     const classes = useStyles();
+    const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch("/auth/login/success")
             .then(res => res.json())
-            .then(user => props.setUser(user));
+            .then(user => props.setUser(user))
+            .then(() => setLoading(false));
     }, []);
 
     const handleLogout = () => {
         window.open("http://localhost:5000/auth/logout", "_self");
-        setUser({});
     };
+
+    const handleLogin = () => {
+        window.open("http://localhost:5000/auth/google", "_self");
+    }
 
     const TimeFlex = () => {
         return (
-            <div className={`${classes.root} ${styles}`}>
+            <div className={styles}>
                 <AppBar color="inherit" className={classes.appbar}>
                     <Toolbar variant="dense" >
                         <Hidden smUp>
@@ -81,7 +90,7 @@ const App = props => {
                             <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                             <Dropdown />
                         </Hidden>
-                        <Button onClick={handleLogout} className={classes.login}>Logout</Button>
+                        <Button onClick={handleLogout}>Logout</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{ height: "50px" }} />
@@ -97,12 +106,26 @@ const App = props => {
     }
 
     const LoginPage = () => {
-        return <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
+        return <Button onClick={handleLogin} className={classes.login}>Login</Button>;
     }
+
     console.log(props.user.googleId);
-    if (props.user.googleId)
-        return <TimeFlex />;
-    return <LoginPage />;
+    return (
+        <div className={classes.root}>
+            <Router>
+                <Route exact path="/">
+                    {props.user.googleId ? <Redirect to="/calendar" /> : <Redirect to="/login" />}
+                </Route>
+                <Route path="/calendar">
+                    {isLoading ? null : (props.user.googleId ? <TimeFlex /> : <Redirect to="/login" />)}
+                </Route>
+                <Route path="/login">
+                    {props.user.googleId ? <Redirect to="/calendar" /> : <LoginPage />}
+                </Route>
+            </Router>
+        </div>
+
+    );
 };
 
 const mapStateToProps = state => ({
