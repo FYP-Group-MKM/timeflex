@@ -15,7 +15,7 @@ router.get('/:googleId', async (req, res) => {
         console.log("fetched appointments successfully");
     } catch (error) {
         console.log(error);
-        res.status(404).json({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 
@@ -30,32 +30,38 @@ router.get('/:googleId/:appointmentId', async (req, res) => {
         console.log(`fetched appointment with appointmentId:${appointmentId} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
         console.log("error");
-        res.status(404).json({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 
 // Appointment creation
 router.post('/', async (req, res) => {
-    console.log("inserting appointment...")
-    if (req.body.type === "simple") {
-        const appointment = {
+    console.log("inserting appointment...");
+
+    const type = req.body.type;
+    const appointment = { ...req.body.appointment };
+
+    if (type !== "simple" && type !== "smart") {
+        console.log("appointment type must be either \"simple\" or \"smart\"")
+        res.json({ message: "appointment type must be either \"simple\" or \"smart\"" });
+    }
+
+    if (type === "simple") {
+        const newAppointment = new Appointment({
+            ...appointment,
             appointmentId: uuid.v4(),
-            ...req.body.appointment
-        };
-        const newAppointment = new Appointment(appointment);
+        });
         try {
             await newAppointment.save();
-            res.status(200).send("inserted appointment successfully");
+            res.status(200).json({ message: `created appointment "${appointment.title}" successfully` });
             console.log(`created appointment "${appointment.title}" successfully`)
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.json({ message: error.message });
             console.log(error);
         }
-    } else if (req.body.type === "smart") {
-        const appointment = {
-            deadline: new Date(req.body.appointment.deadline),
-            ...req.body.appointment,
-        };
+    }
+
+    if (type === "smart") {
         const appointments = await Appointment.find().lean();
         const suggestions = smartPlanning(appointment, appointments);
         if (suggestions) {
@@ -64,26 +70,27 @@ router.post('/', async (req, res) => {
                     const newAppointment = new Appointment(suggestion);
                     newAppointment.save();
                 });
-                res.status(200).send("inserted appointment successfully");
+                res.status(200).json({ message: `created appointment "${appointment.title}" with Smart Planning successfully` });
                 console.log(`created appointment "${appointment.title}" with Smart Planning successfully`);
             } catch (error) {
-                res.status(400).json({ message: error.message });
+                console.log(error);
+                res.json({ message: error.message });
             }
         } else {
             console.log("no solution available")
             res.json({ message: "no solution available" })
         }
-    } else {
-        console.log("incorrect type of appointment request (simple/smart)")
     }
+
+    res.status(404);
 });
 
 // Edit appointment by id
 router.put('/:googleId/:appointmentId', async (req, res) => {
+    console.log(`editing appointment with appointmentId: ${paramId}...`);
+    let startingTimestamp = Date.now();
     const googleId = req.params.googleId;
     const appointmentId = req.params.appointmentId;
-    let startingTimestamp = Date.now();
-    console.log(`editing appointment with appointmentId: ${paramId}...`);
     const updatedAppointment = { ...req.body };
     try {
         await Appointment.findOneAndUpdate({
@@ -111,7 +118,7 @@ router.delete('/:googleId/:appointmentId', async (req, res) => {
         res.status(200).send("deleted appointment succesfully");
         console.log(`deleted appointment successfully`);
     } catch (error) {
-        res.status(409).json({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 
