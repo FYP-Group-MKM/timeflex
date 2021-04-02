@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import FormDatePicker from './FormDatePicker';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { connect } from 'react-redux'
-import { fetchAppointments, editAppointment, setCurrentDate } from '../../actions'
+import { fetchAppointments, setCurrentDate } from '../../actions'
 
 class EditEventForm extends Component {
     constructor(props) {
@@ -245,7 +245,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
     fetchAppointments: () => dispatch(fetchAppointments()),
-    editAppointment: (appointment) => dispatch(editAppointment(appointment)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm);
