@@ -26,7 +26,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/appointments/' + this.state.id)
+        fetch('/appointments/' + this.props.googleId + '/' + this.state.id)
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -45,14 +45,22 @@ class EditEventForm extends Component {
         return false;
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
         if (this.state.editData.title === null || this.state.editData.title === "") {
             this.setState({ error: true });
         } else if (this.state.editData.startDate > this.state.editData.endDate) {
             alert("The start date cannot be later than the end date");
         } else {
             this.setState({ error: false });
-            this.props.editAppointment(this.state.editData);
+            // this.props.editAppointment(this.state.editData);
+            await fetch('/appointments/' + this.props.googleId + '/' + this.state.editData.appointmentId, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.state.editData)
+            })
             setTimeout(this.props.fetchAppointments, 50);
             this.props.onClose();
         }
@@ -231,6 +239,7 @@ class EditEventForm extends Component {
 }
 const mapStateToProps = state => ({
     currentDate: state.calendar.currentDate,
+    googleId: state.data.user.googleId,
 });
 
 const mapDispatchToProps = dispatch => ({
