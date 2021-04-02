@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
         margin: "auto",
         width: "350px",
         height: "200px",
-        borderRadius: "18px",
+        borderRadius: "12px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
@@ -53,6 +53,11 @@ const useStyles = makeStyles(theme => ({
     },
     loginButtonIcon: {
         height: "18px",
+    },
+    buttonGroup: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
     },
     appbar: {
         overflow: "hidden"
@@ -137,10 +142,13 @@ const App = props => {
                     <Typography variant="h4" className={classes.loginTitle}>TimeFlex</Typography>
                     <Typography variant="subtitle2" className={classes.loginTitle}>Calendar Designed for HKU Academia</Typography>
                 </div>
-                <Button onClick={handleLogin} variant="outlined" className={classes.loginButton} >
-                    <img src={googleIcon} className={classes.loginButtonIcon} />
-                    Sign in with Google
-                </Button>
+                <div className={classes.buttonGroup}>
+                    <Button onClick={handleLogin} variant="outlined" className={classes.loginButton} >
+                        <img src={googleIcon} className={classes.loginButtonIcon} />
+                        Sign in with Google
+                    </Button>
+                    <Typography variant="caption">*Only available to HKU Connect accounts</Typography>
+                </div>
             </Paper>
         );
     }
