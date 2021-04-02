@@ -20,6 +20,7 @@ class SmartPlanningForm extends Component {
         this.state = {
             open: true,
             smartAppointment: {
+                googleId: this.props.googleId,
                 title: "",
                 deadline: new Date(new Date(new Date().setDate(new Date().getDate() + 7)).setHours(23)).setMinutes(59),
                 exDuration: null,
@@ -234,9 +235,13 @@ class SmartPlanningForm extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    googleId: state.data.user.googleId,
+});
+
 const mapDispatchToProps = dispatch => ({
     fetchAppointments: () => dispatch(fetchAppointments()),
     postAppointment: (appointment) => dispatch(postAppointment(appointment))
 });
 
-export default connect(null, mapDispatchToProps)(SmartPlanningForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SmartPlanningForm);

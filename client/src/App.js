@@ -1,15 +1,17 @@
 import 'fontsource-roboto';
+import googleIcon from './assets/google.png';
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Link from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
+import AddIcon from '@material-ui/icons/Add';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
 import DateNavigator from './components/AppBar/DateNavigator';
@@ -25,10 +27,31 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,
-        height: "100vh"
+        height: "98vh"
     },
     login: {
         margin: "auto",
+        width: "350px",
+        height: "200px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+    loginTitle: {
+        color: "#616161",
+        textAlign: "center"
+    },
+    loginButton: {
+        width: "210px",
+        borderRadius: "18px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    loginButtonIcon: {
+        height: "18px",
     },
     appbar: {
         overflow: "hidden"
@@ -41,7 +64,10 @@ const useStyles = makeStyles(theme => ({
     },
     todayButton: {
         color: "#616161",
-        marginRight: "16px"
+        marginRight: "12px"
+    },
+    logoutButton: {
+        color: "#616161",
     },
     fab: {
         position: "fixed",
@@ -80,9 +106,7 @@ const App = props => {
                         </Hidden>
                         <Hidden xsDown>
                             <Link className={classes.title} underline="none" onClick={props.fetchAppointments}>
-                                <Typography variant="h6">
-                                    TimeFlex
-                            </Typography>
+                                <Typography variant="h6">TimeFlex</Typography>
                             </Link>
                         </Hidden>
                         <DateNavigator className={classes.dateNavigator} />
@@ -90,7 +114,7 @@ const App = props => {
                             <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                             <Dropdown />
                         </Hidden>
-                        <Button onClick={handleLogout}>Logout</Button>
+                        <Button onClick={handleLogout} className={classes.logoutButton}>Logout</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{ height: "50px" }} />
@@ -106,7 +130,18 @@ const App = props => {
     }
 
     const LoginPage = () => {
-        return <Button onClick={handleLogin} className={classes.login}>Login</Button>;
+        return (
+            <Paper className={classes.login} variant="outlined">
+                <div>
+                    <Typography variant="h4" className={classes.loginTitle}>TimeFlex</Typography>
+                    <Typography variant="subtitle2" className={classes.loginTitle}>Calendar Designed for HKU Academia</Typography>
+                </div>
+                <Button onClick={handleLogin} variant="outlined" className={classes.loginButton} >
+                    <img src={googleIcon} className={classes.loginButtonIcon} />
+                    Sign in with Google
+                </Button>
+            </Paper>
+        );
     }
 
     console.log(props.user.googleId);
@@ -130,7 +165,6 @@ const App = props => {
 
 const mapStateToProps = state => ({
     user: state.data.user,
-    authenticated: state.data.authenticated,
 })
 
 const mapDispatchToProps = dispatch => ({

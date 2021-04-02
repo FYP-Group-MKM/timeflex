@@ -37,5 +37,13 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+const authCheck = (req, res, next) => {
+    if (!req.user) {
+        res.status(401).send("user unauthenticated")
+    } else {
+        next();
+    }
+}
+
 app.use('/auth', auth);
-app.use('/appointments', appointments);
+app.use('/appointments', authCheck, appointments);

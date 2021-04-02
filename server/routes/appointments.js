@@ -39,7 +39,6 @@ router.post('/', async (req, res) => {
     console.log("inserting appointment...")
     if (req.body.type === "simple") {
         const appointment = {
-            googleId: req.body.appointment.googleId ? req.body.appointment.googleId : "dev",
             appointmentId: uuid.v4(),
             ...req.body.appointment
         };
@@ -54,7 +53,6 @@ router.post('/', async (req, res) => {
         }
     } else if (req.body.type === "smart") {
         const appointment = {
-            googleId: req.body.appointment.googleId ? req.body.appointment.googleId : "dev",
             deadline: new Date(req.body.appointment.deadline),
             ...req.body.appointment,
         };
