@@ -121,52 +121,9 @@ export const deleteAppointment = appointmentId => {
     };
 };
 
-export const editAppointmentRequest = () => {
-    return {
-        type: 'EDIT_APPOINTMENT_REQUEST',
-    };
-};
-
-export const editAppointmentSuccess = () => {
-    return {
-        type: 'EDIT_APPOINTMENT_SUCCESS'
-    };
-};
-
-export const editAppointmentFailure = error => {
-    return {
-        type: 'EDIT_APPOINTMENT_FAILURE',
-        payload: error
-    };
-};
-
-export const editAppointment = editedAppointment => {
-    return async (dispatch, getState) => {
-        dispatch(editAppointmentRequest());
-        const googleId = getState().data.user.googleId;
-        await fetch('/appointments/' + googleId + '/' + editedAppointment.id, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(editedAppointment)
-        })
-            .then(dispatch(editAppointmentSuccess()))
-            .catch(error => dispatch(editAppointmentFailure(error.message)));
-    };
-};
-
-export const setAuthenticated = (authenticated) => {
-    return {
-        type: 'SET_AUTHENTICATED',
-        payload: authenticated
-    };
-};
-
 export const setUser = (user) => {
     return {
         type: 'SET_USER',
         payload: user
-    }
-}
+    };
+};

@@ -60,28 +60,6 @@ const dataReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-        case 'EDIT_APPOINTMENT_REQUEST':
-            return {
-                ...state,
-                loading: true
-            };
-        case 'EDIT_APPOINTMENT_SUCCESS':
-            return {
-                ...state,
-                loading: false,
-                error: "",
-            };
-        case 'EDIT_APPOINTMENT_FAILURE':
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            };
-        case 'SET_AUTHENTICATED':
-            return {
-                ...state,
-                authenticated: action.payload
-            };
         case 'SET_USER':
             return {
                 ...state,

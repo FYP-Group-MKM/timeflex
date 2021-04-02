@@ -10,6 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
 import FormDatePicker from './FormDatePicker';
 import { connect } from 'react-redux';
 import { fetchAppointments, postAppointment } from '../../actions';
@@ -230,6 +231,12 @@ class SmartPlanningForm extends Component {
                 >
                     {this.renderSmartPlanningForm()}
                 </Dialog>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    open={true}
+                    // onClose={handleClose}
+                    message="I love snacks"
+                />
             </div>
         );
     }

@@ -37,8 +37,8 @@ const Calendar = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleTooltipOpen = editDataId => {
-        setEditDataId(editDataId);
+    const handleTooltipOpen = appointmentId => {
+        setEditDataId(appointmentId);
         setEditing(true);
     };
 
@@ -59,7 +59,7 @@ const Calendar = props => {
             <AppointmentTooltip.Layout
                 {...props}
                 onDeleteButtonClick={() => handleAppointmentDelete(props.appointmentMeta.data.appointmentId)}
-                onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
+                onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.appointmentId)}
             />
         );
     };

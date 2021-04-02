@@ -23,7 +23,7 @@ router.get('/:googleId', async (req, res) => {
 router.get('/:googleId/:appointmentId', async (req, res) => {
     const appointmentId = req.params.appointmentId
     let startingTimestamp = Date.now();
-    console.log(`fetching appointment with appointmentId: ${id}...`);
+    console.log(`fetching appointment with appointmentId: ${appointmentId}...`);
     try {
         const appointment = await Appointment.findOne({ appointmentId: appointmentId });
         res.status(200).json(appointment);
@@ -77,20 +77,19 @@ router.post('/', async (req, res) => {
                 res.json({ message: error.message });
             }
         } else {
-            console.log("no solution available")
-            res.json({ message: "no solution available" })
+            console.log("no solution available");
+            res.status(404).json({ message: "no solution available" });
         }
     }
-
     res.status(404);
 });
 
 // Edit appointment by id
 router.put('/:googleId/:appointmentId', async (req, res) => {
-    console.log(`editing appointment with appointmentId: ${paramId}...`);
     let startingTimestamp = Date.now();
     const googleId = req.params.googleId;
     const appointmentId = req.params.appointmentId;
+    console.log(`editing appointment with appointmentId: ${appointmentId}...`);
     const updatedAppointment = { ...req.body };
     try {
         await Appointment.findOneAndUpdate({
