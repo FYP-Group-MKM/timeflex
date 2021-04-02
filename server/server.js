@@ -39,7 +39,7 @@ app.use(passport.session());
 
 const authCheck = (req, res, next) => {
     if (!req.user) {
-        res.status(401).send("user unauthenticated")
+        res.status(401).json({ message: "user unauthenticated" })
     } else {
         next();
     }

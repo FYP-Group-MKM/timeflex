@@ -5,6 +5,7 @@ router.get('/login/success', (req, res) => {
     if (req.user) {
         res.json(req.user);
     }
+    res.json({ message: "unauthenticated user" });
 });
 
 // auth with google

@@ -33,6 +33,7 @@ const useStyles = makeStyles(theme => ({
         margin: "auto",
         width: "350px",
         height: "200px",
+        borderRadius: "18px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
