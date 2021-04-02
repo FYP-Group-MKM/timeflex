@@ -1,10 +1,5 @@
 import 'fontsource-roboto';
-import React, { useEffect, useState } from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route
-} from 'react-router-dom';
+import React, { useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -20,7 +15,7 @@ import DateNavigator from './components/AppBar/DateNavigator';
 import SimpleEventForm from './components/Forms/SimpleEventForm';
 import SideBar from './components/AppBar/SideBar';
 import { makeStyles } from '@material-ui/core/styles';
-import { fetchAppointments, setCurrentDate, setSimpleEventForm } from './actions';
+import { fetchAppointments, setCurrentDate, setSimpleEventForm, setUser } from './actions';
 import { connect } from 'react-redux';
 import styles from './style.css';
 
@@ -54,16 +49,19 @@ const useStyles = makeStyles(theme => ({
 
 const App = props => {
     const classes = useStyles();
-    const [user, setUser] = useState({});
 
-    useEffect(async () => {
-        await fetch("/auth/login/success")
+    useEffect(() => {
+        fetch("/auth/login/success")
             .then(res => res.json())
-            .then(user => setUser(user));
-    }, [])
+            .then(user => props.setUser(user));
+    }, []);
+
+    const handleLogout = () => {
+        window.open("http://localhost:5000/auth/logout", "_self");
+        setUser({});
+    };
 
     const TimeFlex = () => {
-        console.log(user);
         return (
             <div className={`${classes.root} ${styles}`}>
                 <AppBar color="inherit" className={classes.appbar}>
@@ -83,7 +81,7 @@ const App = props => {
                             <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                             <Dropdown />
                         </Hidden>
-                        <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
+                        <Button onClick={handleLogout} className={classes.login}>Logout</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{ height: "50px" }} />
@@ -101,20 +99,22 @@ const App = props => {
     const LoginPage = () => {
         return <Button onClick={() => window.open("http://localhost:5000/auth/google", "_self")} className={classes.login}>Login</Button>
     }
-
-    if (user)
+    console.log(props.user.googleId);
+    if (props.user.googleId)
         return <TimeFlex />;
     return <LoginPage />;
 };
 
 const mapStateToProps = state => ({
+    user: state.data.user,
     authenticated: state.data.authenticated,
 })
 
 const mapDispatchToProps = dispatch => ({
     navigateToday: () => dispatch(setCurrentDate(new Date())),
     setSimpleEventForm: () => dispatch(setSimpleEventForm(true)),
-    fetchAppointments: () => dispatch(fetchAppointments())
+    fetchAppointments: () => dispatch(fetchAppointments()),
+    setUser: (user) => dispatch(setUser(user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

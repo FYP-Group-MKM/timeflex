@@ -31,6 +31,7 @@ class SimpleEventForm extends Component {
             recurrence: false,
             recurMenuAnchorEl: null,
             simpleAppointment: {
+                googleId: this.props.googleId,
                 title: "",
                 allDay: false,
                 startDate: addHours(setMinutes(new Date(), 0), 1),
@@ -336,7 +337,8 @@ class SimpleEventForm extends Component {
 const mapStateToProps = state => {
     return {
         currentDate: state.calendar.currentDate,
-        isOpen: state.simpleEventForm.isOpen
+        isOpen: state.simpleEventForm.isOpen,
+        googleId: state.data.user.googleId,
     }
 }
 
