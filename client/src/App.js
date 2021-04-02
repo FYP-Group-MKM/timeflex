@@ -1,5 +1,6 @@
 import 'fontsource-roboto';
 import googleIcon from './assets/google.png';
+import HKULogo from './assets/HKU.jpg';
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
@@ -32,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     login: {
         margin: "auto",
         width: "350px",
-        height: "200px",
+        height: "400px",
         borderRadius: "12px",
         display: "flex",
         flexDirection: "column",
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     loginTitle: {
         color: "#616161",
         textAlign: "center"
+    },
+    hkuLogo: {
+        width: "150px"
     },
     loginButton: {
         width: "210px",
@@ -140,8 +144,9 @@ const App = props => {
             <Paper className={classes.login} variant="outlined">
                 <div>
                     <Typography variant="h4" className={classes.loginTitle}>TimeFlex</Typography>
-                    <Typography variant="subtitle2" className={classes.loginTitle}>Calendar Designed for HKU Academia</Typography>
+                    <Typography variant="subtitle2" className={classes.loginTitle}>Calendar designed for HKU academia</Typography>
                 </div>
+                <img src={HKULogo} className={classes.hkuLogo} />
                 <div className={classes.buttonGroup}>
                     <Button onClick={handleLogin} variant="outlined" className={classes.loginButton} >
                         <img src={googleIcon} className={classes.loginButtonIcon} />
