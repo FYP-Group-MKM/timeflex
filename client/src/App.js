@@ -158,7 +158,6 @@ const App = props => {
         );
     }
 
-    console.log(props.user.googleId);
     return (
         <div className={classes.root}>
             <Router>

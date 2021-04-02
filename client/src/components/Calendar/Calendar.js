@@ -49,7 +49,6 @@ const Calendar = props => {
 
     const AppointmentTooltipLayout = props => {
         const handleAppointmentDelete = (appointmentId) => {
-            console.log(appointmentId);
             deleteAppointment(appointmentId);
             setTimeout(fetchAppointments, 50);
             props.onHide();
@@ -86,10 +85,7 @@ const Calendar = props => {
                     layoutComponent={AppointmentTooltipLayout}
                 />
             </Scheduler >
-            {
-                isEditing ? <EditEventForm open={isEditing} onClose={handleTooltipClose} editDataId={editDataId} /> : null
-            }
-
+            {isEditing ? <EditEventForm open={isEditing} onClose={handleTooltipClose} editDataId={editDataId} /> : null}
         </div >
     );
 };

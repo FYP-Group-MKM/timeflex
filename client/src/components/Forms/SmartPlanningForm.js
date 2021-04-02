@@ -10,7 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
 import FormDatePicker from './FormDatePicker';
 import { connect } from 'react-redux';
 import { fetchAppointments, postAppointment } from '../../actions';
@@ -20,6 +19,7 @@ class SmartPlanningForm extends Component {
         super(props);
         this.state = {
             open: true,
+            snackbar: false,
             smartAppointment: {
                 googleId: this.props.googleId,
                 title: "",
@@ -40,14 +40,27 @@ class SmartPlanningForm extends Component {
         };
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
         if (this.checkValid()) {
             const appointmentRequest = {
                 type: "smart",
                 appointment: { ...this.state.smartAppointment }
             };
-            this.props.postAppointment(appointmentRequest);
-            setTimeout(this.props.fetchAppointments, 50);
+            // this.props.postAppointment(appointmentRequest);
+            // setTimeout(this.props.fetchAppointments, 50);
+            await fetch('/appointments', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(appointmentRequest)
+            }).then((res) => {
+                if (res.status === 200)
+                    this.props.fetchAppointments();
+                if (res.status === 404)
+                    this.setState({ snackbar: true });
+            });
             this.onClose();
         }
     }
@@ -231,12 +244,6 @@ class SmartPlanningForm extends Component {
                 >
                     {this.renderSmartPlanningForm()}
                 </Dialog>
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                    open={true}
-                    // onClose={handleClose}
-                    message="I love snacks"
-                />
             </div>
         );
     }
