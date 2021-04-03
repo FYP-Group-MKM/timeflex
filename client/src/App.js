@@ -138,13 +138,13 @@ const App = props => {
                         <AddIcon />
                     </Fab>
                 </Tooltip>
-                <Snackbar
+                {/* <Snackbar
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
                     open={snackbarIsOpen}
                     autoHideDuration={2000}
                     onClose={() => setSnackbar(false)}
                     message="Note archived"
-                />
+                /> */}
             </div >
         );
     }

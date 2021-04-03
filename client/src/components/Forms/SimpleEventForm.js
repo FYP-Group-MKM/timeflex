@@ -1,7 +1,7 @@
 import format from 'date-fns/format';
 import setMinutes from 'date-fns/setMinutes';
 import addHours from 'date-fns/addHours';
-import React, { useState, Component } from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -45,6 +45,9 @@ const useStyles = makeStyles({
         color: "#757575",
         width: "50px"
     },
+    recurMenu: {
+        margin: "10px 0"
+    },
     formButtons: {
         alignSelf: "flex-end",
     }
@@ -58,6 +61,14 @@ const SimpleEventForm = (props) => {
     const appointment = props.appointment;
     const setAppointment = props.setAppointment;
 
+    useEffect(() => {
+        setAppointment({
+            ...appointment,
+            startDate: setMinutes(addHours(new Date(), 1), 0),
+            endDate: setMinutes(addHours(new Date(), 2), 0),
+        });
+    }, [])
+
     const handleTextFieldInput = (event) => {
         let nam = event.target.name;
         let val = event.target.value;
@@ -65,7 +76,7 @@ const SimpleEventForm = (props) => {
             ...appointment,
             [nam]: val,
         });
-    }
+    };
 
     const handleStartDateSelection = (date) => {
         setAppointment({
@@ -111,21 +122,22 @@ const SimpleEventForm = (props) => {
     return (
         <form className={classes.root} autoComplete="off">
             <TextField
-                autoFocus
                 required
-                error={titleIsEmpty}
-                helperText={titleIsEmpty ? "Title required" : ""}
+                fullWidth
                 name="title"
                 label="Title"
-                onChange={handleTextFieldInput}
-                fullWidth
+                error={props.validity.titleIsEmpty}
                 className={classes.title}
+                value={appointment.title}
+                onChange={handleTextFieldInput}
+                InputLabelProps={{ shrink: true }}
+                helperText={titleIsEmpty ? "Title required" : ""}
             />
             <div className={classes.datePickerRow}>
                 <Typography variant="button" className={classes.timeSectionHeader}>From</Typography>
                 <FormDatePicker
                     allDay={appointment.allDay}
-                    currentDate={appointment.startDate}
+                    currentDate={appointment.startDate ? appointment.startDate : setMinutes(addHours(new Date(), 1), 0)}
                     handleFormChange={handleStartDateSelection}
                 />
             </div>
@@ -133,7 +145,7 @@ const SimpleEventForm = (props) => {
                 <Typography variant="button" className={classes.timeSectionHeader}>Until</Typography>
                 <FormDatePicker
                     allDay={appointment.allDay}
-                    currentDate={appointment.endDate}
+                    currentDate={appointment.endDate ? appointment.endDate : setMinutes(addHours(new Date(), 2), 0)}
                     handleFormChange={handleEndDateSelection}
                 />
             </div>
@@ -147,6 +159,7 @@ const SimpleEventForm = (props) => {
                 variant="outlined"
                 onClick={(event) => setRecurMenuAnchorEl(event.currentTarget)}
                 endIcon={<ArrowDropDownIcon />}
+                className={classes.recurMenu}
             >
                 <Typography variant="button">
                     {appointment.rRule ? recurrenceType : "Doesn't repeat"}
@@ -170,7 +183,7 @@ const SimpleEventForm = (props) => {
                 name="description"
                 label="Description"
                 variant="outlined"
-                defaultValue=" "
+                InputLabelProps={{ shrink: true }}
                 onChange={handleTextFieldInput}
                 multiline rows="2"
                 fullWidth
@@ -237,23 +250,23 @@ const SimpleEventForm = (props) => {
 //         }
 //     }
 
-//     appointmentIsValid = () => {
-//         if (!this.state.simpleAppointment.title
-//             || (new Date(this.state.simpleAppointment.startDate) < new Date())
-//             || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
-//             if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
-//                 this.setState({ titleEmpty: true });
-//             }
-//             if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
-//                 alert("The start date cannot be in the past");
-//             }
-//             if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
-//                 alert("The start date cannot be later than the end date");
-//             }
-//             return false;
-//         }
-//         return true;
-//     }
+    // appointmentIsValid = () => {
+    //     if (!this.state.simpleAppointment.title
+    //         || (new Date(this.state.simpleAppointment.startDate) < new Date())
+    //         || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
+    //         if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
+    //             this.setState({ titleEmpty: true });
+    //         }
+    //         if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
+    //             alert("The start date cannot be in the past");
+    //         }
+    //         if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
+    //             alert("The start date cannot be later than the end date");
+    //         }
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
 //     setAllDay = () => {
 //         const simpleAppointment = { ...this.state.simpleAppointment };

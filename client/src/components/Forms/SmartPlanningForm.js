@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import setMinutes from 'date-fns/setMinutes';
+import addHours from 'date-fns/addHours';
+import addWeeks from 'date-fns/addWeeks';
+import setHours from 'date-fns/setHours';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -40,6 +44,7 @@ const useStyles = makeStyles({
     },
     numberTextFieldRow: {
         width: "100%",
+        minHeight: "70px",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
@@ -58,63 +63,112 @@ const SmartPlanningForm = (props) => {
     const classes = useStyles();
     const appointment = props.appointment;
     const setAppointment = props.setAppointment;
+    const validity = props.validity;
+    const setValidity = props.validity;
+
+    const handleTextFieldInput = (event) => {
+        let nam = event.target.name;
+        let val = event.target.value;
+
+        if (nam === "exDuration" || nam === "minSession" || nam === "maxSession") {
+            val = parseInt(val);
+            if (val <= 0)
+                return;
+        }
+
+        if (nam === "minSession")
+            if (val > appointment.exDuration || val > appointment.maxSession)
+                return;
+
+        if (nam === "maxSession")
+            if (val > appointment.exDuration || val < appointment.minSession)
+                return;
+
+        setAppointment({
+            ...appointment,
+            [nam]: val,
+        });
+    };
+
+    const handleDeadlineSelection = (date) => {
+        setAppointment({
+            ...appointment,
+            deadline: date
+        });
+    };
 
     return (
-        <form className={classes.root} autoComplete="off">
-            <TextField
-                autoFocus
-                required
-                // error={this.state.titleEmpty}
-                // helperText={this.state.titleEmpty ? "Required" : ""}
-                name="title"
-                label="Title"
-                // onChange={this.handleTextFieldInput}
-                fullWidth
-                className={classes.title}
-            />
-            <div className={classes.datePickerRow}>
-                <Typography variant="button" className={classes.timeSectionHeader}>Due</Typography>
-                <FormDatePicker
-                    allDay={false}
-                    currentDate={new Date()}
-                // handleFormChange={handleEndDateSelection}
-                />
-            </div>
-            <div className={classes.numberTextFieldRow}>
+        <>
+            <form className={classes.root} autoComplete="off">
+                <Typography variant="body2">There is a smart planning algorithm in TimeFlex, which will help you find a timeslot for your task.</Typography>
                 <TextField
-                    label="Duration (hours)"
-                    name="exDuration"
-                    // error={this.state.exDurationEmpty}
-                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
-                    type="number"
-                    // onChange={this.handleTextFieldInput}
+                    required
+                    fullWidth
+                    value={appointment.title}
+                    error={props.validity.titleIsEmpty}
+                    helperText={props.validity.titleIsEmpty ? "Required" : ""}
+                    name="title"
+                    label="Title"
+                    onChange={handleTextFieldInput}
                     InputLabelProps={{ shrink: true }}
-                    className={classes.numberTextField}
+                    className={classes.title}
                 />
+                <div className={classes.datePickerRow}>
+                    <Typography variant="button" className={classes.timeSectionHeader}>Due</Typography>
+                    <FormDatePicker
+                        allDay={false}
+                        currentDate={appointment.deadline ? appointment.deadline : addWeeks(setMinutes(setHours(new Date(), 23), 59), 1)}
+                        handleFormChange={handleDeadlineSelection}
+                    />
+                </div>
+                <div className={classes.numberTextFieldRow}>
+                    <TextField
+                        label="Duration (hours)"
+                        name="exDuration"
+                        type="number"
+                        value={appointment.exDuration ? appointment.exDuration : null}
+                        error={props.validity.exDurationIsEmpty}
+                        helperText={props.validity.exDurationIsEmpty ? "Required" : ""}
+                        onChange={handleTextFieldInput}
+                        InputLabelProps={{ shrink: true }}
+                        className={classes.numberTextField}
+                    />
+                    <TextField
+                        label="Session min."
+                        name="minSession"
+                        type="number"
+                        value={appointment.minSession}
+                        error={props.validity.minSessionIsEmpty}
+                        helperText={props.validity.minSessionIsEmpty ? "Required" : ""}
+                        onChange={handleTextFieldInput}
+                        InputLabelProps={{ shrink: true }}
+                        className={classes.numberTextField}
+                    />
+                    <TextField
+                        label="Session max."
+                        name="maxSession"
+                        type="number"
+                        value={appointment.maxSession ? appointment.maxSession : null}
+                        error={props.validity.maxSessionIsEmpty}
+                        helperText={props.validity.maxSessionIsEmpty ? "Required" : ""}
+                        onChange={handleTextFieldInput}
+                        InputLabelProps={{ shrink: true }}
+                        className={classes.numberTextField}
+                    />
+                </div>
                 <TextField
-                    label="Session min."
-                    name="exDuration"
-                    // error={this.state.exDurationEmpty}
-                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
-                    type="number"
-                    // onChange={this.handleTextFieldInput}
+                    name="description"
+                    label="Description"
+                    variant="outlined"
+                    onChange={handleTextFieldInput}
                     InputLabelProps={{ shrink: true }}
-                    className={classes.numberTextField}
+                    multiline rows="2"
+                    fullWidth
                 />
-                <TextField
-                    label="Session max."
-                    name="exDuration"
-                    // error={this.state.exDurationEmpty}
-                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
-                    type="number"
-                    // onChange={this.handleTextFieldInput}
-                    InputLabelProps={{ shrink: true }}
-                    className={classes.numberTextField}
-                />
-            </div>
-        </form>
+            </form>
+        </>
     );
-}
+};
 
 
 class SmartPlanning extends Component {
