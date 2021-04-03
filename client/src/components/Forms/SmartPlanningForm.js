@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -14,12 +15,114 @@ import FormDatePicker from './FormDatePicker';
 import { connect } from 'react-redux';
 import { fetchAppointments, postAppointment } from '../../actions';
 
-class SmartPlanningForm extends Component {
+const useStyles = makeStyles({
+    root: {
+        height: "350px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+    },
+    title: {
+        marginBottom: "10px"
+    },
+    datePickerRow: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    allDaySwitch: {
+        marginLeft: "-5px"
+    },
+    timeSectionHeader: {
+        color: "#757575",
+        width: "50px"
+    },
+    numberTextFieldRow: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    numberTextField: {
+        maxWidth: "150px"
+    },
+    formButtons: {
+        alignSelf: "flex-end",
+    }
+});
+
+
+const SmartPlanningForm = (props) => {
+    const classes = useStyles();
+    const appointment = props.appointment;
+    const setAppointment = props.setAppointment;
+
+    return (
+        <form className={classes.root} autoComplete="off">
+            <TextField
+                autoFocus
+                required
+                // error={this.state.titleEmpty}
+                // helperText={this.state.titleEmpty ? "Required" : ""}
+                name="title"
+                label="Title"
+                // onChange={this.handleTextFieldInput}
+                fullWidth
+                className={classes.title}
+            />
+            <div className={classes.datePickerRow}>
+                <Typography variant="button" className={classes.timeSectionHeader}>Due</Typography>
+                <FormDatePicker
+                    allDay={false}
+                    currentDate={new Date()}
+                // handleFormChange={handleEndDateSelection}
+                />
+            </div>
+            <div className={classes.numberTextFieldRow}>
+                <TextField
+                    label="Duration (hours)"
+                    name="exDuration"
+                    // error={this.state.exDurationEmpty}
+                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
+                    type="number"
+                    // onChange={this.handleTextFieldInput}
+                    InputLabelProps={{ shrink: true }}
+                    className={classes.numberTextField}
+                />
+                <TextField
+                    label="Session min."
+                    name="exDuration"
+                    // error={this.state.exDurationEmpty}
+                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
+                    type="number"
+                    // onChange={this.handleTextFieldInput}
+                    InputLabelProps={{ shrink: true }}
+                    className={classes.numberTextField}
+                />
+                <TextField
+                    label="Session max."
+                    name="exDuration"
+                    // error={this.state.exDurationEmpty}
+                    // helperText={this.state.exDurationEmpty ? "Required" : ""}
+                    type="number"
+                    // onChange={this.handleTextFieldInput}
+                    InputLabelProps={{ shrink: true }}
+                    className={classes.numberTextField}
+                />
+            </div>
+        </form>
+    );
+}
+
+
+class SmartPlanning extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: true,
-            snackbar: false,
+            // open: true,
+            // snackbar: false,
             smartAppointment: {
                 googleId: this.props.googleId,
                 title: "",
@@ -46,8 +149,6 @@ class SmartPlanningForm extends Component {
                 type: "smart",
                 appointment: { ...this.state.smartAppointment }
             };
-            // this.props.postAppointment(appointmentRequest);
-            // setTimeout(this.props.fetchAppointments, 50);
             await fetch('/appointments', {
                 method: 'POST',
                 headers: {

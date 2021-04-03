@@ -12,11 +12,13 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
+import Snackbar from '@material-ui/core/Snackbar';
 import AddIcon from '@material-ui/icons/Add';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
 import DateNavigator from './components/AppBar/DateNavigator';
 import SimpleEventForm from './components/Forms/SimpleEventForm';
+import AppointmentForm from './components/Forms/AppointmentForm';
 import SideBar from './components/AppBar/SideBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { fetchAppointments, setCurrentDate, setSimpleEventForm, setUser } from './actions';
@@ -90,6 +92,7 @@ const useStyles = makeStyles(theme => ({
 const App = props => {
     const classes = useStyles();
     const [isLoading, setLoading] = useState(true);
+    const [snackbarIsOpen, setSnackbar] = useState(true);
 
     useEffect(() => {
         fetch("/auth/login/success")
@@ -129,12 +132,19 @@ const App = props => {
                 </AppBar>
                 <div style={{ height: "50px" }} />
                 <Calendar />
-                <SimpleEventForm />
+                <AppointmentForm />
                 <Tooltip title="Create Event" placement="left" aria-label="add">
                     <Fab className={classes.fab} color="primary" onClick={props.setSimpleEventForm}>
                         <AddIcon />
                     </Fab>
                 </Tooltip>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
+                    open={snackbarIsOpen}
+                    autoHideDuration={2000}
+                    onClose={() => setSnackbar(false)}
+                    message="Note archived"
+                />
             </div >
         );
     }
