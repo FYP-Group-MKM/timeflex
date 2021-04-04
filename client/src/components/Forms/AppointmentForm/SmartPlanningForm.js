@@ -7,9 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import FormDatePicker from './FormDatePicker';
+import FormDatePicker from '../FormDatePicker';
 import { connect } from 'react-redux';
-import { fetchAppointments, postAppointment } from '../../actions';
+import { fetchAppointments, postAppointment } from '../../../actions';
 
 const useStyles = makeStyles({
     root: {
@@ -55,8 +55,6 @@ const SmartPlanningForm = (props) => {
     const classes = useStyles();
     const appointment = props.appointment;
     const setAppointment = props.setAppointment;
-    const validity = props.validity;
-    const setValidity = props.validity;
 
     const handleTextFieldInput = (event) => {
         let nam = event.target.name;
