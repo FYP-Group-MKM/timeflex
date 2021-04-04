@@ -10,10 +10,10 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import FormDatePicker from './FormDatePicker';
+import FormDatePicker from '../FormDatePicker';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { connect } from 'react-redux'
-import { setCurrentDate, setSimpleEventForm, postAppointment, fetchAppointments } from '../../actions';
+import { setCurrentDate, setSimpleEventForm, postAppointment, fetchAppointments } from '../../../actions';
 
 const useStyles = makeStyles({
     root: {
