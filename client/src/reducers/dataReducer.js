@@ -1,5 +1,6 @@
 const initialState = {
     user: {},
+    authenticated: false,
     appointments: [],
     loading: false,
     error: ""
@@ -59,22 +60,10 @@ const dataReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-        case 'EDIT_APPOINTMENT_REQUEST':
+        case 'SET_USER':
             return {
                 ...state,
-                loading: true
-            };
-        case 'EDIT_APPOINTMENT_SUCCESS':
-            return {
-                ...state,
-                loading: false,
-                error: "",
-            };
-        case 'EDIT_APPOINTMENT_FAILURE':
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
+                user: { ...action.payload }
             };
         default:
             return state;

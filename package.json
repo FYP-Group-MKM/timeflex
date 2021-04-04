@@ -20,7 +20,8 @@
         "url": "https://github.com/FYP-Group-MKM/timeflex/issues"
     },
     "homepage": "https://github.com/FYP-Group-MKM/timeflex#readme",
-    "dependencies": {
+    "dependencies": {},
+    "devDependencies": {
         "concurrently": "^6.0.0"
     }
 }
