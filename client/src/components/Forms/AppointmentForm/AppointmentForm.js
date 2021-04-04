@@ -4,8 +4,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import SmartPlanningForm from '../SmartPlanningForm';
-import TabMenu from '../TabMenu';
+import TabMenu from './TabMenu';
+import SmartPlanningForm from './SmartPlanningForm';
 import SimpleEventForm from './SimpleEventForm';
 import { connect } from 'react-redux'
 import { setSimpleEventForm, fetchAppointments } from '../../../actions';

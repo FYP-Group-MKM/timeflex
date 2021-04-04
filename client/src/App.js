@@ -17,7 +17,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
 import DateNavigator from './components/AppBar/DateNavigator';
-import AppointmentForm from './components/Forms/AppointmentForm';
+import AppointmentForm from './components/Forms/AppointmentForm/AppointmentForm';
 import SideBar from './components/AppBar/SideBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { fetchAppointments, setCurrentDate, setSimpleEventForm, setUser } from './actions';
@@ -155,10 +155,10 @@ const App = props => {
                     <Typography variant="h4" className={classes.loginTitle}>TimeFlex</Typography>
                     <Typography variant="subtitle2" className={classes.loginTitle}>Calendar designed for HKU academia</Typography>
                 </div>
-                <img src={HKULogo} className={classes.hkuLogo} />
+                <img src={HKULogo} alt="" className={classes.hkuLogo} />
                 <div className={classes.buttonGroup}>
                     <Button onClick={handleLogin} variant="outlined" className={classes.loginButton} >
-                        <img src={googleIcon} className={classes.loginButtonIcon} />
+                        <img src={googleIcon} alt="" className={classes.loginButtonIcon} />
                         Sign in with Google
                     </Button>
                     <Typography variant="caption">*Only available to HKU Connect accounts</Typography>
