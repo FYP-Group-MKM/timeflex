@@ -21,8 +21,12 @@ const TabMenu = (props) => {
         if (newValue === 0) {
             props.setSimple(true);
             props.setAppointment(tempAppointment ? tempAppointment : {
+                title: "",
                 startDate: setMinutes(addHours(new Date(), 1), 0),
                 endDate: setMinutes(addHours(new Date(), 2), 0),
+                allDay: false,
+                rRule: "",
+                description: "",
             });
         }
 
@@ -31,7 +35,11 @@ const TabMenu = (props) => {
             props.setAppointment(tempAppointment ? tempAppointment : {
                 title: props.appointment.title,
                 deadline: addWeeks(setMinutes(setHours(new Date(), 23), 59), 1),
+                exDuration: null,
                 minSession: 1,
+                maxSession: null,
+                divisible: true,
+                description: "",
             });
         }
 

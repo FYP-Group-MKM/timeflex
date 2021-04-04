@@ -1,29 +1,13 @@
-import format from 'date-fns/format';
-import setMinutes from 'date-fns/setMinutes';
-import addHours from 'date-fns/addHours';
-import SwipeableViews from 'react-swipeable-views';
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Switch from '@material-ui/core/Switch';
-import Typography from '@material-ui/core/Typography';
-import FormDatePicker from './FormDatePicker';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SmartPlanningForm from './SmartPlanningForm';
 import TabMenu from './TabMenu';
 import SimpleEventForm from './SimpleEventForm';
 import { connect } from 'react-redux'
-import { setCurrentDate, setSimpleEventForm, postAppointment, fetchAppointments } from '../../actions';
+import { setSimpleEventForm, fetchAppointments } from '../../actions';
 
 const AppointmentForm = (props) => {
     const [isSimple, setSimple] = useState(true);
@@ -33,18 +17,14 @@ const AppointmentForm = (props) => {
     const handleAppointmentFormClose = () => {
         props.setSimpleEventForm(false);
         setAppointment({});
+        setValidity({});
     }
 
     const handleSubmit = async () => {
-        if (!checkValidity())
+        if (isSimple && !simpleAppointmentIsValid())
             return;
-
-        let type;
-        if (isSimple)
-            type = "simple";
-        else
-            type = "smart";
-
+        if (!isSimple && !smartAppointmentIsValid())
+            return;
         await fetch('/appointments', {
             method: 'POST',
             headers: {
@@ -52,7 +32,7 @@ const AppointmentForm = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                type: type,
+                type: isSimple ? "simple" : "smart",
                 appointment: {
                     googleId: props.googleId,
                     ...appointment
@@ -67,46 +47,73 @@ const AppointmentForm = (props) => {
         handleAppointmentFormClose();
     }
 
-    const checkValidity = () => {
-        const newValidity = {};
-        const { title, startDate, endDate, deadline, exDuration, divisible, minSession, maxSession } = appointment;
+    const simpleAppointmentIsValid = () => {
+        const { title, startDate, endDate } = appointment;
+        let newValidity = {};
+        let isValid = true;
 
-        if (!title)
+        if (!title) {
             newValidity.titleIsEmpty = true;
-
-        if (isSimple) {
-            if (startDate < new Date() || endDate < new Date()) {
-                alert("The start date cannot be in the past")
-                newValidity.invalidDate = true;
-            }
-            if (startDate > endDate) {
-                alert("The start date cannot be later than the end date");
-                newValidity.invalidDate = true;
-            }
-        } else {
-            if (deadline < new Date()) {
-                newValidity.deadlineLegit = false;
-                alert("The deadline must be in the future");
-            }
-            if (!exDuration)
-                newValidity.exDurationIsEmpty = true;
-            if (!maxSession)
-                newValidity.maxSessionIsEmpty = true;
-            if (!minSession)
-                newValidity.minSessionIsEmpty = true;
-            // if (divisible && !maxSession)
-            //     newValidity.maxSessionIsEmpty = true;
-            // if (divisible && !minSession)
-            //     newValidity.minSessionIsEmpty = true;
+            isValid = false;
         }
+
+        if (startDate < new Date()) {
+            newValidity.invalidDate = true;
+            isValid = false;
+            alert("The start date cannot be in the past");
+        }
+
+        if (endDate < new Date()) {
+            newValidity.invalidDate = true;
+            isValid = false;
+            alert("The end date cannot be in the past");
+        }
+
+        if (startDate > endDate) {
+            newValidity.invalidDate = true;
+            isValid = false;
+            alert("The start date cannot be later than the end date");
+        }
+
         setValidity(newValidity);
-        for (const requirement in validity) {
-            if (!requirement)
-                return false;
-        }
-        return true;
-    }
+        return isValid;
+    };
 
+    const smartAppointmentIsValid = () => {
+        const { title, deadline, exDuration, divisible, minSession, maxSession } = appointment;
+        let newValidity = {};
+        let isValid = true;
+
+        if (!title) {
+            newValidity.titleIsEmpty = true;
+            isValid = false;
+        }
+
+        if (deadline < new Date()) {
+            newValidity.invalidDeadline = true;
+            isValid = false;
+            alert("The deadline must be in the future");
+        }
+
+        if (!exDuration) {
+            newValidity.exDurationIsEmpty = true;
+            isValid = false;
+        }
+
+        if (divisible && !maxSession) {
+            newValidity.maxSessionIsEmpty = true;
+            isValid = false;
+        }
+
+        if (divisible && !minSession) {
+            newValidity.minSessionIsEmpty = true;
+            isValid = false;
+        }
+
+        setValidity(newValidity);
+        return isValid;
+    }
+    console.log(appointment);
     return (
         <div>
             <Dialog open={props.open} onClose={handleAppointmentFormClose}>

@@ -17,7 +17,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Calendar from './components/Calendar/Calendar';
 import Dropdown from './components/AppBar/Dropdown';
 import DateNavigator from './components/AppBar/DateNavigator';
-import SimpleEventForm from './components/Forms/SimpleEventForm';
 import AppointmentForm from './components/Forms/AppointmentForm';
 import SideBar from './components/AppBar/SideBar';
 import { makeStyles } from '@material-ui/core/styles';

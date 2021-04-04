@@ -50,15 +50,17 @@ const SimpleEventForm = (props) => {
     const classes = useStyles();
     const [recurrenceType, setRecurrenceType] = useState("");
     const [recurMenuAnchorEl, setRecurMenuAnchorEl] = useState(null);
-    const [titleIsEmpty, setTitleEmptyError] = useState(false);
     const appointment = props.appointment;
     const setAppointment = props.setAppointment;
 
     useEffect(() => {
         setAppointment({
-            ...appointment,
+            title: "",
             startDate: setMinutes(addHours(new Date(), 1), 0),
             endDate: setMinutes(addHours(new Date(), 2), 0),
+            allDay: false,
+            rRule: "",
+            description: "",
         });
     }, [])
 
@@ -144,7 +146,7 @@ const SimpleEventForm = (props) => {
             </div>
             <FormControlLabel
                 control={<Switch color="primary" size="small" onChange={handleAllDayButtonChange} />}
-                label="All day"
+                label={<Typography variant="body2">All day</Typography>}
                 className={classes.allDaySwitch}
             />
             <Button

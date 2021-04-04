@@ -62,7 +62,9 @@ router.post('/', async (req, res) => {
     }
 
     if (type === "smart") {
-        const appointments = await Appointment.find().lean();
+        appointment.deadline = new Date(appointment.deadline);
+        const appointments = await Appointment.find({ googleId: appointment.googleId }).lean();
+        console.log(typeof (appointment.deadline))
         const suggestions = smartPlanning(appointment, appointments);
         if (suggestions) {
             try {

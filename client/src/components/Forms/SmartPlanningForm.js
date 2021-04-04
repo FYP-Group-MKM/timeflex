@@ -4,6 +4,8 @@ import addWeeks from 'date-fns/addWeeks';
 import setHours from 'date-fns/setHours';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import FormDatePicker from './FormDatePicker';
 import { connect } from 'react-redux';
@@ -25,7 +27,7 @@ const useStyles = makeStyles({
         flexDirection: "row",
         alignItems: "center",
     },
-    allDaySwitch: {
+    divisibilitySwitch: {
         marginLeft: "-5px"
     },
     timeSectionHeader: {
@@ -87,6 +89,15 @@ const SmartPlanningForm = (props) => {
         });
     };
 
+    const handleAppointmentDivisibility = () => {
+        setAppointment({
+            ...appointment,
+            divisible: !appointment.divisible,
+            minSession: appointment.exDuration,
+            maxSession: appointment.exDuration,
+        });
+    }
+
     return (
         <>
             <form className={classes.root} autoComplete="off">
@@ -111,40 +122,50 @@ const SmartPlanningForm = (props) => {
                         handleFormChange={handleDeadlineSelection}
                     />
                 </div>
+                <FormControlLabel
+                    // key={appointment.divisible}
+                    label={<Typography variant="body2">Divisible</Typography>}
+                    className={classes.divisibilitySwitch}
+                    checked={appointment.divisible ? true : false}
+                    control={<Switch color="primary" size="small" onChange={handleAppointmentDivisibility} />}
+                />
                 <div className={classes.numberTextFieldRow}>
                     <TextField
                         label="Duration (hours)"
                         name="exDuration"
                         type="number"
-                        value={appointment.exDuration ? appointment.exDuration : null}
+                        value={appointment.exDuration ? appointment.exDuration : ""}
                         error={props.validity.exDurationIsEmpty}
                         helperText={props.validity.exDurationIsEmpty ? "Required" : ""}
                         onChange={handleTextFieldInput}
                         InputLabelProps={{ shrink: true }}
                         className={classes.numberTextField}
                     />
-                    <TextField
-                        label="Session min."
-                        name="minSession"
-                        type="number"
-                        value={appointment.minSession}
-                        error={props.validity.minSessionIsEmpty}
-                        helperText={props.validity.minSessionIsEmpty ? "Required" : ""}
-                        onChange={handleTextFieldInput}
-                        InputLabelProps={{ shrink: true }}
-                        className={classes.numberTextField}
-                    />
-                    <TextField
-                        label="Session max."
-                        name="maxSession"
-                        type="number"
-                        value={appointment.maxSession ? appointment.maxSession : null}
-                        error={props.validity.maxSessionIsEmpty}
-                        helperText={props.validity.maxSessionIsEmpty ? "Required" : ""}
-                        onChange={handleTextFieldInput}
-                        InputLabelProps={{ shrink: true }}
-                        className={classes.numberTextField}
-                    />
+                    {appointment.divisible ?
+                        <>
+                            <TextField
+                                label="Session min."
+                                name="minSession"
+                                type="number"
+                                value={appointment.minSession}
+                                error={props.validity.minSessionIsEmpty}
+                                helperText={props.validity.minSessionIsEmpty ? "Required" : ""}
+                                onChange={handleTextFieldInput}
+                                InputLabelProps={{ shrink: true }}
+                                className={classes.numberTextField}
+                            />
+                            <TextField
+                                label="Session max."
+                                name="maxSession"
+                                type="number"
+                                value={appointment.maxSession ? appointment.maxSession : null}
+                                error={props.validity.maxSessionIsEmpty}
+                                helperText={props.validity.maxSessionIsEmpty ? "Required" : ""}
+                                onChange={handleTextFieldInput}
+                                InputLabelProps={{ shrink: true }}
+                                className={classes.numberTextField}
+                            />
+                        </> : null}
                 </div>
                 <TextField
                     name="description"
