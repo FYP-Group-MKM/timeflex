@@ -35,19 +35,55 @@ const AppointmentForm = (props) => {
         setAppointment({});
     }
 
-    const handleSubmit = () => {
-        console.log(checkValidity());
+    const handleSubmit = async () => {
+        if (!checkValidity())
+            return;
+
+        let type;
+        if (isSimple)
+            type = "simple";
+        else
+            type = "smart";
+
+        await fetch('/appointments', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: type,
+                appointment: {
+                    googleId: props.googleId,
+                    ...appointment
+                }
+            })
+        }).then((res) => {
+            if (res.status === 200)
+                props.fetchAppointments();
+            // if (res.status === 404)
+            //     this.setState({ snackbar: true });
+        });
+        handleAppointmentFormClose();
     }
 
     const checkValidity = () => {
-        if (isSimple) {
-            checkSimpleAppointmentValidity();
-        } else {
-            const { title, deadline, exDuration, divisible, minSession, maxSession } = appointment;
+        const newValidity = {};
+        const { title, startDate, endDate, deadline, exDuration, divisible, minSession, maxSession } = appointment;
 
-            const newValidity = {};
-            if (!title)
-                newValidity.titleIsEmpty = true;
+        if (!title)
+            newValidity.titleIsEmpty = true;
+
+        if (isSimple) {
+            if (startDate < new Date() || endDate < new Date()) {
+                alert("The start date cannot be in the past")
+                newValidity.invalidDate = true;
+            }
+            if (startDate > endDate) {
+                alert("The start date cannot be later than the end date");
+                newValidity.invalidDate = true;
+            }
+        } else {
             if (deadline < new Date()) {
                 newValidity.deadlineLegit = false;
                 alert("The deadline must be in the future");
@@ -62,57 +98,11 @@ const AppointmentForm = (props) => {
             //     newValidity.maxSessionIsEmpty = true;
             // if (divisible && !minSession)
             //     newValidity.minSessionIsEmpty = true;
-
-            setValidity(newValidity);
-
-            for (const requirement in validity) {
-                if (!requirement)
-                    return false;
-            }
-            return true;
         }
-    }
-
-    const checkSmartAppointmentValidity = () => {
-        const { title, deadline, exDuration, divisible, minSession, maxSession } = appointment;
-
-        const newValidity = {};
-        if (!title)
-            newValidity.titleEmpty = true;
-        if (deadline < new Date()) {
-            newValidity.deadlineLegit = false;
-            alert("The deadline must be in the future");
-        }
-        if (!exDuration)
-            newValidity.exDurationEmpty = true;
-        if (divisible && !maxSession)
-            newValidity.maxSessionEmpty = true;
-        if (divisible && !minSession)
-            newValidity.minSessionEmpty = true;
-
         setValidity(newValidity);
-
         for (const requirement in validity) {
             if (!requirement)
                 return false;
-        }
-        return true;
-    }
-
-    const checkSimpleAppointmentValidity = () => {
-        if (!this.state.simpleAppointment.title
-            || (new Date(this.state.simpleAppointment.startDate) < new Date())
-            || (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate))) {
-            if (this.state.simpleAppointment.title === null || this.state.simpleAppointment.title === "") {
-                this.setState({ titleEmpty: true });
-            }
-            if (new Date(this.state.simpleAppointment.startDate) < new Date()) {
-                alert("The start date cannot be in the past");
-            }
-            if (new Date(this.state.simpleAppointment.startDate) > new Date(this.state.simpleAppointment.endDate)) {
-                alert("The start date cannot be later than the end date");
-            }
-            return false;
         }
         return true;
     }
@@ -154,6 +144,7 @@ const AppointmentForm = (props) => {
 
 const mapStateToProps = state => ({
     open: state.simpleEventForm.isOpen,
+    googleId: state.data.user.googleId,
 });
 
 const mapDispatchToProps = dispatch => ({
