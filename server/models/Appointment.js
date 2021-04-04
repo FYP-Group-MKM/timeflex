@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const appointmentSchema = new Schema({
-    user: String,
-    id: String,
+    googleId: String,
+    appointmentId: String,
     title: String,
     allDay: Boolean,
     startDate: Date,

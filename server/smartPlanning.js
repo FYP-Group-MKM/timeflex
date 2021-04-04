@@ -152,7 +152,8 @@ function convertToJSON(input, solution) {
                 endDate = upperTimePointer;
                 if (solution[i][j + 1] !== "picked") {
                     const appointment = {
-                        id: uuid.v4(),
+                        googleId: input.googleId,
+                        appointmentId: uuid.v4(),
                         title: input.title,
                         startDate: new Date(startDate),
                         endDate: new Date(endDate),

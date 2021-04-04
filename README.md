@@ -5,7 +5,7 @@
 ```
 npm run app-install
 ```
-### Run the server as well as the React frontend concurrently
+#### Run the server as well as the React frontend concurrently
 ```
 npm run dev
 ```

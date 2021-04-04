@@ -22,5 +22,6 @@
     "homepage": "https://github.com/FYP-Group-MKM/timeflex#readme",
     "dependencies": {
         "concurrently": "^6.0.0"
-    }
+    },
+    "devDependencies": {}
 }

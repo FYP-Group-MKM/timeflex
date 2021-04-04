@@ -37,8 +37,8 @@ const Calendar = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleTooltipOpen = editDataId => {
-        setEditDataId(editDataId);
+    const handleTooltipOpen = appointmentId => {
+        setEditDataId(appointmentId);
         setEditing(true);
     };
 
@@ -48,8 +48,7 @@ const Calendar = props => {
     };
 
     const AppointmentTooltipLayout = props => {
-        const handleAppointmentDelete = (event, appointmentId) => {
-            event.preventDefault();
+        const handleAppointmentDelete = (appointmentId) => {
             deleteAppointment(appointmentId);
             setTimeout(fetchAppointments, 50);
             props.onHide();
@@ -58,8 +57,8 @@ const Calendar = props => {
         return (
             <AppointmentTooltip.Layout
                 {...props}
-                onDeleteButtonClick={(event) => handleAppointmentDelete(event, props.appointmentMeta.data.id)}
-                onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.id)}
+                onDeleteButtonClick={() => handleAppointmentDelete(props.appointmentMeta.data.appointmentId)}
+                onOpenButtonClick={() => handleTooltipOpen(props.appointmentMeta.data.appointmentId)}
             />
         );
     };
@@ -86,10 +85,7 @@ const Calendar = props => {
                     layoutComponent={AppointmentTooltipLayout}
                 />
             </Scheduler >
-            {
-                isEditing ? <EditEventForm open={isEditing} onClose={handleTooltipClose} editDataId={editDataId} /> : null
-            }
-
+            {isEditing ? <EditEventForm open={isEditing} onClose={handleTooltipClose} editDataId={editDataId} /> : null}
         </div >
     );
 };
