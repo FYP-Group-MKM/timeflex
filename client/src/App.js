@@ -91,7 +91,7 @@ const useStyles = makeStyles(theme => ({
 const App = props => {
     const classes = useStyles();
     const [isLoading, setLoading] = useState(true);
-    const [snackbarIsOpen, setSnackbar] = useState(true);
+    const [snackbarIsOpen, setSnackbar] = useState(false);
 
     useEffect(() => {
         fetch("/auth/login/success")
@@ -106,7 +106,7 @@ const App = props => {
 
     const handleLogin = () => {
         window.open("http://localhost:5000/auth/google", "_self");
-    }
+    };
 
     const TimeFlex = () => {
         return (
@@ -131,19 +131,19 @@ const App = props => {
                 </AppBar>
                 <div style={{ height: "50px" }} />
                 <Calendar />
-                <AppointmentForm />
+                <AppointmentForm popSnackbar={() => setSnackbar(true)} />
                 <Tooltip title="Create Event" placement="left" aria-label="add">
                     <Fab className={classes.fab} color="primary" onClick={props.setSimpleEventForm}>
                         <AddIcon />
                     </Fab>
                 </Tooltip>
-                {/* <Snackbar
+                <Snackbar
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
                     open={snackbarIsOpen}
-                    autoHideDuration={2000}
+                    autoHideDuration={1000}
                     onClose={() => setSnackbar(false)}
-                    message="Note archived"
-                /> */}
+                    message="No suggestion available"
+                />
             </div >
         );
     }

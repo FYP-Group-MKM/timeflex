@@ -3,16 +3,28 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartPlanningForm from './SmartPlanningForm';
 import TabMenu from './TabMenu';
 import SimpleEventForm from './SimpleEventForm';
 import { connect } from 'react-redux'
 import { setSimpleEventForm, fetchAppointments } from '../../actions';
 
+const styles = {
+    loadingScreen: {
+        minWidth: "300px",
+        minHeight: "200px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+};
+
 const AppointmentForm = (props) => {
     const [isSimple, setSimple] = useState(true);
     const [appointment, setAppointment] = useState({});
     const [validity, setValidity] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleAppointmentFormClose = () => {
         props.setSimpleEventForm(false);
@@ -21,6 +33,7 @@ const AppointmentForm = (props) => {
     }
 
     const handleSubmit = async () => {
+        setLoading(true);
         if (isSimple && !simpleAppointmentIsValid())
             return;
         if (!isSimple && !smartAppointmentIsValid())
@@ -38,12 +51,17 @@ const AppointmentForm = (props) => {
                     ...appointment
                 }
             })
-        }).then((res) => {
-            if (res.status === 200)
+        })
+            .then(res => res.json())
+            .then((res) => {
+                if (res.message === "NO_SOLUTION_AVAILABLE")
+                    props.popSnackbar();
                 props.fetchAppointments();
-            // if (res.status === 404)
-            //     this.setState({ snackbar: true });
-        });
+            })
+            .then(() => setLoading(false))
+            .then(() => handleAppointmentFormClose())
+            .catch(error => console.log(error));
+        setLoading(false);
         handleAppointmentFormClose();
     }
 
@@ -113,36 +131,42 @@ const AppointmentForm = (props) => {
         setValidity(newValidity);
         return isValid;
     }
-    console.log(appointment);
+
     return (
         <div>
             <Dialog open={props.open} onClose={handleAppointmentFormClose}>
                 <DialogContent>
-                    <TabMenu appointment={appointment} setAppointment={setAppointment} setSimple={setSimple}>
-                        <SimpleEventForm
-                            key={appointment}
-                            appointment={appointment}
-                            setAppointment={setAppointment}
-                            validity={validity}
-                            setValidity={setValidity}
-                        />
-                        <SmartPlanningForm
-                            key={appointment}
-                            appointment={appointment}
-                            setAppointment={setAppointment}
-                            validity={validity}
-                            setValidity={setValidity}
-                        />
-                        <p>class</p>
-                    </TabMenu>
+                    {!loading ?
+                        <TabMenu appointment={appointment} setAppointment={setAppointment} setSimple={setSimple}>
+                            <SimpleEventForm
+                                key={appointment}
+                                appointment={appointment}
+                                setAppointment={setAppointment}
+                                validity={validity}
+                                setValidity={setValidity}
+                            />
+                            <SmartPlanningForm
+                                key={appointment}
+                                appointment={appointment}
+                                setAppointment={setAppointment}
+                                validity={validity}
+                                setValidity={setValidity}
+                            />
+                            <p>class</p>
+                        </TabMenu> :
+                        <div style={styles.loadingScreen}>
+                            <CircularProgress />
+                        </div>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleAppointmentFormClose} color="primary">
-                        Cancel
-                     </Button>
-                    <Button variant="contained" onClick={handleSubmit} color="primary" disableElevation>
-                        Create Event
-                    </Button>
+                    {!loading ? <>
+                        <Button onClick={handleAppointmentFormClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button variant="contained" onClick={handleSubmit} color="primary" disableElevation>
+                            Create Event
+                        </Button>
+                    </> : null}
                 </DialogActions>
             </Dialog>
         </div>

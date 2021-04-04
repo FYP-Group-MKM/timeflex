@@ -80,7 +80,7 @@ router.post('/', async (req, res) => {
             }
         } else {
             console.log("no solution available");
-            res.status(404).json({ message: "no solution available" });
+            res.json({ message: "NO_SOLUTION_AVAILABLE" });
         }
     }
     res.status(404);
