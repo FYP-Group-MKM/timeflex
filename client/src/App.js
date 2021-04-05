@@ -93,8 +93,8 @@ const App = props => {
     const [isLoading, setLoading] = useState(true);
     const [snackbarIsOpen, setSnackbar] = useState(false);
 
-    useEffect(() => {
-        fetch("/auth/login/success")
+    useEffect(async () => {
+        await fetch("/auth/login/success")
             .then(res => res.json())
             .then(user => props.setUser(user))
             .then(() => setLoading(false));
