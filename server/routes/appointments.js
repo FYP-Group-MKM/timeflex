@@ -99,7 +99,7 @@ router.put('/:googleId/:appointmentId', async (req, res) => {
             appointmentId: appointmentId
         }, updatedAppointment);
         res.status(200).send("updated appointment successfully");
-        console.log(`updated appointment with appointmentId: ${paramId} successfully in ${Date.now() - startingTimestamp}ms`);
+        console.log(`updated appointment with appointmentId: ${appointmentId} successfully in ${Date.now() - startingTimestamp}ms`);
     } catch (error) {
         console.log("error", error.message);
         res.json({ message: error.message });

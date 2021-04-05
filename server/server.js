@@ -38,11 +38,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const authCheck = (req, res, next) => {
-    if (!req.user) {
-        res.status(401).json({ message: "user unauthenticated" })
-    } else {
-        next();
-    }
+    if (!req.user) res.status(401).json({ message: "ACCESS_DENIED" })
+    else next();
 }
 
 app.use('/auth', auth);

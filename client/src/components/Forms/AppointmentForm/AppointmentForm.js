@@ -33,12 +33,12 @@ const AppointmentForm = (props) => {
     }
 
     const handleSubmit = async () => {
-        setLoading(true);
+        // setLoading(true);
         if (isSimple && !simpleAppointmentIsValid())
             return;
         if (!isSimple && !smartAppointmentIsValid())
             return;
-        await fetch('/appointments', {
+        await fetch('http://localhost:5000/appointments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -50,7 +50,8 @@ const AppointmentForm = (props) => {
                     googleId: props.googleId,
                     ...appointment
                 }
-            })
+            }),
+            credentials: 'include'
         })
             .then(res => res.json())
             .then((res) => {
