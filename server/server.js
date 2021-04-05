@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const cors = require('cors');
@@ -6,7 +7,7 @@ const cookieSession = require("cookie-session");
 const appointments = require('./routes/appointments');
 const auth = require('./routes/auth');
 const keys = require('./config/keys');
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 require('./config/passportSetup');
 
 const app = express();
@@ -44,3 +45,9 @@ const authCheck = (req, res, next) => {
 
 app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
+
+app.use(express.static('../client/build'));
+
+app.get('*', function (req, res) {
+    res.sendFile(path.join('../client/build/index.html'));
+});
