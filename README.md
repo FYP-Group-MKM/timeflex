@@ -10,7 +10,7 @@ npm run app-install
 ```
 AUTH_REDIRECT_PORT: 3000
 ```
-3)  Start the app the dev mode
+2)  Start the app the dev mode
 ```
 npm run dev
 ```
