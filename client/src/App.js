@@ -2,7 +2,6 @@ import 'fontsource-roboto';
 import googleIcon from './assets/google.png';
 import HKULogo from './assets/HKU.jpg';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -169,17 +168,7 @@ const App = props => {
 
     return (
         <div className={classes.root}>
-            <Router>
-                <Route exact path="/">
-                    {props.user.googleId ? <Redirect to="/calendar" /> : <Redirect to="/login" />}
-                </Route>
-                <Route path="/calendar">
-                    {loading ? null : (props.user.googleId ? <TimeFlex /> : <Redirect to="/login" />)}
-                </Route>
-                <Route path="/login">
-                    {props.user.googleId ? <Redirect to="/calendar" /> : <LoginPage />}
-                </Route>
-            </Router>
+            {loading ? null : (props.user.googleId ? <TimeFlex /> : <LoginPage />)}
         </div>
     );
 };
