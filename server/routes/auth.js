@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
-const REDIRECT_PORT = require('../server');
+const portConifg = require('../config/portConfig');
 
 router.get('/login/success', (req, res) => {
     console.log('fetching user profile...')
@@ -21,13 +21,13 @@ router.get('/google/redirect',
         next();
     },
     passport.authenticate('google', {
-        successRedirect: `http://localhost:${REDIRECT_PORT}`
+        successRedirect: `http://localhost:${portConifg.AUTH_REDIRECT_PORT}`
     })
 );
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect(`http://localhost:${REDIRECT_PORT}`);
+    res.redirect(`http://localhost:${portConifg.AUTH_REDIRECT_PORT}`);
 });
 
 module.exports = router;
