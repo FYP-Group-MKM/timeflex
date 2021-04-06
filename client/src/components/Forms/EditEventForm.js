@@ -28,7 +28,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/appointments/' + this.props.user.AcceptgoogleId + '/' + this.state.id, { credentials: 'include' })
+        fetch('https://timeflex-web.herokuapp.com/appointments/' + this.props.user.AcceptgoogleId + '/' + this.state.id, { credentials: 'include' })
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -55,7 +55,7 @@ class EditEventForm extends Component {
         } else {
             this.setState({ error: false });
             // this.props.editAppointment(this.state.editData);
-            await fetch('/appointments/' + this.props.user.googleId + '/' + this.state.editData.appointmentId, {
+            await fetch('https://timeflex-web.herokuapp.com/appointments/' + this.props.user.googleId + '/' + this.state.editData.appointmentId, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

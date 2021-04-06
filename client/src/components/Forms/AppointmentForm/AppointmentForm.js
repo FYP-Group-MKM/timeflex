@@ -40,7 +40,7 @@ const AppointmentForm = (props) => {
             return;
         if (!isSimple && !smartAppointmentIsValid())
             return;
-        await fetch('/appointments', {
+        await fetch('https://timeflex-web.herokuapp.com/appointments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

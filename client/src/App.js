@@ -96,7 +96,7 @@ const App = props => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            await fetch("/auth/login/success", { credentials: 'include' })
+            await fetch('https://timeflex-web.herokuapp.com/auth/login/success', { credentials: 'include' })
                 .then(res => res.json())
                 .then(user => { if (user.googleId) props.setUser(user) })
                 .then(() => setLoading(false));
