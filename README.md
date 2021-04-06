@@ -17,7 +17,7 @@ npm run dev
 #### Or run the app in production mode
 1)  In server/config/portConfig.js, set the given AUTH_REDIRECT_PORT to 5000 
 ```
-AUTH_REDIRECT_PORT: 5000;
+AUTH_REDIRECT_PORT: 5000
 ```
 2)  Run the following command:
 ```
