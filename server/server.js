@@ -44,10 +44,7 @@ const authCheck = (req, res, next) => {
 }
 
 app.use('/auth', auth);
-app.use('' + '/appointments', authCheck, appointments);
+app.use('/appointments', authCheck, appointments);
 
 app.use(express.static('../client/build'));
-
-app.get('*', function (req, res) {
-    res.sendFile(path.join('../client/build/index.html'));
-});
+app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
