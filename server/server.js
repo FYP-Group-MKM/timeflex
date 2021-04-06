@@ -59,7 +59,7 @@ const authCheck = (req, res, next) => {
 app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
 
-if (portConifg.AUTH_REDIRECT_PORT === 5000) {
+if (portConifg.AUTH_REDIRECT_PORT === process.env.PORT || 5000) {
     app.use(express.static(path.resolve('client/build')));
     app.get('*', (req, res) => res.sendFile(path.resolve('client/build/index.html')));
 }
