@@ -9,12 +9,13 @@ npm run app-install
 1)  In server/server.js, remove the code fragment as shown below:
 ```
 // server/server.js
+// remove this part
 app.use(express.static('../client/build'));
 app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
 ```
-2)  In routes/auth.js, set the given REDIRECT_PORT to 3000:
+2)  Set the given REDIRECT_PORT to 3000
 ```
-// routes/auth.js
+// server/server.js
 const REDIRECT_PORT = 3000;
 ```
 3)  Start the app the dev mode
@@ -22,13 +23,12 @@ const REDIRECT_PORT = 3000;
 npm run dev
 ```
 #### Or run the app in production mode
-1)  In server/server.js, add back the code fragment removed for the dev mode (if applicable)
-2)  In routes/auth.js, set the given REDIRECT_PORT to 5000:
+1)  In server/server.js, add back the code fragment removed for the dev mode (if applicable) and set the given REDIRECT_PORT to 5000: 
 ```
-// routes/auth.js
+// server/server.js
 const REDIRECT_PORT = 5000;
 ```
-4)  Run the following command:
+2)  Run the following command:
 ```
 npm run client-build    //required for first run only
 npm run start
