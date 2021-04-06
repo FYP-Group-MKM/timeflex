@@ -21,14 +21,14 @@ router.get('/google/redirect',
         next();
     },
     passport.authenticate('google', {
-        successRedirect: `https://timeflex-web.herokuapp.com:${portConifg.AUTH_REDIRECT_PORT}`
+        successRedirect: `https://timeflex-web.herokuapp.com`
         // successRedirect: `http://localhost:${portConifg.AUTH_REDIRECT_PORT}`
     })
 );
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect(`https://timeflex-web.herokuapp.com:${portConifg.AUTH_REDIRECT_PORT}`);
+    res.redirect(`https://timeflex-web.herokuapp.com`);
     // res.redirect(`http://localhost:${portConifg.AUTH_REDIRECT_PORT}`);
 });
 
