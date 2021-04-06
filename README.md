@@ -6,10 +6,17 @@
 npm run app-install
 ```
 #### Run the app in development mode
+1)  Remove the code fragment as shown below in server/server.js
+```
+app.use(express.static('../client/build'));
+app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
+```
+2)  Start the app the dev mode
 ```
 npm run dev
 ```
 #### Or run the app in production mode
+Add back the code fragment removed for the dev mode (if applicable), then run the following command:
 ```
 npm run client-build    //required for first run only
 npm run start
