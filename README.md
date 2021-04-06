@@ -8,6 +8,7 @@ npm run app-install
 #### Run the app in development mode
 1)  Remove the code fragment as shown below in server/server.js
 ```
+// server/server.js
 app.use(express.static('../client/build'));
 app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
 ```
