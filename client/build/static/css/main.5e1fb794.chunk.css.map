@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/style.css"],"names":[],"mappings":"AAAA,EACI,uBACJ,CAEA,oBACI,YACJ","file":"main.5e1fb794.chunk.css","sourcesContent":["* {\n    -ms-overflow-style: none;\n}\n\n::-webkit-scrollbar {\n    display: none;\n}"]}
