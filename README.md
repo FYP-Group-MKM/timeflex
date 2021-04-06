@@ -11,6 +11,7 @@ npm run dev
 ```
 #### Or run the app in production mode
 ```
+npm run client-build    //required for first run only
 npm run start
 ```
 
