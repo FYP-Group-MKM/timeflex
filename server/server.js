@@ -46,5 +46,7 @@ const authCheck = (req, res, next) => {
 app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
 
+
+// Remove this part to run in dev mode
 app.use(express.static('../client/build'));
 app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
