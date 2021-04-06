@@ -168,7 +168,11 @@ const App = props => {
 
     return (
         <div className={classes.root}>
+<<<<<<< HEAD
             {loading ? null : (props.user.googleId ? <TimeFlex /> : <LoginPage />)}
+=======
+            {!loading ? (props.user.googleId ? <TimeFlex /> : <LoginPage />) : null}
+>>>>>>> 892ced90f15b9e195429af0071d143f290274b47
         </div>
     );
 };
