@@ -90,13 +90,13 @@ const useStyles = makeStyles(theme => ({
 
 const App = props => {
     const classes = useStyles();
-    const [isLoading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [snackbarIsOpen, setSnackbar] = useState(false);
 
     useEffect(async () => {
-        await fetch("/auth/login/success")
+        await fetch("http://localhost:5000/auth/login/success", { credentials: 'include' })
             .then(res => res.json())
-            .then(user => props.setUser(user))
+            .then(user => { if (user.googleId) props.setUser(user) })
             .then(() => setLoading(false));
     }, []);
 
@@ -174,14 +174,13 @@ const App = props => {
                     {props.user.googleId ? <Redirect to="/calendar" /> : <Redirect to="/login" />}
                 </Route>
                 <Route path="/calendar">
-                    {isLoading ? null : (props.user.googleId ? <TimeFlex /> : <Redirect to="/login" />)}
+                    {loading ? null : (props.user.googleId ? <TimeFlex /> : <Redirect to="/login" />)}
                 </Route>
                 <Route path="/login">
                     {props.user.googleId ? <Redirect to="/calendar" /> : <LoginPage />}
                 </Route>
             </Router>
         </div>
-
     );
 };
 

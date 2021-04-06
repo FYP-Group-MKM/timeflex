@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 5000;
+
 export const setCurrentDate = (date) => {
     return {
         type: 'SET_CURRENT_DATE',
@@ -43,7 +45,7 @@ export const fetchAppointments = () => {
     return async (dispatch, getState) => {
         dispatch(fetchAppointmentsRequest());
         const googleId = getState().data.user.googleId;
-        await fetch('/appointments/' + googleId)
+        await fetch('http://localhost:' + PORT + '/appointments/' + googleId, { credentials: 'include' })
             .then(res => res.json())
             .then(appointments => dispatch(fetchAppointmentsSuccess(appointments)))
             .catch(error => dispatch(fetchAppointmentsFailure(error.message)));
@@ -72,13 +74,14 @@ export const postAppointmentFailure = error => {
 export const postAppointment = appointment => {
     return async (dispatch) => {
         dispatch(postAppointmentRequest());
-        await fetch('/appointments', {
+        await fetch('http://localhost:' + PORT + '/appointments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(appointment)
+            body: JSON.stringify(appointment),
+            credentials: 'include',
         })
             .then(dispatch(postAppointmentSuccess()))
             .catch(error => dispatch(postAppointmentFailure(error.message)));
@@ -109,12 +112,13 @@ export const deleteAppointment = appointmentId => {
     return async (dispatch, getState) => {
         dispatch(deleteAppointmentRequest());
         const googleId = getState().data.user.googleId;
-        await fetch('/appointments/' + googleId + '/' + appointmentId, {
+        await fetch('http://localhost:' + PORT + '/appointments/' + googleId + '/' + appointmentId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
         })
             .then(dispatch(deleteAppointmentSuccess()))
             .catch(error => dispatch(deleteAppointmentFailure(error.message)));
