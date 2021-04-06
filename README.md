@@ -5,9 +5,13 @@
 ```
 npm run app-install
 ```
-#### Run the server as well as the React frontend concurrently
+#### Run the app in development mode
 ```
 npm run dev
+```
+#### Or run the app in production mode
+```
+npm run start
 ```
 
 ### Motivation
