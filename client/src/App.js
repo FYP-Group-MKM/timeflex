@@ -23,6 +23,8 @@ import { fetchAppointments, setCurrentDate, setSimpleEventForm, setUser } from '
 import { connect } from 'react-redux';
 import styles from './style.css';
 
+const PORT = process.env.PORT || 5000;
+
 const useStyles = makeStyles(theme => ({
     root: {
         display: "flex",
@@ -92,19 +94,22 @@ const App = props => {
     const [loading, setLoading] = useState(true);
     const [snackbarIsOpen, setSnackbar] = useState(false);
 
-    useEffect(async () => {
-        await fetch("http://localhost:5000/auth/login/success", { credentials: 'include' })
-            .then(res => res.json())
-            .then(user => { if (user.googleId) props.setUser(user) })
-            .then(() => setLoading(false));
+    useEffect(() => {
+        const fetchUser = async () => {
+            await fetch("http://localhost:" + PORT + "/auth/login/success", { credentials: 'include' })
+                .then(res => res.json())
+                .then(user => { if (user.googleId) props.setUser(user) })
+                .then(() => setLoading(false));
+        };
+        fetchUser();
     }, []);
 
     const handleLogout = () => {
-        window.open("http://localhost:5000/auth/logout", "_self");
+        window.open("http://localhost:" + PORT + "/auth/logout", "_self");
     };
 
     const handleLogin = () => {
-        window.open("http://localhost:5000/auth/google", "_self");
+        window.open("http://localhost:" + PORT + "/auth/google", "_self");
     };
 
     const TimeFlex = () => {
@@ -168,11 +173,7 @@ const App = props => {
 
     return (
         <div className={classes.root}>
-<<<<<<< HEAD
-            {loading ? null : (props.user.googleId ? <TimeFlex /> : <LoginPage />)}
-=======
             {!loading ? (props.user.googleId ? <TimeFlex /> : <LoginPage />) : null}
->>>>>>> 892ced90f15b9e195429af0071d143f290274b47
         </div>
     );
 };
