@@ -6,14 +6,26 @@ const cors = require('cors');
 const cookieSession = require("cookie-session");
 const appointments = require('./routes' + '/appointments');
 const auth = require('./routes/auth');
-const keys = require('./config/keys');
 const PORT = process.env.PORT || 5000;
+// const keys = require('./config/keys');
+let MONGODB_URL, COOKIE_KEY;
 const portConifg = require('./config/portConfig');
 require('./config/passportSetup');
 
 const app = express();
 
-mongoose.connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+if (process.env.MONGODB_URL) {
+    MONGODB_URL = process.env.MONGODB_URL;
+    COOKIE_KEY = process.env.MONGODB_URL;
+}
+else {
+    const keys = require('./config/keys');
+    MONGODB_URL = keys.mongodb.dbURI;
+    COOKIE_KEY = keys.session.cookieKey;
+}
+
+
+mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => app.listen(PORT, () => console.log(`server running on port ${PORT}`)))
     .catch((error) => console.log(error.message));
 
@@ -33,7 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieSession({
     // milliseconds of a day
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [keys.session.cookieKey]
+    keys: [COOKIE_KEY]
 }));
 
 app.use(passport.initialize());
