@@ -6,27 +6,18 @@
 npm run app-install
 ```
 #### Run the app in development mode
-1)  In server/server.js, remove the code fragment as shown below:
+1)  In server/config/portConfig.js, set the given AUTH_REDIRECT_PORT to 3000
 ```
-// server/server.js
-// remove this part
-app.use(express.static('../client/build'));
-app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
-```
-2)  Set the given REDIRECT_PORT to 3000
-```
-// server/server.js
-const REDIRECT_PORT = 3000;
+AUTH_REDIRECT_PORT: 3000
 ```
 3)  Start the app the dev mode
 ```
 npm run dev
 ```
 #### Or run the app in production mode
-1)  In server/server.js, add back the code fragment removed for the dev mode (if applicable) and set the given REDIRECT_PORT to 5000: 
+1)  In server/config/portConfig.js, set the given AUTH_REDIRECT_PORT to 5000 
 ```
-// server/server.js
-const REDIRECT_PORT = 5000;
+AUTH_REDIRECT_PORT = 5000;
 ```
 2)  Run the following command:
 ```
