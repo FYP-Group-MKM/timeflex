@@ -46,7 +46,10 @@ const authCheck = (req, res, next) => {
 app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
 
-
 // Remove this part to run in dev mode
 app.use(express.static('../client/build'));
 app.get('*', (req, res) => res.sendFile(path.join('../client/build/index.html')));
+
+// Set the port number to 3000 in dev mode, or 500 in prod mode
+const REDIRECT_PORT = 5000;
+module.exports = REDIRECT_PORT;
