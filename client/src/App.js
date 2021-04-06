@@ -96,7 +96,7 @@ const App = props => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            await fetch("http://localhost:" + PORT + "/auth/login/success", { credentials: 'include' })
+            await fetch("/auth/login/success", { credentials: 'include' })
                 .then(res => res.json())
                 .then(user => { if (user.googleId) props.setUser(user) })
                 .then(() => setLoading(false));
@@ -105,11 +105,11 @@ const App = props => {
     }, []);
 
     const handleLogout = () => {
-        window.open("http://localhost:" + PORT + "/auth/logout", "_self");
+        window.open("/auth/logout", "_self");
     };
 
     const handleLogin = () => {
-        window.open("http://localhost:" + PORT + "/auth/google", "_self");
+        window.open("/auth/google", "_self");
     };
 
     const TimeFlex = () => {
