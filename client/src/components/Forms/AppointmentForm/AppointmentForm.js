@@ -38,7 +38,7 @@ const AppointmentForm = (props) => {
             return;
         if (!isSimple && !smartAppointmentIsValid())
             return;
-        await fetch('http://localhost:5000/appointments', {
+        await fetch('http://localhost:' + process.env.PORT || 5000 + '/appointments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

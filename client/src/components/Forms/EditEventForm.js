@@ -26,7 +26,7 @@ class EditEventForm extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:5000/appointments/' + this.props.user.AcceptgoogleId + '/' + this.state.id, { credentials: 'include' })
+        fetch('http://localhost:' + (process.env.PORT || 5000) + '/appointments/' + this.props.user.AcceptgoogleId + '/' + this.state.id, { credentials: 'include' })
             .then(res => res.json())
             .then(data => this.setState({
                 editData: {
@@ -53,7 +53,7 @@ class EditEventForm extends Component {
         } else {
             this.setState({ error: false });
             // this.props.editAppointment(this.state.editData);
-            await fetch('http://localhost:5000/appointments/' + this.props.user.googleId + '/' + this.state.editData.appointmentId, {
+            await fetch('http://localhost:' + process.env.PORT || 5000 + '/appointments/' + this.props.user.googleId + '/' + this.state.editData.appointmentId, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

@@ -20,13 +20,13 @@ router.get('/google/redirect',
         next();
     },
     passport.authenticate('google', {
-        successRedirect: "http://localhost:5000"
+        successRedirect: `http://localhost:${process.env.PORT || 5000}`
     })
 );
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect('http://localhost:5000');
+    res.redirect(`http://localhost:${process.env.PORT || 5000}`);
 });
 
 module.exports = router;
