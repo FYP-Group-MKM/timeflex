@@ -4,16 +4,19 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const cors = require('cors');
 const cookieSession = require("cookie-session");
-const appointments = require('./routes' + '/appointments');
-const auth = require('./routes/auth');
-const PORT = process.env.PORT || 5000;
 const useragent = require('express-useragent');
-let MONGODB_URL, COOKIE_KEY;
-const portConifg = require('./config/portConfig');
 require('./config/passportSetup');
+
+const appointments = require('./routes/appointments');
+const webAuth = require('./routes/auth');
+const expoAuth = require('./routes/expoAuth');
+const config = require('../config');
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+let MONGODB_URL, COOKIE_KEY;
 if (process.env.MONGODB_URL) {
     MONGODB_URL = process.env.MONGODB_URL;
     COOKIE_KEY = process.env.MONGODB_URL;
@@ -24,7 +27,6 @@ else {
     COOKIE_KEY = keys.session.cookieKey;
 }
 
-
 mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => app.listen(PORT, () => console.log(`server running on port ${PORT}`)))
     .catch((error) => console.log(error.message));
@@ -33,7 +35,7 @@ mongoose.set('useFindAndModify', false);
 
 app.use(
     cors({
-        origin: "http://localhost:3000", // allow to server to accept request from different origin
+        origin: 'http://localhost:3000', // allow to server to accept request from different origin
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         credentials: true, // allow session cookie from browser to pass through
     })
@@ -52,15 +54,17 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/auth', webAuth);
+app.use('/expo-auth', expoAuth);
+
 const authCheck = (req, res, next) => {
     if (!(req.user || req.useragent.browser === 'Expo')) res.status(401).json({ message: "ACCESS_DENIED" })
     else next();
 };
-
-app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
 
-if (portConifg.AUTH_REDIRECT_PORT === process.env.PORT || 5000) {
+
+if (config.AUTH_REDIRECT !== 'http://localhost:3000') {
     app.use(express.static(path.resolve('client/build')));
     app.get('*', (req, res) => res.sendFile(path.resolve('client/build/index.html')));
 }

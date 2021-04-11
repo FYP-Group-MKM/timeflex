@@ -17,7 +17,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 
 router.get('/google/redirect', (req, res, next) => {
     passport.authenticate('google', {
-        successRedirect: AUTH_REDIRECT
+        successRedirect: `exp://10.66.102.197:19000/${req.user.googleId}`
     })(req, res, next);
 });
 
