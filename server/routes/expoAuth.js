@@ -17,7 +17,6 @@ router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 
 router.get('/google/redirect', (req, res, next) => {
     passport.authenticate('google', {
-        // successRedirect: `exp://10.66.102.197:19000/${req.user.googleId}`
         successRedirect: `exp://exp.host/@darren1208/timeflex-rn/${req.user.googleId}`
     })(req, res, next);
 });
