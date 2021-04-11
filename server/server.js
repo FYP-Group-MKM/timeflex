@@ -7,7 +7,7 @@ const cookieSession = require("cookie-session");
 const appointments = require('./routes' + '/appointments');
 const auth = require('./routes/auth');
 const PORT = process.env.PORT || 5000;
-// const keys = require('./config/keys');
+const useragent = require('express-useragent');
 let MONGODB_URL, COOKIE_KEY;
 const portConifg = require('./config/portConfig');
 require('./config/passportSetup');
@@ -41,6 +41,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(useragent.express());
 
 app.use(cookieSession({
     // milliseconds of a day
@@ -52,9 +53,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const authCheck = (req, res, next) => {
-    if (!req.user) res.status(401).json({ message: "ACCESS_DENIED" })
+    if (!(req.user || req.useragent.browser === 'Expo')) res.status(401).json({ message: "ACCESS_DENIED" })
     else next();
-}
+};
 
 app.use('/auth', auth);
 app.use('/appointments', authCheck, appointments);
