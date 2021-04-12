@@ -23,7 +23,8 @@ import { fetchAppointments, setCurrentDate, setSimpleEventForm, setUser } from '
 import { connect } from 'react-redux';
 import styles from './style.css';
 
-const PORT = process.env.PORT || 5000;
+import config from './config';
+const HOST_URL = config.HOST_URL;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -96,7 +97,7 @@ const App = props => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            await fetch('https://timeflex-web.herokuapp.com/auth/login/success', { credentials: 'include' })
+            await fetch(`${HOST_URL}/auth/login/success`, { credentials: 'include' })
                 .then(res => res.json())
                 .then(user => { if (user.googleId) props.setUser(user) })
                 .then(() => setLoading(false));
@@ -105,11 +106,11 @@ const App = props => {
     }, []);
 
     const handleLogout = () => {
-        window.open("/auth/logout", "_self");
+        window.open(`${HOST_URL}/auth/logout`, "_self");
     };
 
     const handleLogin = () => {
-        window.open("/auth/google", "_self");
+        window.open(`${HOST_URL}/auth/google`, "_self");
     };
 
     const TimeFlex = () => {

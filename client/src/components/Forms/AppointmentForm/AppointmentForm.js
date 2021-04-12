@@ -10,7 +10,8 @@ import SimpleEventForm from './SimpleEventForm';
 import { connect } from 'react-redux'
 import { setSimpleEventForm, fetchAppointments } from '../../../actions';
 
-const PORT = process.env.PORT || 5000;
+import config from '../../../config';
+const HOST_URL = config.HOST_URL;
 
 const styles = {
     loadingScreen: {
@@ -40,7 +41,7 @@ const AppointmentForm = (props) => {
             return;
         if (!isSimple && !smartAppointmentIsValid())
             return;
-        await fetch('https://timeflex-web.herokuapp.com/appointments', {
+        await fetch(`${HOST_URL}/appointments`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
