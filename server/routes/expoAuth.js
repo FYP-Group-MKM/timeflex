@@ -13,7 +13,7 @@ router.get('/login/success', (req, res) => {
     }
 });
 
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get('/google', passport.authenticate('expo', { scope: ['profile'] }));
 
 router.get('/google/redirect', (req, res, next) => {
     const userProfile = encodeURIComponent(JSON.stringify(req.user))

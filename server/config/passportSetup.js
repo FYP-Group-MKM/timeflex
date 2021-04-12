@@ -23,7 +23,7 @@ passport.deserializeUser((id, done) => {
     });
 });
 
-passport.use(
+passport.use('google',
     new GoogleStrategy({
         // options for google strategy
         clientID: GOOGLE_CLIENT_ID,
@@ -47,7 +47,7 @@ passport.use(
     })
 );
 
-passport.use(
+passport.use('expo',
     new GoogleStrategy({
         // options for google strategy
         clientID: GOOGLE_CLIENT_ID,
