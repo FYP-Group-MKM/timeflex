@@ -17,7 +17,7 @@ router.get('/google', passport.authenticate('expo', { scope: ['profile'] }));
 
 router.get('/google/redirect', (req, res, next) => {
     const userProfile = encodeURIComponent(JSON.stringify(req.user))
-    passport.authenticate('google', {
+    passport.authenticate('expo', {
         successRedirect: `exp://exp.host/@darren1208/timeflex-rn/${userProfile}`
     })(req, res, next);
 });
