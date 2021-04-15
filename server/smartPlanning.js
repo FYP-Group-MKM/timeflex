@@ -58,6 +58,8 @@ function getArrayCalendar(input, appointments) {
     const arrayCalendar = [];
     let availDays = differenceInCalendarDays(input.deadline, firstDay);
 
+    if (availDays <= 0) return arrayCalendar;
+
     for (let i = 0; i < availDays; i++) {
         const day = [];
         for (j = 0; j < 48; j++) {
@@ -90,7 +92,7 @@ function getArrayCalendar(input, appointments) {
                 arrayOccupationEnd = i;
                 break;
             }
-            timeslot = { start: addMinutes(timeslot.start, 30), end: addMinutes(timeslot.end, 30) }
+            timeslot = { start: addMinutes(timeslot.start, 30), end: addMinutes(timeslot.end, 30) };
         }
 
         for (let i = arrayOccupationStart; i <= arrayOccupationEnd; i++) {
