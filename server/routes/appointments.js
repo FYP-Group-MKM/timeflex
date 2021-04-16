@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
     if (type === "simple") {
         const newAppointment = new Appointment({
             ...appointment,
-            appointmentId: uuid.v4(),
+            appointmentId: appointment.appointmentId ? appointment.appointmentId : uuid.v4(),
         });
         try {
             await newAppointment.save();
