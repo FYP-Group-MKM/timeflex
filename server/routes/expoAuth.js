@@ -13,13 +13,12 @@ router.get('/login/success', (req, res) => {
     }
 });
 
-router.get('/google', passport.authenticate('mobile', { scope: ['profile'] }));
+router.get('/google', passport.authenticate('expo', { scope: ['profile'] }));
 
 router.get('/google/redirect', (req, res, next) => {
     const userProfile = encodeURIComponent(JSON.stringify(req.user))
     passport.authenticate('expo', {
         successRedirect: `exp://exp.host/@darren1208/timeflex-rn/${userProfile}`
-        // successRedirect: `timeflex://${userProfile}`
     })(req, res, next);
 });
 
