@@ -10,6 +10,7 @@ require('./config/passportSetup');
 const appointments = require('./routes/appointments');
 const webAuth = require('./routes/auth');
 const expoAuth = require('./routes/expoAuth');
+const nativeAuth = require('./routes/nativeAuth');
 const config = require('../config');
 
 const PORT = process.env.PORT || 5000;
@@ -56,6 +57,7 @@ app.use(passport.session());
 
 app.use('/auth', webAuth);
 app.use('/expo-auth', expoAuth);
+app.use('/native-auth', nativeAuth);
 
 const authCheck = (req, res, next) => {
     if (req.user) next();

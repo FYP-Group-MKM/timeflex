@@ -45,7 +45,7 @@ passport.use('google', new GoogleStrategy({
     });
 }));
 
-passport.use('expo', new GoogleStrategy({
+passport.use('mobile', new GoogleStrategy({
     // options for google strategy
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
