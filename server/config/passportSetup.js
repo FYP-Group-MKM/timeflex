@@ -43,8 +43,7 @@ passport.use('google', new GoogleStrategy({
             });
         }
     });
-})
-);
+}));
 
 passport.use('expo', new GoogleStrategy({
     // options for google strategy
@@ -66,5 +65,4 @@ passport.use('expo', new GoogleStrategy({
             });
         }
     });
-})
-);
+}));

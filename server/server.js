@@ -58,9 +58,12 @@ app.use('/auth', webAuth);
 app.use('/expo-auth', expoAuth);
 
 const authCheck = (req, res, next) => {
-    if (!(req.user || req.useragent.browser === 'Expo')) res.status(401).json({ message: "ACCESS_DENIED" })
-    else next();
+    if (req.user) next();
+    if (req.useragent.browser === 'Expo') next();
+    if (req.useragent.browser === 'TimeFlex') next();
+    res.status(401).json({ message: "ACCESS_DENIED" });
 };
+
 app.use('/appointments', authCheck, appointments);
 
 
