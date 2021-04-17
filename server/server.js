@@ -61,9 +61,9 @@ app.use('/native-auth', nativeAuth);
 
 const authCheck = (req, res, next) => {
     if (req.user) next();
-    if (req.useragent.browser === 'Expo') next();
-    if (req.useragent.browser === 'TimeFlex') next();
-    res.status(401).json({ message: "ACCESS_DENIED" });
+    else if (req.useragent.browser === 'Expo') next();
+    else if (req.useragent.browser === 'TimeFlex') next();
+    else res.status(401).json({ message: "ACCESS_DENIED" });
 };
 
 app.use('/appointments', authCheck, appointments);
