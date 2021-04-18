@@ -127,8 +127,8 @@ const App = props => {
                             </Link>
                         </Hidden>
                         <DateNavigator className={classes.dateNavigator} />
+                        <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                         <Hidden xsDown>
-                            <Button onClick={() => props.navigateToday()} className={classes.todayButton}>Today</Button>
                             <Dropdown />
                         </Hidden>
                         <Button onClick={handleLogout} className={classes.logoutButton}>Logout</Button>
