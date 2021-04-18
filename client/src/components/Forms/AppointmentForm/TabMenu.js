@@ -71,7 +71,7 @@ const TabMenu = (props) => {
             >
                 <Tab label="Simple Event" />
                 <Tab label="Smart Planning" />
-                {/* <Tab label="Class (coming soon)" disabled /> */}
+                <Tab label="Class (coming soon)" disabled />
             </Tabs>
             <SwipeableViews
                 axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
