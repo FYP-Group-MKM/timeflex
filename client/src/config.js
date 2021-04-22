@@ -13,4 +13,4 @@ const DEPLOYMENT_COMFIG = {
     AUTH_REDIRECT: 'https://timeflex-web.herokuapp.com'
 };
 
-module.exports = DEPLOYMENT_COMFIG;
+module.exports = LOCAL_HOST_CONFIG;
