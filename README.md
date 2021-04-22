@@ -5,21 +5,10 @@
 ```
 npm run app-install
 ```
-#### Run the app in development mode
-1)  In server/config/portConfig.js, set the given AUTH_REDIRECT_PORT to 3000
-```
-AUTH_REDIRECT_PORT: 3000
-```
-2)  Start the app the dev mode
-```
-npm run dev
-```
-#### Or run the app in production mode
-1)  In server/config/portConfig.js, set the given AUTH_REDIRECT_PORT to 5000 
-```
-AUTH_REDIRECT_PORT: 5000
-```
-2)  Run the following command:
+#### host the web app server locally
+1)  In client/src/config.js, set the module.exports to LOCAL_HOST_CONFIG
+2)  Do the same for /config.js
+3)  Run the following command:
 ```
 npm run client-build    //required for first run only
 npm run start
