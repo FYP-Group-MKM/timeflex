@@ -6,9 +6,10 @@
 npm run app-install
 ```
 #### host the web app server locally
-1)  In client/src/config.js, set the module.exports to LOCAL_HOST_CONFIG
+1)  In /client/src/config.js, set the module.exports to LOCAL_HOST_CONFIG
 2)  Do the same for /config.js
-3)  Run the following command:
+3)  Add the keys.js file to /server/config
+4)  Run the following command:
 ```
 npm run client-build    //required for first run only
 npm run start
